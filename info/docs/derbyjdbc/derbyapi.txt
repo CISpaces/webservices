@@ -1,0 +1,5 @@
+Derby JDBC driver:
+ derbyclient.jar  for connection to the Gaian database 
+ http://db.apache.org/derby/docs/10.7/devguide/cdevdvlp40653.html
+ 
+ for other databases, include the JDBC driver in the WEB-INF/lib and change the settings in web.xml

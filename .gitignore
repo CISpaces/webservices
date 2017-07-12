@@ -1,0 +1,10 @@
+# Netbeans Project files
+**/nbproject
+
+# IntelliJ Project files
+**/.idea
+
+# Compiled output
+**/*.class
+**/*.war
+

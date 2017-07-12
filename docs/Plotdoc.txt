@@ -1,0 +1,103 @@
+/******************************************************************************
+ * This research was sponsored by the U.S. Army Research Laboratory and the
+ * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+ * Project 6, Task 3: Collaborative Intelligence Analysis.
+ * The U.S. and U.K. Governments are authorized to reproduce and distribute
+ * reprints for Government purposes notwithstanding any copyright notation
+ * hereon.
+ * **************************************************************************  
+ */
+ 
+ 
+Installation:
+
+1. download Apache Tomcat (or alike) http://tomcat.apache.org/
+
+2. download PLOT folder from http://homepages.abdn.ac.uk/a.toniolo/pages/cisp/PLOT.zip
+
+3. copy plotgraph.war in copy4server under webapps folder of Tomcat
+
+4. Run Tomcat startup.sh/bat
+
+-------
+Dependencies
+
+- JFREECHART: Java chart library http://www.jfree.org/jfreechart/
+- GSON: JSon to Java objects: https://code.google.com/p/google-gson/
+
+Tested with Apache Tomcat 7-8, JAVA SE 7 
+
+-------
+
+Graphs:
+
+The servlet is accessible at the URL 
+
+http://localhost:8080/plotgraphs/Jfree?action=ACT&json=JSON
+
+* ACT can be one of the following: 
+1-byday: the responses by day (bar chart)
+2-byloc: the responses by location (bar chart)
+3-byquest: the responses by answer to a question (bar chart)
+4-byans: substitute to tag cloud (stacked bar chart)
+5-barplot: general bar chart
+6-bysinglequest: return bar chart for only one question require parameter id=IDoftheQuestion
+7-byallquest:return an image of charts for all the questions in separate graphs
+8-byallcrowdinfo: RETURN an image of historical data on crowdinfo with dates
+
+* JSON is a string with data for the plot
+-the HDC string for the first 4 options 
+-For 5 the string is a set of triples  
+{
+"data":[
+	{"numb":33, "series":"Q1", "categ":"Rome"},
+	{"numb":44, "series":"Q1", "categ":"Cairo"},...
+	]
+}
+where "numb" is the count, "series" is the corresponding series (those shown on the legend), "categ" is the ticks on the x axis
+
+
+There are additional parameters that can be set in the URL:
+action=ACT&title=TITLE&xax=XLABEL&yax=YLABEL&xdim=XDIM&ydim=YDIM&json=JSON
+
+*TITLE: title of the graph, in the first 4 options the default is the title given in the xls file
+*XLABEL: label of the x axis, in the first 4 options the default is the one suggested in the email
+*YLABEL: label of the y axis, in the first 4 options the default is the one suggested in the email
+*XDIM-YDIM: default 500X400 pixels
+---------------
+
+Here are a few examples: 
+
+http://localhost:8080/plotgraphs/Jfree?action=byloc&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byloc&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"ratioByLoc": {"UK": 0.11,"US": 0.4},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byday&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"ratioByDay": { "2014-05-28": 0.3,"2014-05-29": 0.3,"2014-05-30": 0.25},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byday&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byquest&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byans&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Yes":4,"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=barplot&title=Graph&xax=x axis&yax=y axis&xdim=300&ydim=200&json={"data":[{"numb":33, "series":"Q1", "categ":"Rome"},{"numb":44, "series":"Q1", "categ":"Cairo"},{"numb":22, "series":"Q2", "categ":"Rome"},{"numb":12, "series":"Q2", "categ":"Cairo"},{"numb":56, "series":"Q3", "categ":"Rome"},{"numb":98, "series":"Q3", "categ":"Cairo"},{"numb":2, "series":"Q4", "categ":"Rome"},{"numb":15, "series":"Q4", "categ":"Cairo"}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=bysinglequest&id=0&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"No": 3,"Yes": 12 },"queID": "2","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"No": 3,"Yes": 12 },"queID": "3","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"formID": "formabc","numByDay": { "2014-05-28": 4,"2014-05-29": 9,"2014-05-30": 2},"numByLoc": {"UK": 11,"US": 4},"queStat":[{"count": {"No": 3,"Yes": 12 },"queID": "0","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"No": 3,"Yes": 12 },"queID": "2","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"No": 3,"Yes": 12 },"queID": "3","ratio": {"No": 0.2,"Yes": 0.8}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"1",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}},{"count": {"Blue": 7,"Green": 4,"Pink": 1,"Unclear": 1,"Yellow": 2 },"queID":"4",    "ratio": {"Blue": 0.46666667,"Green": 0.26666668,"Pink": 0.06666667,"Unclear": 0.06666667,"Yellow": 0.13333334}}]}.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"numByLoc":{"UK/US":2},"queStat":[{"count":{"12345678901234567890":1,"VEry long answer that ":1},"ratio":{"12345678901234567890":0.5,"VEry long answer that ":0.5},"queID":"0","maxAnsLen":22}],"numByDay":{"2014-08-20":2},"formID":"8a6d5550-4155-42e4-b1d8-6de9baabb468"}&.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"formAnalysis": {"lastTime": "2015-04-14 16:00:37.037", "des": "Questions about water contamination in Kish. Task: report zones with contaminated water. ", "nodeID": "", "title": "Water color", "supp": false, "timestamp": "2015-04-27 22:44:30.4430", "crowdloc": "UK/US", "userID": "5785ac7e-0f06-4cd8-9c75-aeee2dd8db6a", "locations": ["UK", "US"], "nQues": 4, "ques": [{"queType": "FreeText", "srcUrl": "http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Friver_01.jpg", "que": "What is the color of the river?", "queID": "3"}, {"queType": "FreeText", "srcUrl": "http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Friver_02.jpg", "que": "What is the color of the river?", "queID": "2"}, {"queType": "FreeText", "srcUrl": "http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Friver_03.jpg", "que": "What is the color of the river?", "queID": "1"}, {"queType": "FreeText", "srcUrl": "http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Friver_04.jpg", "que": "What is the color of the river?", "queID": "0"}], "queStat": [{"queType": "FreeText", "count": {"orange": 6, "mixed": 1, "red": 3}, "ratio": {"orange": 0.6, "mixed": 0.1, "red": 0.3}, "queID": "0", "maxAnsLen": 6}, {"queType": "FreeText", "count": {"blue": 7, "gray": 2, "brown": 1}, "ratio": {"blue": 0.7, "gray": 0.2, "brown": 0.1}, "queID": "1", "maxAnsLen": 5}, {"queType": "FreeText", "count": {"pink": 7, "purple": 1, "red": 1, "violet": 1}, "ratio": {"pink": 0.7, "purple": 0.1, "red": 0.1, "violet": 0.1}, "queID": "2", "maxAnsLen": 6}, {"queType": "FreeText", "count": {"blue": 8, "green": 2}, "ratio": {"blue": 0.8, "green": 0.2}, "queID": "3", "maxAnsLen": 5}], "formID": "myFormWater", "createTime": "201504051123"}, "crowdInfo": false, "supp": false, "ratioByDay": {"2015-04-14": 0.4, "2015-04-13": 0.3, "2015-04-11": 0.3}, "numByLoc": {"US": 8, "UK": 2}, "ratioByLoc": {"US": 0.8, "UK": 0.2}, "queStat": [{"queType": "FreeText", "count": {"orange": 6, "mixed": 1, "red": 3}, "ratio": {"orange": 0.6, "mixed": 0.1, "red": 0.3}, "queID": "0", "maxAnsLen": 6}, {"queType": "FreeText", "count": {"blue": 7, "gray": 2, "brown": 1}, "ratio": {"blue": 0.7, "gray": 0.2, "brown": 0.1}, "queID": "1", "maxAnsLen": 5}, {"queType": "FreeText", "count": {"pink": 7, "purple": 1, "red": 1, "violet": 1}, "ratio": {"pink": 0.7, "purple": 0.1, "red": 0.1, "violet": 0.1}, "queID": "2", "maxAnsLen": 6}, {"queType": "FreeText", "count": {"blue": 8, "green": 2}, "ratio": {"blue": 0.8, "green": 0.2}, "queID": "3", "maxAnsLen": 5}], "formID": "myFormWater", "numByDay": {"2015-04-14": 4, "2015-04-13": 3, "2015-04-11": 3}}
+
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"ratioByDay":{"2015-02-24":1.0},"numByLoc":{"US":4},"ratioByLoc":{"US":1.0},"queStat":[{"queType":"MultiChoice","count":{"y":1,"n":3},"ratio":{"y":0.25,"n":0.75},"queID":"0","maxAnsLen":1},{"queType":"Numerical","count":{"1":1,"10":1,"2":1,"5":1},"ratio":{"1":0.25,"10":0.25,"2":0.25,"5":0.25},"queID":"1","maxAnsLen":2},{"queType":"FreeText","count":{"1":2,"11":1,"4":1},"ratio":{"1":0.5,"11":0.25,"4":0.25},"queID":"2","maxAnsLen":2}],"formID":"6ceaf0e6-e86f-4a0b-b9f3-b079bbd5ba15","numByDay":{"2015-02-24":4}}
+
+byans&json={"numByLoc":{"UK/US":2},"queStat":[{"count":{"New Answer 2":2},"ratio":{"New Answer 2":1.0},"queID":"0","maxAnsLen":12}],"numByDay":{"2014-08-20":2},"formID":"72d6f788-0ee4-4007-b804-deebf4522c2e"}&.png
+
+http://localhost:8080/plotgraphs/Jfree?action=byallquest&json={"formID":"myFormCont","queStat":[{"queID":"0","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}},{"queID":"1","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}}],"numByDay":{"2015-04-11":3,"2015-04-13":3,"2015-04-14":4},"numByLoc":{"UK/US":10},"ratioByDay":{"2015-04-11":0.3,"2015-04-13":0.3,"2015-04-14":0.4},"ratioByLoc":{"UK/US":1.0},"summary":["(1) What is the temperature of your cold water? Answers: Con [1.0E-308,19.0], Pro [20.0,1.0E308]","(0) What is the color of your tap water? Answers: [White:Con] [Yellow:Pro] [Brown:Pro] [Clear:Con]"],"supp":true,"formAnalysis":{"formID":"myFormCont","locations":["UK/US"],"crowdloc":"UK/US","userID":"5785ac7e-0f06-4cd8-9c75-aeee2dd8db6a","ques":[{"queType":"MultiChoice","que":"What is the color of your tap water?","ansOptions":["White","Yellow","Brown","Clear"],"srcUrl":"http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Ftap_water.png","ansValues":["Con","Pro","Pro","Con"],"queID":"1"},{"queType":"Numerical","que":"What is the temperature of your cold water?","srcUrl":"http%3A%2F%2Flocalhost%3A8080%2Fhdcpictures%2Ftap_water.png","Con":[1.0E-308,19.0],"Pro":[20.0,1.0E308],"queID":"0"}],"nQues":2,"queStat":[{"queID":"0","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}},{"queID":"1","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}}],"title":"A Toxic Bacteria contaminated the local water system in Kish","des":"Given that A Toxic Bacteria contaminated the local water system in Kish, is the claim supported by evidence?","createTime":"201504051123","lastTime":"2015-04-14 16:00:37.037","nodeID":"","timestamp":"2015-04-27 23:03:42.342","supp":true},"crowdInfo":false}.pngLibraries and dependencies:
+
+
+

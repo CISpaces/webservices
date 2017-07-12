@@ -1,0 +1,108 @@
+/******************************************************************************
+ * This research was sponsored by the U.S. Army Research Laboratory and the
+ * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+ * Project 6, Task 3: Collaborative Intelligence Analysis.
+ * The U.S. and U.K. Governments are authorized to reproduce and distribute
+ * reprints for Government purposes notwithstanding any copyright notation
+ * hereon.
+ * **************************************************************************  
+ */
+ 
+ Installation:
+
+1. download Apache Tomcat (or alike) http://tomcat.apache.org/ 
+
+!!!! AND NEW REQUIREMENT: 
+	1A) Add derbyclient.jar in /lib of Tomcat 
+	1B) Add the following to context.xml (path/to/tomcat/conf/context.xml)
+ 
+ <Resource name="jdbc/myDB"
+    auth="Container"
+    type="javax.sql.DataSource"
+    username="gaiandb"
+    password="passw0rd"
+    driverClassName="org.apache.derby.jdbc.ClientDriver"
+    url="jdbc:derby://localhost:6414/gaiandb"
+    maxTotal="10"
+    removeAbandonedOnBorrow="true"
+    removeAbandonedTimeout="60"
+    logAbandoned="true"
+    />
+
+2. download HDC folder from http://homepages.abdn.ac.uk/a.toniolo/pages/cisp/HDC.zip
+
+3. copy hdc.war in copy4server under webapps folder of Tomcat
+
+4. Run Tomcat startup.sh/bat
+
+
+-------
+ 
+ Changes made in createforms/get agg answers now depends on support (on/off)
++ Query crowdinfo on getMyForms
+
+-------------------------------
+Dependencies introduced: 
+- Apache HttpComponents within JENA release:  https://hc.apache.org/ toolset of low level Java components focused on HTTP and associated protocols
+- GSON: JSon to Java objects: https://code.google.com/p/google-gson/
+- HDC primer: initial version of HDC:  https://dl.dropboxusercontent.com/u/82816032/hdc.rar
+
+-------------------------------------------------------------
+Parameters on web.xml
+
+ A.  DATABASE SETTING: GAIAN but it could work with any other database as long as the jdbc is included in the lib folder 
+ password-	passw0rd
+ user-		gaiandb
+ url- 		jdbc:derby://localhost:6414/gaiandb
+ driver -	org.apache.derby.jdbc.ClientDriver>org.apache.derby.jdbc.ClientDriver</param-value>
+ 
+ B. CROWDINFO SETTINGS 128.97.93.172 
+ci_host -		128.97.93.172
+ci_timeout -	300
+ci_port -		80
+ci_path-		/queryall
+ci_queries- 	Subway:query_sub;Restaurant:query_yos;TSquare:query_fus;Bistro:query_bis;Library:query_lib;Gym:query_gym;ABDN_room_left:query_base05;ABDN_room_right:query_base06;ABDN_theatre:query_base01;ABDN_lab:query_base02;</param-value>
+    
+   
+--------------------------------
+Parameters of the database are read in CISPACES/code/config/cis_settings.txt
+
+REQUIRED env variables: 
+--CISPACES
+--CATALINA_HOME
+
+--------------------------------
+
+
+There are four form options: 1 with no support in this case nodeID is ignored so all the options collapse in one [NOS], the other 3 with support (1 no nodes selected as input [NND], 1 node selected [1ND], 1 cq selected [1CQ]) 
+
+
+*******************STEP A create forms
+[NOS]
+curl -X POST -H "Content-Type: application/json" -d '{"params": {"ques": [{"queType": "Numerical", "srcUrl": "http://example.com/example.htm", "que": "what is the temperature of your cold water?","Con":[1e-308,1e308],"Pro":[1e-308,1e308]}, {"queType": "MultiChoice", "ansOptions": ["White", "Yellow", "Brown", "Clear "],"ansValues": ["N/A", "N/A", "N/A", "N/A"], "srcUrl": "http://example.com/example.htm", "que": "What is the color of your tap water?"}, {"queType": "FreeText", "srcUrl": "http://example.com/example.htm", "que": "What do you think about the water?"}], "crowdLoc": "US", "limit": 10, "title": "Form 1 no support", "deadline": "999912312359", "des": "Form 1 no support", "userID": "2423145e-369d-45a7-b285-71b218772336", "formID": "24b67354-30dc-44d8-8975-fb2fac8aa93d","supp":false, "nodeID":null}, "func": "createForm"}' http://localhost:8080/hdc/write/
+
+[NND]
+curl -X POST -H "Content-Type: application/json" -d '{"params": {"ques": [{"queType": "Numerical", "srcUrl": "http://example.com/example.htm", "que": "what is the temperature of your cold water?","Con":[1e-308,19],"Pro":[20,1e308]}, {"queType": "MultiChoice", "ansOptions": ["White", "Yellow", "Brown", "Clear "],"ansValues": ["Con", "Pro", "Pro", "Con"], "srcUrl": "http://example.com/example.htm", "que": "What is the color of your tap water?"}], "crowdLoc": "US", "limit": 10, "title": "There are stars in the sky", "deadline": "999912312359", "des": "I believe that the are stars in the sky, do you know this?", "userID": "2423145e-369d-45a7-b285-71b218772336", "formID": "8e526a1d-be7c-4d51-97b9-e6df16bdde54","supp":true,"nodeID":null}, "func": "createForm"}' http://localhost:8080/hdc/write/
+
+[1ND]
+curl -X POST -H "Content-Type: application/json" -d '{"params": {"ques": [{"queType": "Numerical", "srcUrl": "http://example.com/example.htm", "que": "what is the temperature of your cold water?","Con":[1e-308,19],"Pro":[20,1e308]}, {"queType": "MultiChoice", "ansOptions": ["White", "Yellow", "Brown", "Clear "],"ansValues": ["Con", "Pro", "Pro", "Con"], "srcUrl": "http://example.com/example.htm", "que": "What is the color of your tap water?"}], "crowdLoc": "US", "limit": 10, "title": "A non-waterborne bacteria was engineered and released in the water supply", "deadline": "999912312359", "des": "Is it the case that A non-waterborne bacteria was engineered and released in the water supply?", "userID": "2423145e-369d-45a7-b285-71b218772336", "formID": "40c25b5a-774c-41d5-b2a4-4129e4dbe4b1","supp":true, "nodeID":"fcab8cb9-5b31-4ebf-a202-80d9821746b3"}, "func": "createForm"}' http://localhost:8080/hdc/write/
+
+[1CQ]
+curl -X POST -H "Content-Type: application/json" -d '{"params": {"ques": [{"queType": "Numerical", "srcUrl": "http://example.com/example.htm", "que": "what is the temperature of your cold water?","Con":[1e-308,19],"Pro":[20,1e308]}, {"queType": "MultiChoice", "ansOptions": ["White", "Yellow", "Brown", "Clear "],"ansValues": ["Con", "Pro", "Pro", "Con"], "srcUrl": "http://example.com/example.htm", "que": "What is the color of your tap water?"}], "crowdLoc": "US", "limit": 10, "title": "A Toxic Bacteria contaminated the local water system in Kish", "deadline": "999912312359", "des": "Given that A Toxic Bacteria contaminated the local water system in Kish, is the claim supported by evidence?", "userID": "2423145e-369d-45a7-b285-71b218772336", "formID": "f348e5ac-6985-40ce-9976-9d4962ace2b8","supp":true, "nodeID":"e8123236-4c82-4033-951b-c2efb596fc02"}, "func": "createForm"}' http://localhost:8080/hdc/write/
+
+*******************STEP B get agg answers
+[NOS]
+ {"formID":"24b67354-30dc-44d8-8975-fb2fac8aa93d","queStat":[{"queID":"0","queType":"FreeText","maxAnsLen":12,"count":{"too bad":4,"ok":2,"not sure":1,"dangerous":1,"contaminated":1,"bad":1},"ratio":{"too bad":0.4,"ok":0.2,"not sure":0.1,"dangerous":0.1,"contaminated":0.1,"bad":0.1}},{"queID":"1","queType":"MultiChoice","maxAnsLen":6,"count":{"clear ":6,"yellow":2,"white":1,"brown":1},"ratio":{"clear ":0.6,"yellow":0.2,"white":0.1,"brown":0.1}},{"queID":"2","queType":"Numerical","maxAnsLen":2,"count":{"22":2,"25":1,"24":1,"23":1,"21":1,"20":1,"19":1,"18":1,"17":1},"ratio":{"22":0.2,"25":0.1,"24":0.1,"23":0.1,"21":0.1,"20":0.1,"19":0.1,"18":0.1,"17":0.1}}],"numByDay":{"2015-03-01":10},"numByLoc":{"US":10},"ratioByDay":{"2015-03-01":1.0},"ratioByLoc":{"US":1.0},"supp":false,"formAnalysis":{"formID":"24b67354-30dc-44d8-8975-fb2fac8aa93d","locations":["US"],"crowdloc":"US","userID":"2423145e-369d-45a7-b285-71b218772336","ques":[{"queType":"Numerical","que":"what is the temperature of your cold water?","srcUrl":"http://example.com/example.htm","Con":[1.0E-308,1.0E308],"Pro":[1.0E-308,1.0E308],"queID":"2"},{"queType":"MultiChoice","que":"What is the color of your tap water?","ansOptions":["White","Yellow","Brown","Clear "],"srcUrl":"http://example.com/example.htm","ansValues":["N/A","N/A","N/A","N/A"],"queID":"1"},{"queType":"FreeText","que":"What do you think about the water?","srcUrl":"http://example.com/example.htm","queID":"0"}],"nQues":3,"queStat":[{"queID":"0","queType":"FreeText","maxAnsLen":12,"count":{"too bad":4,"ok":2,"not sure":1,"dangerous":1,"contaminated":1,"bad":1},"ratio":{"too bad":0.4,"ok":0.2,"not sure":0.1,"dangerous":0.1,"contaminated":0.1,"bad":0.1}},{"queID":"1","queType":"MultiChoice","maxAnsLen":6,"count":{"clear ":6,"yellow":2,"white":1,"brown":1},"ratio":{"clear ":0.6,"yellow":0.2,"white":0.1,"brown":0.1}},{"queID":"2","queType":"Numerical","maxAnsLen":2,"count":{"22":2,"25":1,"24":1,"23":1,"21":1,"20":1,"19":1,"18":1,"17":1},"ratio":{"22":0.2,"25":0.1,"24":0.1,"23":0.1,"21":0.1,"20":0.1,"19":0.1,"18":0.1,"17":0.1}}],"title":"Form 1 no support","des":"Form 1 no support","createTime":"201503041707","lastTime":"2015-03-01 18:07:35.735","nodeID":"","timestamp":"2015-03-04 18:17:45.1745","supp":false}}
+
+[NND]
+ {"formID":"8e526a1d-be7c-4d51-97b9-e6df16bdde54","queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"numByDay":{"2015-03-01":10},"numByLoc":{"US":10},"ratioByDay":{"2015-03-01":1.0},"ratioByLoc":{"US":1.0},"summary":["(1)What is the color of your tap water? Answers:[White:Con][Yellow:Pro][Brown:Pro][Clear :Con]","(0)what is the temperature of your cold water? Answers:Con [1.0E-308,19.0],Pro [20.0,1.0E308]"],"supp":true,"formAnalysis":{"formID":"8e526a1d-be7c-4d51-97b9-e6df16bdde54","locations":["US"],"crowdloc":"US","userID":"2423145e-369d-45a7-b285-71b218772336","ques":[{"queType":"Numerical","que":"what is the temperature of your cold water?","srcUrl":"http://example.com/example.htm","Con":[1.0E-308,19.0],"Pro":[20.0,1.0E308],"queID":"1"},{"queType":"MultiChoice","que":"What is the color of your tap water?","ansOptions":["White","Yellow","Brown","Clear "],"srcUrl":"http://example.com/example.htm","ansValues":["Con","Pro","Pro","Con"],"queID":"0"}],"nQues":2,"queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"title":"There are stars in the sky","des":"I believe that the are stars in the sky, do you know this?","createTime":"201503041709","lastTime":"2015-03-01 18:07:35.735","nodeID":"","timestamp":"2015-03-04 18:17:53.1753","supp":true}}
+
+[1ND]
+{"formID":"40c25b5a-774c-41d5-b2a4-4129e4dbe4b1","queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"numByDay":{"2015-03-01":10},"numByLoc":{"US":10},"ratioByDay":{"2015-03-01":1.0},"ratioByLoc":{"US":1.0},"summary":["(1)What is the color of your tap water? Answers:[White:Con][Yellow:Pro][Brown:Pro][Clear :Con]","(0)what is the temperature of your cold water? Answers:Con [1.0E-308,19.0],Pro [20.0,1.0E308]"],"supp":true,"formAnalysis":{"formID":"40c25b5a-774c-41d5-b2a4-4129e4dbe4b1","locations":["US"],"crowdloc":"US","userID":"2423145e-369d-45a7-b285-71b218772336","ques":[{"queType":"Numerical","que":"what is the temperature of your cold water?","srcUrl":"http://example.com/example.htm","Con":[1.0E-308,19.0],"Pro":[20.0,1.0E308],"queID":"1"},{"queType":"MultiChoice","que":"What is the color of your tap water?","ansOptions":["White","Yellow","Brown","Clear "],"srcUrl":"http://example.com/example.htm","ansValues":["Con","Pro","Pro","Con"],"queID":"0"}],"nQues":2,"queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"title":"A non-waterborne bacteria was engineered and released in the water supply","des":"Is it the case that A non-waterborne bacteria was engineered and released in the water supply?","createTime":"201503041713","lastTime":"2015-03-01 18:07:35.735","nodeID":"fcab8cb9-5b31-4ebf-a202-80d9821746b3","timestamp":"2015-03-04 18:18:00.180","supp":true}}
+
+[1CQ]
+{"formID":"f348e5ac-6985-40ce-9976-9d4962ace2b8","queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"numByDay":{"2015-03-01":10},"numByLoc":{"US":10},"ratioByDay":{"2015-03-01":1.0},"ratioByLoc":{"US":1.0},"summary":["(1)What is the color of your tap water? Answers:[White:Con][Yellow:Pro][Brown:Pro][Clear :Con]","(0)what is the temperature of your cold water? Answers:Con [1.0E-308,19.0],Pro [20.0,1.0E308]"],"supp":true,"formAnalysis":{"formID":"f348e5ac-6985-40ce-9976-9d4962ace2b8","locations":["US"],"crowdloc":"US","userID":"2423145e-369d-45a7-b285-71b218772336","ques":[{"queType":"Numerical","que":"what is the temperature of your cold water?","srcUrl":"http://example.com/example.htm","Con":[1.0E-308,19.0],"Pro":[20.0,1.0E308],"queID":"1"},{"queType":"MultiChoice","que":"What is the color of your tap water?","ansOptions":["White","Yellow","Brown","Clear "],"srcUrl":"http://example.com/example.htm","ansValues":["Con","Pro","Pro","Con"],"queID":"0"}],"nQues":2,"queStat":[{"queID":"0","queType":"MultiChoice","maxAnsLen":6,"count":{"Brown":0.125,"Clear ":0.5416666666666666,"White":0.125,"Yellow":0.20833333333333334},"ratio":{}},{"queID":"1","queType":"Numerical","maxAnsLen":2,"count":{"left":17.0,"mean":21.1,"right":25.0,"std":2.6012817353502227},"ratio":{}}],"title":"A Toxic Bacteria contaminated the local water system in Kish","des":"Given that A Toxic Bacteria contaminated the local water system in Kish, is the claim supported by evidence?","createTime":"201503041718","lastTime":"2015-03-01 18:07:35.735","nodeID":"e8123236-4c82-4033-951b-c2efb596fc02","timestamp":"2015-03-04 18:18:05.185","supp":true}}
+
+ 
+ 
+ 

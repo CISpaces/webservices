@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>mcs</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>Jersey REST Service</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+        <param-name>jersey.config.server.provider.packages</param-name>
+        <param-value>mcs</param-value>
+    </init-param>
+     <init-param>
+        <param-name>print</param-name>
+        <param-value>false</param-value>
+    </init-param>
+      <!--   DATABASE SETTINGS -->
+    <init-param>
+        <param-name>password</param-name>
+        <param-value>passw0rd</param-value>
+    </init-param>
+    <init-param>
+        <param-name>user</param-name>
+        <param-value>gaiandb</param-value>
+    </init-param>
+    <init-param>
+        <param-name>url</param-name>
+        <param-value>jdbc:derby://localhost:6414/gaiandb</param-value>
+    </init-param>
+      <init-param>
+        <param-name>driver</param-name>
+        <param-value>org.apache.derby.jdbc.ClientDriver</param-value>
+    </init-param>
+       <!--   MOIRA SETTINGS -->
+      <init-param>
+        <param-name>moira_host_name</param-name>
+        <param-value>178.62.33.18</param-value>
+    </init-param>
+      <init-param>
+        <param-name>moira_port</param-name>
+        <param-value>8080</param-value>
+    </init-param>
+      <init-param>
+        <param-name>moira_cards</param-name>
+        <param-value>/CeStoreWeb/concepts/card/instances?showStats=true</param-value>
+    </init-param>
+       <init-param>
+        <param-name>moira_posts</param-name>
+        <param-value>/CeStoreWeb/sentences</param-value>
+    </init-param>
+       <init-param>
+        <param-name>moira_name</param-name>
+        <param-value>Moira</param-value>
+    </init-param>
+      <init-param>
+        <param-name>interval_sec</param-name>
+        <param-value>30</param-value>
+    </init-param>
+ 
+      <!--   END   -->
+       <load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+    <servlet-name>Jersey REST Service</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+</servlet-mapping>
+<listener>
+    <listener-class>mcs.ListenerHandler</listener-class>    
+</listener>
+</web-app>
