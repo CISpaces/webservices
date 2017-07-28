@@ -1,10 +1,23 @@
+/**
+ *  This class consists of the SQL queries for creating the tables which enable the support of Version Control within the application.
+ *  It also includes queries which will be executed on the back-end to accommodate front-end interaction with the program.
+ *  The database used is Derby, so all queries are written to support the Derby SQL dialect.
+ *
+ *  @author Yordanka Ivanova
+ *  @since July 2017
+ */
+
 package database;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+
 public class DBQuery {
 
+    /*This object manages the connection to the database and the execution of queries
+    * @see DBConnect in the database package
+    */
     protected DBConnect dbcn;
 
     public DBQuery() {
@@ -25,8 +38,8 @@ public class DBQuery {
     }
 
     public void createTableNode(){
-        String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), username varchar (255), eval varchar(5000), txt varchar (5000), inp varchar (20), dtg timestamp, " +
-                "type varchar(10), annot varchar (5000), sessionid varchar(255),";
+        String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), source varchar (255), uncert varchar(20), eval varchar(5000), "
+                + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), sessionid varchar(255),";
         query+="CONSTRAINT CISPACES_NODE_pk PRIMARY KEY (nodeid))";
         dbcn.updateSQL(query);
     }
@@ -59,15 +72,19 @@ public class DBQuery {
         dbcn.updateSQL(sql);
     }
 
-    public void insertNode(String nodeID, String username, String eval, String txt, String input, Timestamp timestamp, String type, String annot, String sessionid) {
+    public void insertNode(String nodeID, String source, String uncert, String eval, String txt, String input,
+                           Timestamp timestamp, String commit, String type, String annot, String sessionid)
+    {
         String sql;
-        sql = "INSERT INTO CISPACES_NODE (nodeid, username, eval, txt, inp, dtg, type, annot, sessionid) VALUES "
+        sql = "INSERT INTO CISPACES_NODE (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, sessionid) VALUES "
                 + "( '"+nodeID+"' ,"
-                + " '"+username+"' ,"
+                + " '"+source+"' ,"
+                + " '"+uncert+"' ,"
                 + " '"+eval+"' ,"
                 + " '"+txt+"' ,"
                 + " '"+input+"' ,"
                 + " '"+timestamp+"' ,"
+                + " '"+commit+"' ,"
                 + " '"+type+"' ,"
                 + " '"+annot+"' ,"
                 + " '"+sessionid+"'"
