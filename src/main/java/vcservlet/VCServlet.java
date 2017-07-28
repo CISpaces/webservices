@@ -1,8 +1,6 @@
 package vcservlet;
 
-import javax.servlet.ServletConfig;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
 import java.util.logging.Logger;

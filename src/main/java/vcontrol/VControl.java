@@ -49,7 +49,7 @@ public class VControl {
         map = new HashMap();
         map.put("response","success");
 
-        return null;
+        return map;
     }
 
 
