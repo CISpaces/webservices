@@ -1,5 +1,8 @@
 package database;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 public class DBQuery {
 
     protected DBConnect dbcn;
@@ -22,8 +25,8 @@ public class DBQuery {
     }
 
     public void createTableNode(){
-        String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), username varchar (255), eval CLOB (50 KB), txt CLOB (50 KB), input varchar (20), dtg timestamp, " +
-                "type varchar(10), annot CLOB (50 KB), prov clob (500 KB), sessionid varchar(255),";
+        String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), username varchar (255), eval varchar(5000), txt varchar (5000), inp varchar (20), dtg timestamp, " +
+                "type varchar(10), annot varchar (5000), sessionid varchar(255),";
         query+="CONSTRAINT CISPACES_NODE_pk PRIMARY KEY (nodeid))";
         dbcn.updateSQL(query);
     }
@@ -43,5 +46,51 @@ public class DBQuery {
     public void closeDatabase() {
         dbcn.forceClose();
     }
+
+    public void insertSession(String sessionid, boolean isTemp, Calendar timest, boolean isShared){
+        String sql;
+        sql = "INSERT INTO CISPACES_SESSION (sessionid, isTemp, timest, isShared) VALUES "
+                + "( '" + sessionid + "' ,"
+                + " '" + isTemp + "' ,"
+                + " '" + timest + "' ,"
+                + " " + isShared + " )";
+
+        System.out.println(sql);
+        dbcn.updateSQL(sql);
+    }
+
+    public void insertNode(String nodeID, String username, String eval, String txt, String input, Timestamp timestamp, String type, String annot, String sessionid) {
+        String sql;
+        sql = "INSERT INTO CISPACES_NODE (nodeid, username, eval, txt, inp, dtg, type, annot, sessionid) VALUES "
+                + "( '"+nodeID+"' ,"
+                + " '"+username+"' ,"
+                + " '"+eval+"' ,"
+                + " '"+txt+"' ,"
+                + " '"+input+"' ,"
+                + " '"+timestamp+"' ,"
+                + " '"+type+"' ,"
+                + " '"+annot+"' ,"
+                + " '"+sessionid+"'"
+                        + " )";
+
+        System.out.println(sql);
+        dbcn.updateSQL(sql);
+    }
+
+    public void insertEdge(String toID, String fromID, String formEdgeID, String edgeID) {
+        String sql;
+        String temp = "testSession";
+        sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, sessionid) VALUES "
+                + "( '"+edgeID+"' ,"
+                + " '"+toID+"' ,"
+                + " '"+fromID+"' ,"
+                + " '"+formEdgeID+"' ,"
+                + " '"+temp+"'"
+                        + " )";
+
+        System.out.println(sql);
+        dbcn.updateSQL(sql);
+    }
+
 
 }

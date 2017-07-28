@@ -35,35 +35,35 @@ public class JsonHelper {
 	}
 
 
-public HashMap convertInputMap(String json) {
-	 HashMap map=new HashMap();
-	 Gson gson = new Gson();
- try{
-	 map = gson.fromJson(json, HashMap.class);
- }catch(Exception e){
-	 log.log(Level.SEVERE,"Exception Not a JSON string"); 
- }
-	return  map;
-}
+	public HashMap convertInputMap(String json) {
+		 HashMap map=new HashMap();
+		 Gson gson = new Gson();
+	 try{
+		 map = gson.fromJson(json, HashMap.class);
+	 }catch(Exception e){
+		 log.log(Level.SEVERE,"Exception Not a JSON string");
+	 }
+		return  map;
+	}
 
 
-public String convertInputJson(HashMap input) {
+	public String convertInputJson(HashMap input) {
+			Gson gson = new GsonBuilder()
+			  //  .setPrettyPrinting()
+				.disableHtmlEscaping()
+				.create();
+			String response=gson.toJson(input);
+			return response;
+		}
+
+	public String convertInputJson(LinkedTreeMap input) {
 		Gson gson = new GsonBuilder()
-		  //  .setPrettyPrinting()
-		    .disableHtmlEscaping()
-		    .create();
+		 //   .setPrettyPrinting()
+			.disableHtmlEscaping()
+			.create();
 		String response=gson.toJson(input);
 		return response;
 	}
-
-public String convertInputJson(LinkedTreeMap input) {
-	Gson gson = new GsonBuilder()
-	 //   .setPrettyPrinting()
-	    .disableHtmlEscaping()
-	    .create();
-	String response=gson.toJson(input);
-	return response;
-}
 
 
 }

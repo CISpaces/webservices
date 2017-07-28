@@ -18,12 +18,8 @@
 
 
 package database;
-import java.sql.Connection;
- 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -59,7 +55,6 @@ public class DBConnect {
 	            return false;
 	        }
 		}
-
 	 
 
 		public synchronized ArrayList<HashMap<String,Object>> execSQL(String sql){
@@ -102,7 +97,7 @@ public class DBConnect {
 			try{
 				connect();
 				s = dbCon.createStatement();
-				//System.out.println(sql);
+				System.out.println(sql);
 				s.executeUpdate(sql);
 		
 				res=true;
@@ -208,8 +203,35 @@ public class DBConnect {
 			    }
 			
 		}
-	    
-	   
+
+
+	public synchronized void insertClob(String updateStatement, String clob){
+		//only one update per query!!!
+		PreparedStatement ps = null;
+		try{
+			connect();
+			ps = dbCon.prepareStatement(updateStatement);
+			ps.setString(1,clob);
+			ps.executeUpdate();
+			ps.close();
+		}catch(Exception e){
+			log.log(Level.SEVERE,"GAIAN DB CONNECTION",e);
+		}
+		finally{
+
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) { /* ignored */}
+			}
+			if (dbCon != null) {
+				try {
+					dbCon.close();
+				} catch (SQLException e) { /* ignored */}
+			}
+		}
+
+	}
 
 }
 
