@@ -75,7 +75,10 @@ public class VControl {
             input = map.get("input").toString();
         }
 
-        Timestamp timestamp = timeHelper.formatDateCIS(map.get("dtg").toString());
+        Timestamp timestamp = null;
+        if(map.get("dtg") != null) {
+            timestamp = timeHelper.formatDateCIS(map.get("dtg").toString());
+        }
 
 
         String commit = null;
