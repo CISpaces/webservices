@@ -79,7 +79,7 @@ public class VCServlet {
     }
 
     /**
-     * @param edgeid the JSON for an edge coming from the front-end upon the deletion of an existing edge
+     * @param edgeid a string containing the id of the edge to be deleted
      * @return a response indicating whether the JSON has been processed and the edge deleted from the database
      * URL: http://localhost:8080/VC/rest/deleteEdge
      */
@@ -99,7 +99,7 @@ public class VCServlet {
     }
 
     /**
-     * @param nodeid the JSON for a node coming from the front-end upon the deletion of an existing edge
+     * @param nodeid a string containing the id of the node to be deleted
      * @return a response indicating whether the JSON has been processed and the node deleted from the database
      * URL: http://localhost:8080/VC/rest/deleteNode
      */
