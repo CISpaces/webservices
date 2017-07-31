@@ -7,6 +7,8 @@
 
 package vcservlet;
 
+import database.DBQuery;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
@@ -74,6 +76,46 @@ public class VCServlet {
         log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Node Request Handled ***");
 
         return out;
+    }
+
+    /**
+     * @param edgeid the JSON for an edge coming from the front-end upon the deletion of an existing edge
+     * @return a response indicating whether the JSON has been processed and the edge deleted from the database
+     * URL: http://localhost:8080/VC/rest/postEdge
+     */
+    @Path("/deleteEdge")
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean deleteEdge(String edgeid){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Delete Edge Request ***");
+
+        DBQuery dbQuery = new DBQuery();
+        boolean isDeleted = dbQuery.deleteEdge(edgeid);
+
+        log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Delete Edge Request Handled ***");
+
+        return isDeleted;
+    }
+
+    /**
+     * @param nodeid the JSON for a node coming from the front-end upon the deletion of an existing edge
+     * @return a response indicating whether the JSON has been processed and the node deleted from the database
+     * URL: http://localhost:8080/VC/rest/postNode
+     */
+    @Path("/deleteNode")
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean deleteNode(String nodeid){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Delete Node Request ***");
+
+        DBQuery dbQuery = new DBQuery();
+        boolean isDelelted = dbQuery.deleteNode(nodeid);
+
+        log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Delete Node Request Handled ***");
+
+        return isDelelted;
     }
 
 }

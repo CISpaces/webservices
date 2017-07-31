@@ -110,4 +110,19 @@ public class DBQuery {
     }
 
 
+    public boolean deleteEdge(String edgeid) {
+        String sql = "DELETE FROM CISPACES_EDGE WHERE edgeid = " + "'" + edgeid + "'";
+        System.out.println(sql);
+        boolean isStatementExecuted = dbcn.updateSQL(sql);
+
+        return isStatementExecuted;
+    }
+
+    public boolean deleteNode(String nodeid) {
+        String sql = "DELETE FROM CISPACES_NODE WHERE nodeid = " + "'" + nodeid + "'";
+        System.out.println(sql);
+        boolean isStatementExecuted = dbcn.updateSQL(sql);
+
+        return isStatementExecuted;
+    }
 }
