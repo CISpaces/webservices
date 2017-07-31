@@ -81,7 +81,7 @@ public class VCServlet {
     /**
      * @param edgeid the JSON for an edge coming from the front-end upon the deletion of an existing edge
      * @return a response indicating whether the JSON has been processed and the edge deleted from the database
-     * URL: http://localhost:8080/VC/rest/postEdge
+     * URL: http://localhost:8080/VC/rest/deleteEdge
      */
     @Path("/deleteEdge")
     @POST
@@ -101,7 +101,7 @@ public class VCServlet {
     /**
      * @param nodeid the JSON for a node coming from the front-end upon the deletion of an existing edge
      * @return a response indicating whether the JSON has been processed and the node deleted from the database
-     * URL: http://localhost:8080/VC/rest/postNode
+     * URL: http://localhost:8080/VC/rest/deleteNode
      */
     @Path("/deleteNode")
     @POST
