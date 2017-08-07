@@ -41,9 +41,9 @@ public class VCServlet {
     /**
      * @param input the JSON for an edge coming from the front-end upon the creation of a new edge
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
-     * URL: http://localhost:8080/VC/rest/postEdge
+     * URL: http://localhost:8080/VC/rest/edge
      */
-    @Path("/postEdge")
+    @Path("/edge")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -61,9 +61,9 @@ public class VCServlet {
     /**
      * @param input the JSON for a node coming from the front-end upon the creation of a new node
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
-     * URL: http://localhost:8080/VC/rest/postNode
+     * URL: http://localhost:8080/VC/rest/node
      */
-    @Path("/postNode")
+    @Path("/node")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -81,13 +81,13 @@ public class VCServlet {
     /**
      * @param edgeid a string containing the id of the edge to be deleted
      * @return a response indicating whether the JSON has been processed and the edge deleted from the database
-     * URL: http://localhost:8080/VC/rest/deleteEdge
+     * URL: http://localhost:8080/VC/rest/edge/id
      */
-    @Path("/deleteEdge")
+    @Path("/edge/{edgeid}")
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public boolean deleteEdge(String edgeid){
+    public boolean deleteEdge(@PathParam("edgeid") String edgeid){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Delete Edge Request ***");
 
         DBQuery dbQuery = new DBQuery();
@@ -101,13 +101,13 @@ public class VCServlet {
     /**
      * @param nodeid a string containing the id of the node to be deleted
      * @return a response indicating whether the JSON has been processed and the node deleted from the database
-     * URL: http://localhost:8080/VC/rest/deleteNode
+     * URL: http://localhost:8080/VC/rest/node/nodeid
      */
-    @Path("/deleteNode")
+    @Path("/node/{nodeid}")
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public boolean deleteNode(String nodeid){
+    public boolean deleteNode(@PathParam("nodeid") String nodeid){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Delete Node Request ***");
 
         DBQuery dbQuery = new DBQuery();
