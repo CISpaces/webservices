@@ -39,19 +39,19 @@ public class VCServlet {
 
 
     /**
-     * @param input the JSON for an edge coming from the front-end upon the creation of a new edge
+     * @param edge the JSON for an edge coming from the front-end upon the creation of a new edge
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
      * URL: http://localhost:8080/VC/rest/edge
      */
-    @Path("/edge")
+    @Path("/edge/{edgeid}")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String getJSONInputEdge(String input){
+    public String getJSONInputEdge(String edge){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - New Edge Request ***");
 
         VCForkControl vcControl = new VCForkControl();
-        String out = vcControl.evalJSONEdge(input);
+        String out = vcControl.evalJSONEdge(edge);
 
         log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Edge Request Handled ***");
 
@@ -59,19 +59,19 @@ public class VCServlet {
     }
 
     /**
-     * @param input the JSON for a node coming from the front-end upon the creation of a new node
+     * @param node the JSON for a node coming from the front-end upon the creation of a new node
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
-     * URL: http://localhost:8080/VC/rest/node
+     * URL: http://localhost:8080/VC/rest/node/nodeid
      */
-    @Path("/node")
+    @Path("/node/{nodeid}")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String getJSONInputNode(String input){
+    public String getJSONInputNode(String node){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - New Node Request ***");
 
         VCForkControl vcControl = new VCForkControl();
-        String out = vcControl.evalJSONNode(input);
+        String out = vcControl.evalJSONNode(node);
 
         log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Node Request Handled ***");
 
@@ -84,7 +84,7 @@ public class VCServlet {
      * URL: http://localhost:8080/VC/rest/edge/id
      */
     @Path("/edge/{edgeid}")
-    @POST
+    @DELETE
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean deleteEdge(@PathParam("edgeid") String edgeid){
@@ -104,7 +104,7 @@ public class VCServlet {
      * URL: http://localhost:8080/VC/rest/node/nodeid
      */
     @Path("/node/{nodeid}")
-    @POST
+    @DELETE
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean deleteNode(@PathParam("nodeid") String nodeid){
