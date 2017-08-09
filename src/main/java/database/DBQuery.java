@@ -10,7 +10,9 @@
 package database;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 
 public class DBQuery {
@@ -76,21 +78,36 @@ public class DBQuery {
                            Timestamp timestamp, String commit, String type, String annot, String sessionid)
     {
         String sql;
-        sql = "INSERT INTO CISPACES_NODE (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, sessionid) VALUES "
-                + "( '"+nodeID+"' ,"
-                + " '"+source+"' ,"
-                + " '"+uncert+"' ,"
-                + " '"+eval+"' ,"
-                + " '"+txt+"' ,"
-                + " '"+input+"' ,"
-                + " '"+timestamp+"' ,"
-                + " '"+commit+"' ,"
-                + " '"+type+"' ,"
-                + " '"+annot+"' ,"
-                + " '"+sessionid+"'"
-                        + " )";
+        sql = "Select * from CISPACES_NODE WHERE nodeid = " + "'" + nodeID + "'";
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        if(rs.isEmpty()){
+            System.out.println("NODE DOESNT EXIST");
+            sql = "INSERT INTO CISPACES_NODE (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, sessionid) VALUES "
+                    + "( '"+nodeID+"' ,"
+                    + " '"+source+"' ,"
+                    + " '"+uncert+"' ,"
+                    + " '"+eval+"' ,"
+                    + " '"+txt+"' ,"
+                    + " '"+input+"' ,"
+                    + " '"+timestamp+"' ,"
+                    + " '"+commit+"' ,"
+                    + " '"+type+"' ,"
+                    + " '"+annot+"' ,"
+                    + " '"+sessionid+"'"
+                    + " )";
+            System.out.println(sql);
+        }else{
+            System.out.println("NODE EXISTS");
+            sql = "UPDATE CISPACES_NODE SET uncert = " + "'" + uncert + "'" + " ,"
+                                        + " eval = " + "'" + eval + "'" + " ,"
+                                        + " txt = "  + "'" + txt + "'" + " ,"
+                                        + " inp = "  + "'" + input + "'" + " ,"
+                                        + " cmt = "  + "'" + commit + "'" + " ,"
+                                        + " annot = " + "'" + annot + "'"
+                    + " WHERE nodeid = " + "'" + nodeID + "'";
+            System.out.println(sql);
+        }
 
-        System.out.println(sql);
         dbcn.updateSQL(sql);
     }
 

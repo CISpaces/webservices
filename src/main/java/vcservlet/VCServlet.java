@@ -43,7 +43,7 @@ public class VCServlet {
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
      * URL: http://localhost:8080/VC/rest/edge
      */
-    @Path("/edge/{edgeid}")
+    @Path("/edge")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -58,8 +58,19 @@ public class VCServlet {
         return out;
     }
 
+    @Path("/node/{nodeid}")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String putNode(String json){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Put Node Request ***");
+        VCForkControl vcControl = new VCForkControl();
+        String out = vcControl.evalJSONNode(json);
+        return out;
+    }
+
     /**
-     * @param node the JSON for a node coming from the front-end upon the creation of a new node
+     * @param json the JSON for a node coming from the front-end upon the creation of a new node
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database
      * URL: http://localhost:8080/VC/rest/node/nodeid
      */
@@ -67,11 +78,11 @@ public class VCServlet {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String getJSONInputNode(String node){
+    public String getJSONInputNode(String json){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - New Node Request ***");
 
         VCForkControl vcControl = new VCForkControl();
-        String out = vcControl.evalJSONNode(node);
+        String out = vcControl.evalJSONNode(json);
 
         log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Node Request Handled ***");
 
