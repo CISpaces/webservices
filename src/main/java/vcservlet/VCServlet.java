@@ -58,6 +58,17 @@ public class VCServlet {
         return out;
     }
 
+    @Path("/edge/{edgeid}")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String putEdge(String json){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Put Edge Request ***");
+        VCForkControl vcControl = new VCForkControl();
+        String out = vcControl.evalJSONEdge(json);
+        return out;
+    }
+
     @Path("/node/{nodeid}")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)

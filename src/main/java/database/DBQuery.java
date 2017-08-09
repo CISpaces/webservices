@@ -114,16 +114,22 @@ public class DBQuery {
     public void insertEdge(String toID, String fromID, String formEdgeID, String edgeID) {
         String sql;
         String temp = "testSession";
-        sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, sessionid) VALUES "
-                + "( '"+edgeID+"' ,"
-                + " '"+toID+"' ,"
-                + " '"+fromID+"' ,"
-                + " '"+formEdgeID+"' ,"
-                + " '"+temp+"'"
-                        + " )";
+        sql = "Select * from CISPACES_EDGE WHERE edgeid = " + "'" + edgeID + "'";
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        if(rs.isEmpty()) {
+            System.out.println("EDGE DOESNT EXIST");
+            sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, sessionid) VALUES "
+                    + "( '" + edgeID + "' ,"
+                    + " '" + toID + "' ,"
+                    + " '" + fromID + "' ,"
+                    + " '" + formEdgeID + "' ,"
+                    + " '" + temp + "'"
+                    + " )";
+            dbcn.updateSQL(sql);
+        }
 
         System.out.println(sql);
-        dbcn.updateSQL(sql);
+
     }
 
 

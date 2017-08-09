@@ -23,8 +23,8 @@ public class VControl {
      */
     public HashMap onAddEdges(HashMap map) {
 
-        String toID = map.get("toID").toString();
-        String fromID = map.get("fromID").toString();
+        String toID = map.get("target").toString();
+        String fromID = map.get("source").toString();
         String formEdgeID = null;
         if(map.get("formEdgeID") != null) {
             formEdgeID = map.get("formEdgeID").toString();
