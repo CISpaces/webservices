@@ -38,6 +38,33 @@ public class VCServlet {
     }
 
 
+    @POST
+    @Path("/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void createNewGraph(String graph){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - New Graph Request ***");
+
+        VCForkControl vcControl = new VCForkControl();
+        vcControl.evalJSONGraph(graph);
+
+        log.log(Level.INFO,"*** VERSION CONTROL SERVICE - New Graph Request Handled ***");
+
+    }
+
+    @POST
+    @Path("/save")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void saveGraph(String graph){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Save Graph Request ***");
+
+        VCForkControl vcControl = new VCForkControl();
+        vcControl.saveJSONGraph(graph);
+
+        log.log(Level.INFO,"*** VERSION CONTROL SERVICE - Save Graph Request Handled ***");
+
+    }
+
+
     /**
      * @param edge the JSON for an edge coming from the front-end upon the creation of a new edge
      * @return a response indicating whether the JSON has been processed and the relevant bits put into the database

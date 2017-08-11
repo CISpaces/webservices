@@ -27,34 +27,50 @@ public class DBQuery {
     }
 
     public void createTableSession(){
-        String query = "CREATE TABLE CISPACES_SESSION ( sessionid varchar (255), isTemp boolean, timest timestamp, isShared boolean, ";
-        query+="CONSTRAINT CISPACES_SESSION_pk PRIMARY KEY (sessionid))";
+        String query = "CREATE TABLE CISPACES_GRAPH ( graphid varchar (255), userid varchar(255), timest timestamp, isshared boolean, parentgraphid varchar(255)";
+        query+="CONSTRAINT CISPACES_SESSION_pk PRIMARY KEY (graphid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableSessionHistory(){
-        String query = "CREATE TABLE CISPACES_SESSION_HISTORY (logid varchar(255), sessionid varchar(255), userid varchar(255), " +
-                "action varchar(500),";
-        query+="CONSTRAINT CISPACES_SESSION_HISTORY_pk PRIMARY KEY (logid))";
+        String query = "CREATE TABLE CISPACES_GRAPH_HISTORY (revisionid varchar(255), graphid varchar(255), userid varchar(255), " +
+                "timest timestamp, isshared boolean, parentgraphid varchar(255)";
+        query+="CONSTRAINT CISPACES_SESSION_HISTORY_pk PRIMARY KEY (revisionid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableNode(){
         String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), source varchar (255), uncert varchar(20), eval varchar(5000), "
-                + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), sessionid varchar(255),";
+                + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), graphid varchar(255), "
+                + "islocked boolean";
         query+="CONSTRAINT CISPACES_NODE_pk PRIMARY KEY (nodeid))";
+        dbcn.updateSQL(query);
+    }
+
+    public void createTableNodeHistory(){
+        String query="CREATE TABLE CISPACES_NODE_HISTORY ( nodeid varchar(255), source varchar (255), uncert varchar(20), eval varchar(5000), "
+                + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), graphid varchar(255), "
+                + "islocked boolean, revisionid varchar(255)";
+        query+="CONSTRAINT CISPACES_NODE_HISTORY_pk PRIMARY KEY (revisionid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableEdge(){
         String query="CREATE TABLE CISPACES_EDGE ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
-                "sessionid varchar(255),";
+                "graphid varchar(255), islocked boolean";
         query+="CONSTRAINT CISPACES_EDGE_pk (edgeid))";
         dbcn.updateSQL(query);
     }
 
+    public void createTableEdgeHistory(){
+        String query="CREATE TABLE CISPACES_EDGE_HISTORY ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
+                "graphid varchar(255), islocked boolean, revisionid varchar(255)";
+        query+="CONSTRAINT CISPACES_EDGE_pk (revisionid))";
+        dbcn.updateSQL(query);
+    }
+
     public void dropAllTables(){
-        String query="DROP TABLE IF EXISTS CISPACES_SESSION, CISPACES_SESSION_HISTORY, CISPACES_NODE, CISPACES_EDGE";
+        String query="DROP TABLE IF EXISTS CISPACES_GRAPH, CISPACES_GRAPH_HISTORY, CISPACES_NODE, CISPACES_NODE_HISTORY, CISPACES_EDGE, CISPACES_EDGE_HISTORY";
         dbcn.updateSQL(query);
     }
 
@@ -62,27 +78,44 @@ public class DBQuery {
         dbcn.forceClose();
     }
 
-    public void insertSession(String sessionid, boolean isTemp, Calendar timest, boolean isShared){
+    public void insertSession(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid){
         String sql;
-        sql = "INSERT INTO CISPACES_SESSION (sessionid, isTemp, timest, isShared) VALUES "
-                + "( '" + sessionid + "' ,"
-                + " '" + isTemp + "' ,"
+        sql = "INSERT INTO CISPACES_SESSION (graphid, userid, timest, isshared, parentgraphid) VALUES "
+                + "( '" + graphid + "' ,"
+                + " '" + userid + "' ,"
                 + " '" + timest + "' ,"
-                + " " + isShared + " )";
+                + " '" + isshared + "' ,"
+                + " '" + parentgraphid + "'"
+                +" )";
+
+        System.out.println(sql);
+        dbcn.updateSQL(sql);
+    }
+
+    public void insertSessionHistory(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid, String revisionID){
+        String sql;
+        sql = "INSERT INTO CISPACES_SESSION (graphid, userid, timest, isshared, parentgraphid, revisionid) VALUES "
+                + "( '" + graphid + "' ,"
+                + " '" + userid + "' ,"
+                + " '" + timest + "' ,"
+                + " " + isshared + "' ,"
+                + " " + parentgraphid + "' ,"
+                + " '" + revisionID + "'"
+                +" )";
 
         System.out.println(sql);
         dbcn.updateSQL(sql);
     }
 
     public void insertNode(String nodeID, String source, String uncert, String eval, String txt, String input,
-                           Timestamp timestamp, String commit, String type, String annot, String sessionid)
+                           Timestamp timestamp, String commit, String type, String annot, String graphID, boolean isLocked)
     {
         String sql;
         sql = "Select * from CISPACES_NODE WHERE nodeid = " + "'" + nodeID + "'";
         ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
         if(rs.isEmpty()){
             System.out.println("NODE DOESNT EXIST");
-            sql = "INSERT INTO CISPACES_NODE (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, sessionid) VALUES "
+            sql = "INSERT INTO CISPACES_NODE (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, graphid, islocked) VALUES "
                     + "( '"+nodeID+"' ,"
                     + " '"+source+"' ,"
                     + " '"+uncert+"' ,"
@@ -93,7 +126,8 @@ public class DBQuery {
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
                     + " '"+annot+"' ,"
-                    + " '"+sessionid+"'"
+                    + " '"+graphID+"'"
+                    + " '"+isLocked+"'"
                     + " )";
             System.out.println(sql);
         }else{
@@ -111,19 +145,59 @@ public class DBQuery {
         dbcn.updateSQL(sql);
     }
 
-    public void insertEdge(String toID, String fromID, String formEdgeID, String edgeID) {
+    public void insertNodeHistory(String nodeID, String source, String uncert, String eval, String txt, String input,
+                           Timestamp timestamp, String commit, String type, String annot, String graphID, boolean isLocked, String revisionID)
+    {
         String sql;
-        String temp = "testSession";
+        sql = "Select * from CISPACES_NODE_HISTORY WHERE nodeid = " + "'" + nodeID + "'";
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        if(rs.isEmpty()){
+            System.out.println("NODE DOESNT EXIST IN HISTORY TABLE");
+            sql = "INSERT INTO CISPACES_NODE_HISTORY (nodeid, source, uncert, eval, txt, inp, dtg, cmt, type, annot, graphid, islocked, revisionid) VALUES "
+                    + "( '"+nodeID+"' ,"
+                    + " '"+source+"' ,"
+                    + " '"+uncert+"' ,"
+                    + " '"+eval+"' ,"
+                    + " '"+txt+"' ,"
+                    + " '"+input+"' ,"
+                    + " '"+timestamp+"' ,"
+                    + " '"+commit+"' ,"
+                    + " '"+type+"' ,"
+                    + " '"+annot+"' ,"
+                    + " '"+graphID+"'"
+                    + " '"+isLocked+"'"
+                    + " '"+revisionID+"'"
+                    + " )";
+            System.out.println(sql);
+        }else{
+            System.out.println("NODE EXISTS IN HISTORY TABLE");
+            sql = "UPDATE CISPACES_NODE SET uncert = " + "'" + uncert + "'" + " ,"
+                    + " eval = " + "'" + eval + "'" + " ,"
+                    + " txt = "  + "'" + txt + "'" + " ,"
+                    + " inp = "  + "'" + input + "'" + " ,"
+                    + " cmt = "  + "'" + commit + "'" + " ,"
+                    + " annot = " + "'" + annot + "'" + " ,"
+                    + " islocked = " + "'" + isLocked + "'"
+                    + " WHERE nodeid = " + "'" + nodeID + "'";
+            System.out.println(sql);
+        }
+
+        dbcn.updateSQL(sql);
+    }
+
+    public void insertEdge(String toID, String fromID, String formEdgeID, String edgeID, String graphID, boolean isLocked) {
+        String sql;
         sql = "Select * from CISPACES_EDGE WHERE edgeid = " + "'" + edgeID + "'";
         ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
         if(rs.isEmpty()) {
             System.out.println("EDGE DOESNT EXIST");
-            sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, sessionid) VALUES "
+            sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, graphid, islocked) VALUES "
                     + "( '" + edgeID + "' ,"
                     + " '" + toID + "' ,"
                     + " '" + fromID + "' ,"
                     + " '" + formEdgeID + "' ,"
-                    + " '" + temp + "'"
+                    + " '" + graphID + "' ,"
+                    + " '" + isLocked + "'"
                     + " )";
             dbcn.updateSQL(sql);
         }
@@ -132,6 +206,27 @@ public class DBQuery {
 
     }
 
+    public void insertEdgeHistory(String toID, String fromID, String formEdgeID, String edgeID, String graphID, boolean isLocked, String revisionID) {
+        String sql;
+        sql = "Select * from CISPACES_EDGE WHERE edgeid = " + "'" + edgeID + "'";
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        if(rs.isEmpty()) {
+            System.out.println("EDGE DOESNT EXIST IN HISTORY TABLE");
+            sql = "INSERT INTO CISPACES_EDGE (edgeid, tonodeid, fromnodeid, formedgeid, graphid, islocked, revisionid) VALUES "
+                    + "( '" + edgeID + "' ,"
+                    + " '" + toID + "' ,"
+                    + " '" + fromID + "' ,"
+                    + " '" + formEdgeID + "' ,"
+                    + " '" + graphID + "' ,"
+                    + " '" + isLocked + "' ,"
+                    +  " '" + revisionID + "'"
+                    + " )";
+            dbcn.updateSQL(sql);
+        }
+
+        System.out.println(sql);
+
+    }
 
     public boolean deleteEdge(String edgeid) {
         String sql = "DELETE FROM CISPACES_EDGE WHERE edgeid = " + "'" + edgeid + "'";

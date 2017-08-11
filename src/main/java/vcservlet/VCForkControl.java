@@ -61,4 +61,25 @@ public class VCForkControl {
         String response = jsh.convertInputJson(map);
         return response;
     }
+
+    public void evalJSONGraph(String graph) {
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - SPLIT JSON GRAPH");
+
+        graph = graph.replaceAll("\"\"", "null");
+        HashMap map = jsh.convertInputMap(graph);
+
+        VControl vc = new VControl();
+        vc.onAddGraph(map);
+
+    }
+
+    public void saveJSONGraph(String graph) {
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - SPLIT JSON GRAPH");
+
+        graph = graph.replaceAll("\"\"", "null");
+        HashMap map = jsh.convertInputMap(graph);
+
+        VControl vc = new VControl();
+        vc.onSaveGraph(map);
+    }
 }
