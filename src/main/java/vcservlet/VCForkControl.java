@@ -82,4 +82,15 @@ public class VCForkControl {
         VControl vc = new VControl();
         vc.onSaveGraph(map);
     }
+
+    public String evalJSONUser(String userData) {
+
+        userData = userData.replaceAll("\"\"", "null");
+        HashMap map = jsh.convertInputMap(userData);
+
+        VControl vc = new VControl();
+        String result = vc.onCheckUserExists(map);
+
+        return result;
+    }
 }

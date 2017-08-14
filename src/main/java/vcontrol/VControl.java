@@ -201,4 +201,13 @@ public class VControl {
         dbQuery.insertNodeHistory(nodeID, source, uncert, eval, txt, input, timestamp, commit, type, annot, graphID, isLockedNode, revisionID);
         dbQuery.insertEdgeHistory(toID, fromID, formEdgeID, edgeID, graphID, isLockedEdge, revisionID);
     }
+
+    public String onCheckUserExists(HashMap map) {
+        String username = map.get("username").toString();
+        String password = map.get("password").toString();
+
+        DBQuery dbQuery = new DBQuery();
+        String result = dbQuery.checkUserExists(username, password);
+        return result;
+    }
 }

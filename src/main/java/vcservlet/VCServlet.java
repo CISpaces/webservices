@@ -9,6 +9,7 @@ package vcservlet;
 
 import database.DBQuery;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
@@ -37,6 +38,18 @@ public class VCServlet {
         return "Hello Jersey";
     }
 
+    @POST
+    @Path("/user")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String checkUser(String userData){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Login Request ***");
+        log.log(Level.INFO, "Login payload " + userData);
+        VCForkControl vcForkControl = new VCForkControl();
+        String response = vcForkControl.evalJSONUser(userData);
+
+        return response;
+    }
 
     @POST
     @Path("/new")

@@ -243,4 +243,18 @@ public class DBQuery {
 
         return isStatementExecuted;
     }
+
+    public String checkUserExists(String username, String password) {
+        String sql = "SELECT * from CISPACES_USERS WHERE USERNAME = " + "'" + username + "'" + " AND PASSWORD = " +  "'" + password + "'";
+        System.out.println(sql);
+        String response;
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        if(rs.isEmpty()){
+            response = "fail";
+        }else{
+            response = "success";
+        }
+
+        return response;
+    }
 }
