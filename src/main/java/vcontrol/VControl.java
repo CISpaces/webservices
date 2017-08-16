@@ -205,9 +205,13 @@ public class VControl {
     public String onCheckUserExists(HashMap map) {
         String username = map.get("username").toString();
         String password = map.get("password").toString();
+        String aff = null;
+        if(map.get("affiliation") != null){
+            aff = map.get("affiliation").toString();
+        }
 
         DBQuery dbQuery = new DBQuery();
-        String result = dbQuery.checkUserExists(username, password);
+        String result = dbQuery.checkUserExists(username, password, aff);
         return result;
     }
 }

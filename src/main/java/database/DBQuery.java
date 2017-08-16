@@ -244,8 +244,8 @@ public class DBQuery {
         return isStatementExecuted;
     }
 
-    public String checkUserExists(String username, String password) {
-        String sql = "SELECT * from CISPACES_USERS WHERE USERNAME = " + "'" + username + "'" + " AND PASSWORD = " +  "'" + password + "'";
+    public String checkUserExists(String username, String password, String aff) {
+        String sql = "SELECT * from CISPACES_USERS WHERE USERNAME = " + "'" + username + "'" + " AND PASSWORD = " +  "'" + password + "'" + " AND AFFILIATION = " +  "'" + aff + "'";
         System.out.println(sql);
         String response;
         ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
