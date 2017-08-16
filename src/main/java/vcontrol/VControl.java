@@ -11,7 +11,6 @@ package vcontrol;
 import database.DBQuery;
 import utils.TimeHelper;
 
-import java.sql.Clob;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -122,15 +121,15 @@ public class VControl {
 
     public void onAddGraph(HashMap map) {
         TimeHelper timeHelper = new TimeHelper();
-        String graphID = map.get("graphID").toString();
+        String graphID = map.get("graphid").toString();
         String userID = "user";
-        Timestamp timestamp = timeHelper.formatDateCIS(map.get("dtg").toString());
-        boolean isShared = Boolean.parseBoolean(map.get("isShared").toString());
-        String parentGraphID = map.get("parentGraphID").toString();
+        Timestamp timestamp = timeHelper.formatDateCIS(map.get("timest").toString());
+        boolean isShared = Boolean.parseBoolean(map.get("isshared").toString());
+        String parentGraphID = map.get("parentgraphid").toString();
 
 
         DBQuery dbQuery = new DBQuery();
-        dbQuery.insertSession(graphID, userID, timestamp, isShared, parentGraphID);
+        dbQuery.insertGraph(graphID, userID, timestamp, isShared, parentGraphID);
     }
 
     public void onSaveGraph(HashMap map) {
@@ -197,7 +196,7 @@ public class VControl {
         boolean isLockedEdge = Boolean.parseBoolean(map.get("isLocked").toString());
 
         DBQuery dbQuery = new DBQuery();
-        dbQuery.insertSessionHistory(graphID, userID, timestampGraph, isShared, parentGraphID, revisionID);
+        dbQuery.insertGraphHistory(graphID, userID, timestampGraph, isShared, parentGraphID, revisionID);
         dbQuery.insertNodeHistory(nodeID, source, uncert, eval, txt, input, timestamp, commit, type, annot, graphID, isLockedNode, revisionID);
         dbQuery.insertEdgeHistory(toID, fromID, formEdgeID, edgeID, graphID, isLockedEdge, revisionID);
     }

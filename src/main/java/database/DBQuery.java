@@ -27,22 +27,22 @@ public class DBQuery {
     }
 
     public void createTableSession(){
-        String query = "CREATE TABLE CISPACES_GRAPH ( graphid varchar (255), userid varchar(255), timest timestamp, isshared boolean, parentgraphid varchar(255)";
-        query+="CONSTRAINT CISPACES_SESSION_pk PRIMARY KEY (graphid))";
+        String query = "CREATE TABLE CISPACES_GRAPH ( graphid varchar (255), userid varchar(255), timest timestamp, isshared boolean, parentgraphid varchar(255), ";
+        query+="CONSTRAINT CISPACES_GRAPH_pk PRIMARY KEY (graphid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableSessionHistory(){
         String query = "CREATE TABLE CISPACES_GRAPH_HISTORY (revisionid varchar(255), graphid varchar(255), userid varchar(255), " +
-                "timest timestamp, isshared boolean, parentgraphid varchar(255)";
-        query+="CONSTRAINT CISPACES_SESSION_HISTORY_pk PRIMARY KEY (revisionid))";
+                "timest timestamp, isshared boolean, parentgraphid varchar(255), ";
+        query+="CONSTRAINT GRAPH_SESSION_HISTORY_pk PRIMARY KEY (revisionid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableNode(){
         String query="CREATE TABLE CISPACES_NODE ( nodeid varchar(255), source varchar (255), uncert varchar(20), eval varchar(5000), "
                 + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), graphid varchar(255), "
-                + "islocked boolean";
+                + "islocked boolean, ";
         query+="CONSTRAINT CISPACES_NODE_pk PRIMARY KEY (nodeid))";
         dbcn.updateSQL(query);
     }
@@ -50,21 +50,21 @@ public class DBQuery {
     public void createTableNodeHistory(){
         String query="CREATE TABLE CISPACES_NODE_HISTORY ( nodeid varchar(255), source varchar (255), uncert varchar(20), eval varchar(5000), "
                 + "txt varchar (5000), inp varchar (20), dtg timestamp, cmt varchar(50), type varchar(10), annot varchar (5000), graphid varchar(255), "
-                + "islocked boolean, revisionid varchar(255)";
+                + "islocked boolean, revisionid varchar(255), ";
         query+="CONSTRAINT CISPACES_NODE_HISTORY_pk PRIMARY KEY (revisionid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableEdge(){
         String query="CREATE TABLE CISPACES_EDGE ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
-                "graphid varchar(255), islocked boolean";
+                "graphid varchar(255), islocked boolean, ";
         query+="CONSTRAINT CISPACES_EDGE_pk (edgeid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableEdgeHistory(){
         String query="CREATE TABLE CISPACES_EDGE_HISTORY ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
-                "graphid varchar(255), islocked boolean, revisionid varchar(255)";
+                "graphid varchar(255), islocked boolean, revisionid varchar(255), ";
         query+="CONSTRAINT CISPACES_EDGE_pk (revisionid))";
         dbcn.updateSQL(query);
     }
@@ -78,9 +78,9 @@ public class DBQuery {
         dbcn.forceClose();
     }
 
-    public void insertSession(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid){
+    public void insertGraph(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid){
         String sql;
-        sql = "INSERT INTO CISPACES_SESSION (graphid, userid, timest, isshared, parentgraphid) VALUES "
+        sql = "INSERT INTO CISPACES_GRAPH(graphid, userid, timest, isshared, parentgraphid) VALUES "
                 + "( '" + graphid + "' ,"
                 + " '" + userid + "' ,"
                 + " '" + timest + "' ,"
@@ -92,9 +92,9 @@ public class DBQuery {
         dbcn.updateSQL(sql);
     }
 
-    public void insertSessionHistory(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid, String revisionID){
+    public void insertGraphHistory(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid, String revisionID){
         String sql;
-        sql = "INSERT INTO CISPACES_SESSION (graphid, userid, timest, isshared, parentgraphid, revisionid) VALUES "
+        sql = "INSERT INTO CISPACES_GRAPH_HISTORY (graphid, userid, timest, isshared, parentgraphid, revisionid) VALUES "
                 + "( '" + graphid + "' ,"
                 + " '" + userid + "' ,"
                 + " '" + timest + "' ,"
