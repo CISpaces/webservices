@@ -34,11 +34,13 @@ public class VControl {
             graphID = map.get("graphID").toString();
         }
 
-        boolean isLocked = Boolean.parseBoolean(map.get("isLocked").toString());
-        String revisionID = map.get("revisionID").toString();
+        boolean isLocked = false;
+        if(map.get("isLocked") != null){
+            Boolean.parseBoolean(map.get("isLocked").toString());
+        }
 
         DBQuery dbQuery = new DBQuery();
-        dbQuery.insertEdgeHistory(toID, fromID, formEdgeID, edgeID, graphID, isLocked, revisionID);
+        dbQuery.insertEdge(toID, fromID, formEdgeID, edgeID, graphID, isLocked);
 
         map = new HashMap();
         map.put("response","success");
@@ -107,7 +109,10 @@ public class VControl {
             graphID = map.get("graphID").toString();
         }
 
-        boolean isLocked = Boolean.parseBoolean(map.get("isLocked").toString());
+        boolean isLocked = false;
+        if(map.get("isLocked") != null){
+            Boolean.parseBoolean(map.get("isLocked").toString());
+        }
 
         DBQuery dbQuery = new DBQuery();
         dbQuery.insertNode(nodeID, source, uncert, eval, txt, input, timestamp, commit, type, annot, graphID, isLocked);
@@ -121,7 +126,7 @@ public class VControl {
 
     public void onAddGraph(HashMap map) {
         TimeHelper timeHelper = new TimeHelper();
-        String graphID = map.get("graphid").toString();
+        String graphID = map.get("graphID").toString();
         String userID = "user";
         Timestamp timestamp = timeHelper.formatDateCIS(map.get("timest").toString());
         boolean isShared = Boolean.parseBoolean(map.get("isshared").toString());

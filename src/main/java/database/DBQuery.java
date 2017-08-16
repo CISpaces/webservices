@@ -58,14 +58,14 @@ public class DBQuery {
     public void createTableEdge(){
         String query="CREATE TABLE CISPACES_EDGE ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
                 "graphid varchar(255), islocked boolean, ";
-        query+="CONSTRAINT CISPACES_EDGE_pk (edgeid))";
+        query+="CONSTRAINT CISPACES_EDGE_pk PRIMARY KEY (edgeid))";
         dbcn.updateSQL(query);
     }
 
     public void createTableEdgeHistory(){
         String query="CREATE TABLE CISPACES_EDGE_HISTORY ( edgeid varchar(255), tonodeid varchar(255), fromnodeid varchar(255), formedgeid varchar(255)," +
                 "graphid varchar(255), islocked boolean, revisionid varchar(255), ";
-        query+="CONSTRAINT CISPACES_EDGE_pk (revisionid))";
+        query+="CONSTRAINT CISPACES_EDGE_pk PRIMARY KEY (revisionid))";
         dbcn.updateSQL(query);
     }
 
@@ -126,7 +126,7 @@ public class DBQuery {
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
                     + " '"+annot+"' ,"
-                    + " '"+graphID+"'"
+                    + " '"+graphID+"' ,"
                     + " '"+isLocked+"'"
                     + " )";
             System.out.println(sql);
