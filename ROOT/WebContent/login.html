@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<style>
+form {
+
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+input[type=radio] {
+    border: 0px;
+    width: 30px;
+    height: 18px;
+}
+
+button {
+    background-color: #2984c3;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
+img.avatar {
+    width: 25%;
+}
+
+.container {
+    padding: 10px;
+	width: 60%;
+	margin: auto;
+	display: block;
+}
+
+</style>
+<body>
+
+<form>
+
+  <div class="imgcontainer">
+    <img src="cisp.png" alt="Avatar" class="avatar">
+  </div>
+
+  <div class="container">
+    <label><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="uname" id="uname">
+
+    <label><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" id="psw">
+        
+	 <label> <input type="radio" name="aff" value="UK">UK </label>
+	 <label> <input type="radio" name="aff" value="US">US </label>
+	 <label> <input type="radio" name="aff" value="UK/US">UK/US </label>
+	
+    <button type="submit" style="float: right" id="login">Login</button>
+  </div>
+  
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+	function callback(res){
+		if(res == "fail"){
+			alert('This user does not exist in the system! Please try again.');
+		}else if (res == "success"){
+			window.location.assign("http://localhost:8080/index.html");
+		}else{
+			alert('Wrong login details. Make sure you have entered an affiliation.');
+		}
+	}
+	
+	 $("#login").on("click", function(event){
+		var uname = document.getElementById("uname").value;
+		var psw = document.getElementById("psw").value;
+		if(document.querySelector('input[name="aff"]:checked')){
+			var affiliation = document.querySelector('input[name="aff"]:checked').value;
+		}
+		var object =  { "username"  : uname, "password" : psw, "affiliation" : affiliation };
+		$.ajax({
+			type: 'POST',
+			url: 'http://localhost:8080/VC/rest/user',
+			dataType: 'text',
+			contentType: 'application/json',
+			data: JSON.stringify(object),
+			async:true,
+			success: function(result){
+				callback(result);
+			},
+			error: function(result){
+				callback(result);
+			}
+		});
+	});
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ var app = app || {};
 
 app.Edge = Backbone.Model.extend({
 	defaults:{
-		targete: '',
+		target: '',
 		source: '',
 		formEdgeID: '',
 		edgeID: '',

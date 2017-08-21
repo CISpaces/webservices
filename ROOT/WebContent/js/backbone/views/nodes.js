@@ -32,13 +32,14 @@ app.NodeView = Backbone.View.extend({
     if (updated_text != origin_text) {
       this.model.save({
         'text': updated_text
-      // 'eval': $('#' + nodeID + ' .eval').val(),
-      // 'commit': $('#' + nodeID + ' .commit').val(),
-      // 'uncert': $('#' + nodeID + ' .uncert').val()
       });
-      updateText(this.model.attributes);
+	  
+	  $("#draw_" + this.model.get('nodeID') + ' text').html(parseText(updated_text));
+	  $("#draw_" + this.model.get('nodeID') + ' rect title').text(updated_text);
     }
 
     this.$el.hide();
+	
+	return this.model;
   }
 });

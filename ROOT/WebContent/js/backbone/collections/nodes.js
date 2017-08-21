@@ -8,14 +8,13 @@ var NodeList = Backbone.Collection.extend({
 
   model: app.Node,
 
-  localStorage: new Backbone.LocalStorage('nodes-backbone'),
-/*
+  // localStorage: new Backbone.LocalStorage('nodes-backbone'),
+
   url: function() {
-      var url = '/api/nodes';
+      var url = '/VC/rest/node';
       // if (this.get('nodeID').length > 0) url += '/'+this.get('nodeID');
       return url;
-  } 
- */
+  }
 });
 
 app.Nodes = new NodeList();

@@ -35,11 +35,11 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   settings: function() {
-    alert('settings');
+   // alert('settings');
   },
 
   help: function() {
-    alert('help');
+    // alert('help');
   },
 
   /*
@@ -61,11 +61,23 @@ app.ToolBoxView = Backbone.View.extend({
 	  
     var input_file = $("#myFile").click();
 	
+	return input_file;
   },
 
   createNode: function(obj) {
     var id = obj.currentTarget.id;
 
-    app.workBoxView.createNode(id);
+	// creates model of the node
+    var attr = app.workBoxView.createNode(id);
+
+	var restart = true;
+	if(graph_data.nodes.length < 1)
+		restart = false;
+
+	// draws a new node
+	graph_data.node = addNewNode(attr);
+
+	// re-start changed graph
+	simulation = restart_simulation(restart);
   }
 });
