@@ -1,0 +1,219 @@
+/******************************************************************************
+ * This research was sponsored by the U.S. Army Research Laboratory and the
+ * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+ * Project 6, Task 3: Collaborative Intelligence Analysis.
+ * The U.S. and U.K. Governments are authorized to reproduce and distribute
+ * reprints for Government purposes notwithstanding any copyright notation
+ * hereon.
+ * **************************************************************************  
+ */
+ 
+ Installation:
+
+1. download Apache Tomcat (or alike) http://tomcat.apache.org/
+
+!!!! AND NEW REQUIREMENT: 
+	1A) Add derbyclient.jar in /lib of Tomcat 
+	1B) Add the following to context.xml (path/to/tomcat/conf/context.xml)
+ 
+ <Resource name="jdbc/myDB"
+    auth="Container"
+    type="javax.sql.DataSource"
+    username="gaiandb"
+    password="passw0rd"
+    driverClassName="org.apache.derby.jdbc.ClientDriver"
+    url="jdbc:derby://localhost:6414/gaiandb"
+    maxTotal="10"
+    removeAbandonedOnBorrow="true"
+    removeAbandonedTimeout="60"
+    logAbandoned="true"
+    />
+
+
+2. download PROVSIMP folder 
+
+3. unzip
+
+4. Copy provsimp.war in copy4server under webapps folder of Tomcat
+
+5. Run Tomcat startup.sh/bat
+
+6. Check that the services work: open a browser at http://localhost:8080/provsimp/  and follow the instructions
+
+-------------------------------------------------------------
+Parameters on web.xml
+
+A.   print for verbose mode set true
+B. Provsize max length of varchar for storing prov string
+
+--------------------------------------------------
+Libraries and dependencies: (the needed one are already copied in provdata/WEB-INF 
+-lib includes all the package distributions and licenses)
+
+- JERSEY: RESTful Web Services in Java v2.7  https://jersey.java.net/
+- PROV-API:Java API for managing provenance models using prov-o https://github.com/dcorsar/prov-api
+- GSON: JSon to Java objects: https://code.google.com/p/google-gson/
+- JENA v.3.3: Java framework for building Semantic Web and Linked Data applications: https://jena.apache.org/ 
+- JODA TIME v2.3: Java date and time API: http://www.joda.org/joda-time/
+- JGRAPHT: Java graph library http://jgrapht.org/
+
+Tested with Apache Tomcat 8, JAVA SE 1.8*
+------------------------------------------------
+Development: 
+
+Service available at:
+
+http://localhost:8080/provsimp/rest/ProcProv
+
+
+
+SIMPLE PROVDATA JSON REQUESTS  
+ ------------------------------------------------
+ 
+1) "save"
+
+{
+"action":"save",
+"nodes":[.....], //as in CISpaces
+"user": username
+ }
+ 
+RETURN
+{"prov":"...."} 
+
+------------------------------------------------
+
+2)  "load" 
+
+{
+"action":"load",
+"nodes":[.....], //as in CISpaces
+"prov": {.....} //prov saved in the file
+ }
+RETURN
+{"response":"success"}
+or
+{"response":"fail","nodes":[...]}//does that are not added
+
+3) "addnodes"
+
+{
+"action":"addnodes", 
+"nodes":{ // nodes can be many or one of the following three types, indexed by the nodeID and switched according to the key prov,meta, or cisp 
+	"nodeID1":{"prov":{...}},//prov 
+	"nodeID2":{"meta":{"text":"..","source":"..","dtg":"..","stream":".."}},//as infobox 
+	"nodeID3":{"cisp":{"nodeID":..., "source":..., "dtg":....,"text": ....}}//same as cispaces
+	}
+}
+RETURN
+{"response":"success"}
+or
+{"response":"fail","nodes":[...]}//does that are not added
+
+
+
+--- more details of nodes: 
+
+	/*
+	 *  I assume for now that the format of the string is the ERS format
+	 * "cisp":  {"text": "Claim2", "annot": "N/A",  "eval": "N/A", "input": "CLAIM", "nodeID": "Q1","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"}, 
+	 *  
+	 * of which I need the following fields (I don't care about the rest)
+	 * 		{
+  			"text": "Claim2",
+  			"source": "user1",
+  			"dtg": "2014/10/07 13:45:33"
+			}
+	 * although data source is similar to the one below, the names of actions in prov are different
+	 */
+	 
+	 /* I assume for now that the format of the string is the following:  
+	 * The idea here is that this could be called for info that gets sent to CISpaces 
+			"meta": 
+			{
+  			"text": "Info 14f9940d 6e1e 4ffc 9c3c 07e92d3c236c",
+  			"source": "DataStream",
+  			"dtg": "2014/08/28 02:14:50"
+  			"stream": "Moira"
+			}
+	 */
+		 //in this case I load the prov model into the database 
+	/* I assume for now that the format of the string is the following: 
+	 * 
+	 * "prov":{
+	 * 			"prov":"stringprov"
+	 * 			}
+	 * 
+	 * 
+	 */
+	 
+	 
+------------------------------------------------	 
+
+4) "copynode"
+  {
+"action":"copynode",
+"from":"fromid123",
+"to":"toid123"
+}
+
+RETURN
+{"response":"success"}
+or
+{"response":"fail"}
+
+------------------------------------------------
+5) "getnode"
+
+{
+"action":"getnode",
+"user":"Joe",
+"nodeID":"fromid123",
+"obf":true
+}
+
+RETURN 
+{"prov":"...."} 
+
+
+------------------------------------------------
+
+PROV ANALYSIS (WORKFLOW???)
+
+------------------------------------------------
+6) "getpaths" (call 1 for analysis) 
+ {"action":"getpaths",
+ "nodeID":ebfd5885-8749-432e-96b1-b1178b4dffb6,
+ "user":"Joe",
+ "obf":false}
+
+RETURN 
+{"paths":[
+		{"hint":"CollectWaterData",
+		"pathid":"530fa8a5-77aa-4693-a692-d364f696073d",
+		"title":"P3 - Generation Pattern"
+		 "arg":" Given the provenance chain, information *NGO Lab reports examined the contamination* 
+		 \n- was associated with NGOLabAssistant\n- was generated by LabWaterTesting\n- 
+		 was generated by using primary sources WaterSampleData\nthe stated provenance elements infer information 
+		 *NGO Lab reports examined the contamination*\n=> Therefore, information *NGO Lab reports examined the contamination* is credible"
+		}
+		.....]}
+------------------------------------------------		
+7) "getpathnodes" (call 2 for analysis) 
+
+ {"action":"getpathnodes","nodeID":ebfd5885-8749-432e-96b1-b1178b4dffb6,
+ "pathID":cc388379-68df-45c9-b095-5bdbf1c44065,
+ "user":"Joe"}
+ 
+ RETURN 
+ {"nodes":[....], "edges":[.....], "root":"774929b7-66c6-4b67-9e12-e024146a65a9"}
+ 
+------------------------------------------------ TO BE IGNORED :) 
+8) "getprovelems" (call 1P)
+9) "getprefnodes" (call 2P)
+10) "loadpartpref" 	(Call 3P)
+			 
+
+
+
+ 
