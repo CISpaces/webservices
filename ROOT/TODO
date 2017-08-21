@@ -1,0 +1,8 @@
+TO DO:
+--> Extract the provenance of analysis from the JSON and store it in the database (where???)
+--> Decide on the annotations of nodes (right now they are represented as strings in the database)
+--> Build the logics of sessions in code ***WILL REQUIRE TYING THIS WEB SERVICE TO THE FRONT-END***
+
+Alice needs to:
+--> Put the provenance of nodes in the Nodes table
+--> Call the methods which create my tables in the INFO web service since all tables are created there
