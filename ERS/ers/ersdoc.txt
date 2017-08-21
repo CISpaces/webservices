@@ -1,0 +1,221 @@
+/******************************************************************************
+ * This research was sponsored by the U.S. Army Research Laboratory and the
+ * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+ * Project 6, Task 3: Collaborative Intelligence Analysis.
+ * The U.S. and U.K. Governments are authorized to reproduce and distribute
+ * reprints for Government purposes notwithstanding any copyright notation
+ * hereon.
+ * **************************************************************************  
+ */
+ 
+ Installation:
+
+1. download Apache Tomcat (or alike) http://tomcat.apache.org/
+
+2. download ERS folder from http://homepages.abdn.ac.uk/a.toniolo/pages/cisp/ERS.zip
+
+3. unzip
+
+4. Run Tomcat startup.sh/bat
+
+5. Check that the services work: open a browser at http://localhost:8080/ers/  and follow the instructions
+
+------------------------------
+Parameters on web.xml
+
+
+A. print- true/false verbose mode
+
+--------------------------------
+
+REQUIRED env variables: 
+--CISPACES
+
+--------------------------------------------------
+Libraries and dependencies: (the needed one are already copied in ers/WEB-INF
+-lib includes all the package distributions and licenses)
+
+- JARGSEMSAT: Dung solver (using SAT4J solver) v0.1.2-1
+- JERSEY: RESTful Web Services in Java v2.7  https://jersey.java.net/
+- JGRAPHT: Java graph library http://jgrapht.org/
+- GSON: JSon to Java objects: https://code.google.com/p/google-gson/
+- PRAF: Probabilistic Argumentation Framework 
+- JPROL: jprol: Embeddable Java Prolog Engine: https://code.google.com/p/jprol/
+- JENA: Java framework for building Semantic Web and Linked Data applications: https://jena.apache.org/ 
+- JODA TIME v2.3: Java date and time API: http://www.joda.org/joda-time/
+- Apache HttpComponents within JENA release:  https://hc.apache.org/ toolset of low level Java components focused on HTTP and associated protocols
+
+Note: 
+The input is based on the AIF extended format.
+
+Tested with Apache Tomcat 7-8, JAVA SE 7 
+------------------------------------------------
+Development: 
+
+Service available at http://localhost:8080/ers/rest/WriteRules
+
+QUERY FORMAT:
+{"action": "eval"/"nlg"/"csanaly",
+....
+}
+
+If string is empty or string does not contain an action
+Returns
+
+{"fail":true,
+"cause":"PRB"}
+
+of types
+ PRB1="Sorry, the input was corrupted, please try again.";
+ PRB2="Sorry, there is no action in your input, please try again.";
+ PRB3="Sorry, action not recognised, please try again.";
+
+
+----------------------------------------------
+
+1) EVALUATION "action":"eval"
+Input: based on the AIF format
+
+Service receives a JSON string on the format 
+	-uncert  (Off, PRAF, HYPERARG)
+	-list of nodes 
+			-nodeID (UNIQUE ID)
+			-text   (FREE TEXT,Pro,Con,CQ type)
+			-commit (YES,NO,N/A)
+			-annot 	(ARG SCHEME RELATED)
+			-eval	(X,V,?) 
+			-dtg    (date/time stamp strictly on the format yyyy/mm/dd hh:mm:ss)
+			-source (TEXT source of node)
+			-type   (I,RA, 'I' for normal nodes, 'RA' for pro/con )
+			-uncert (Confirmed, Probable, ...etc)
+			
+	-list of edges
+			-edgeID 	(UNIQUE ID)
+			-from ID	(ID of the tail node)
+			-toID		(ID of the head node)
+			-formEdgeID (null)
+ 			
+
+IN JSON STRING: 
+{
+"action":"eval",
+
+"graph":{
+"uncert":"Off"/"On",
+"nodes": 
+ [
+ 	{"text": "Claim2", "annot": "N/A", "eval": "N/A", "commit": "No", "input": "CLAIM", "nodeID": "Q1","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"}, 
+ 	{"text": "Claim1", "annot": "N/A", "eval": "N/A", "commit": "No", "input": "CLAIM", "nodeID": "Q2","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"},
+ 	{"text": "Info 2", "annot": "N/A", "eval": "N/A", "commit": "No", "input": "INFO", "nodeID": "Q3","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"}, 
+ 	{"text": "Info 3", "annot": "N/A", "eval": "N/A", "commit": "No", "input": "INFO", "nodeID": "Q4","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"},
+ 	{"text": "Info 1", "annot": "N/A", "eval": "N/A", "commit": "No", "input": "INFO", "nodeID": "Q5","type":"I", "dtg": "2014/10/07 13:45:33", "source": "user1"},
+ 	{"text": "Con", "annot": "N/A",  "nodeID": "L1","type":"CA", "dtg": "2014/10/07 13:45:33", "source": "user1"},
+ 	{"text": "Pro", "annot": "N/A",  "nodeID": "L2","type":"RA", "dtg": "2014/10/07 13:45:33", "source": "user1"}
+ ],
+ "edges": 
+ [
+ 	{"edgeID":"E1","fromID":"L1","toID":"Q1","formEdgeID":null},
+ 	{"edgeID":"E2","fromID":"Q5","toID":"L1","formEdgeID":null},
+ 	{"edgeID":"E3","fromID":"Q3","toID":"L1","formEdgeID":null},
+ 	{"edgeID":"E4","fromID":"L2","toID":"Q5","formEdgeID":null},
+ 	{"edgeID":"E5","fromID":"Q2","toID":"L2","formEdgeID":null},
+ 	{"edgeID":"E6","fromID":"Q4","toID":"L2","formEdgeID":null}
+ 	],
+}
+}
+
+
+
+ Service returns a JSON STRING: 
+		-list of Problems of badly formed links (PROBS) 
+		-list of evaluation for nodes  (COLORS)
+		either one of the two is empty
+		- if uncertainty also a list of assignment is shown
+
+{
+  "probs": "",
+  "cause": "",
+  "fail": false,
+  "colors": {
+      "8a69f465-10b7-497a-8fbc-c0b6f732af01": "V",
+      "827b5f40-3aeb-4b6f-933f-68739c079cdd": "V",
+      "2726bf17-055d-4616-8c3f-1f87bae9f0e9": "V"
+  }
+    "assign-found": true,
+    "uncert": {
+    "8a69f465-10b7-497a-8fbc-c0b6f732af01": "Confirmed",
+    "827b5f40-3aeb-4b6f-933f-68739c079cdd": "Confirmed",
+    "2726bf17-055d-4616-8c3f-1f87bae9f0e9": "Confirmed"
+  }
+  "chunks": {
+    "chunk-1": {"nodes":…, "edges":…}
+    "chunk-2": {"nodes":…, "edges":…}
+  },
+  
+}
+
+
+
+
+ 
+
+List of problems: 
+
+ ER1="Link does not have a head"
+ ER2="Link does not have a valid head"
+ ER3="Link does not contain tails"
+ ER4="Link has a double premise"
+ ER5="Link has a tail that does not exist"
+ ER7="Links not valid, pro/con at the same time"
+ ER6="Same links"
+ ER7="A CQ can only have one tail"
+ 
+ PRB0="Sorry, you must have at least one node for evaluation, please try again."
+ PRB1="Sorry, the input was corrupted, please try again."
+ PRB2="Sorry, the reasoner has given no response, please try again."
+ PRB3="Sorry, the result was corrupted, please try again."
+ PRB4="Sorry, there are problems with the structure of the links, please fix them and try again."
+ PRB5="Sorry, there are nodes with the same id, please delete and try again."
+
+
+
+------------------
+2) HDC ANALYSIS: "action":"csanaly"
+
+FOR IMPORTING NODES FROM HDC:
+
+ {
+ "action":"csanaly",
+ "user":"Joe", 
+ "formAnalysis":{"  "},
+ "supp":false/true} 
+
+
+if contains formAnalysis then the elaboration is returned
+Returns: 
+{
+"edges":[ ],
+"nodes":[ ],
+"root":"idid",
+"prov": {....}
+}
+
+---------------------
+
+3) NLG "action":"nlg"
+
+INPUT 
+{
+   "action":"nlg",
+   "graph": {"nodes":…, "edges":…, "uncert":"Off"}
+}
+
+
+OUTPUT
+{
+  "fail": false,
+  "text": "Here is nlg text..."
+}
+
+
+
