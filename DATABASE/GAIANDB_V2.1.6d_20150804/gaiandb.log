@@ -1,0 +1,122 @@
+2017-08-21 10:36:24.838~845739382 GaianNode -------------> isInitDataUpToDate = true = GAIANDB_JAR_MD5 BFBDB5F337BFE2D52D4502D7E183EE70 = gdbJarMD5_previous BFBDB5F337BFE2D52D4502D7E183EE70 && gdbDbTimestampAtStartup 1503071841294 > gdbJarFile.lastModified() 1438727020000
+java version "1.8.0_131"
+Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
+Java HotSpot(TM) Client VM (build 25.131-b11, mixed mode, sharing)
+
+GaianDB V2.1.6d - JAR sizes: [913001, 251064], timestamps: [2015/08/04-23:23:40, 2015/08/04-23:23:40]
+
+Features Summary: Federated access to JDBC RDBMS tables and CSV Flat files using a logical table abstraction layer;
+A stored procedures management API, e.g. to set and view all logical tables and data sources in the network;
+SQL Prepared Statement caching; Connection Pooling; Buffered and batched multi-threaded record fetching;
+Explain queries to show a query's route and row counts on node; Constant Column definitions for contextual annotations of logical tables;
+Discovery of other Gaian Nodes when 'MIN_DISCOVERED_CONNECTIONS' is set, with preferential attachment to highly connected nodes;
+Autonomic maintenance of 2-way connections, or re-discovery initiation upon loss of connections;
+Automated dynamic management of SQL VIEWS for logical tables and their derivative definitions containing provenance columns or explain columns;
+A Policy plugin interface to manipulate the incoming SQL queries or filter returned records;
+Flexible GaianDB node discovery using config variable 'DISCOVERY_IP' to specify a broadcast mask or multicast group address;
+New configuration parameters defining permitted hosts, denied hosts and cluster IDs to restrict connectivity between nodes;
+Connectivity resilience to variable network latency using property 'GAIAN_CONNECTIONS_CHECKER_HEARTBEAT_MS';
+MQTT listener & Message Storer; Command line processor; Logging levels; In Memory Tables and Indexing;
+Ability to also access an Omnifind text index using com.ibm.db2j.ICAREST('<search_string>');
+Excel Spreadsheet Data Source Type; 'Pass-through' SQL capability for insert/update/delete/call; Discovery Gateways for discovery across networks;
+Advanced API calls: listnodes(), listflood(), addgateway();
+Access control to allow/disallow SQL API configuration and propagated writes;
+Basic security: User authentication and low-level automatic scrambling of passwords in the config file;
+Detection and cancellation of hanging queries (not mistaken for long-running queries);
+Pass-through sub-queries using 'GaianQuery': define exposed data sources on each node which the query will be executed against;
+Performance metrics; Provenance columns: GAIAN_NODE, GAIAN_LEAF (queryable using option: 'with_provenance')
+
+PROCESS ID:		6916
+
+NODE ID:		DESKTOP5RB1AS6
+
+WORKING DIRECTORY:	C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804
+BYTECODE PATH:		C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804\lib\GAIANDB.jar
+WORKSPACE:		C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804
+
+PHYSICAL DATABASE:	C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804\gaiandb
+LOG FILE:		C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804\gaiandb.log
+CONFIG FILE:		C:\Users\Dani\Desktop\CISpacesTOTAL\CISpacesTOTAL\CISpaces_v3.0.10_2016_04_29\CISpaces\tools\GaianDB\GAIANDB_V2.1.6d_20150804\gaiandb_config.properties
+
+DERBY SERVER PORT:	6414
+PROVENANCE HOST(S):	0.0.0.0
+
+Network Interfaces: 
+lo: Software Loopback Interface 1 /127.0.0.1, /0:0:0:0:0:0:0:1, Address: /127.0.0.1 -> Broadcast: /127.255.255.255, Address: /0:0:0:0:0:0:0:1 -> Broadcast: null
+eth0: PANGP Virtual Ethernet Adapter /fe80:0:0:0:5ca6:fe4c:a068:675e%eth0, Address: /fe80:0:0:0:5ca6:fe4c:a068:675e%eth0 -> Broadcast: null
+eth1: Bluetooth Device (Personal Area Network) 
+eth2: WAN Miniport (Network Monitor) 
+ppp0: WAN Miniport (PPPOE) 
+net0: WAN Miniport (IKEv2) 
+eth3: Microsoft Kernel Debug Network Adapter 
+eth4: WAN Miniport (IP) 
+eth5: Realtek PCIe GBE Family Controller /fe80:0:0:0:208a:667c:8af2:27ca%eth5, Address: /fe80:0:0:0:208a:667c:8af2:27ca%eth5 -> Broadcast: null
+wlan0: Microsoft Wi-Fi Direct Virtual Adapter #2 
+net1: Microsoft ISATAP Adapter 
+wlan1: Qualcomm Atheros AR956x Wireless Network Adapter /10.9.136.163, /2001:630:d0:ed23:c058:a7ca:f1c1:91fa, /2001:630:d0:ed23:a1c1:5d8b:6e5c:5184, /fe80:0:0:0:c058:a7ca:f1c1:91fa%wlan1, Address: /10.9.136.163 -> Broadcast: /10.9.139.255, Address: /2001:630:d0:ed23:c058:a7ca:f1c1:91fa -> Broadcast: null, Address: /2001:630:d0:ed23:a1c1:5d8b:6e5c:5184 -> Broadcast: null, Address: /fe80:0:0:0:c058:a7ca:f1c1:91fa%wlan1 -> Broadcast: null
+net2: Bluetooth Device (RFCOMM Protocol TDI) 
+net3: Microsoft Teredo Tunneling Adapter /fe80:0:0:0:0:100:7f:fffe%net3, Address: /fe80:0:0:0:0:100:7f:fffe%net3 -> Broadcast: null
+net4: WAN Miniport (L2TP) 
+eth6: WAN Miniport (IPv6) 
+eth7: TunnelBear Adapter V9 /fe80:0:0:0:d17f:598f:d9d9:93b6%eth7, Address: /fe80:0:0:0:d17f:598f:d9d9:93b6%eth7 -> Broadcast: null
+net5: Microsoft ISATAP Adapter #2 
+wlan2: Microsoft Wi-Fi Direct Virtual Adapter /fe80:0:0:0:9dd2:a6fe:5292:cc32%wlan2, Address: /fe80:0:0:0:9dd2:a6fe:5292:cc32%wlan2 -> Broadcast: null
+net6: WAN Miniport (SSTP) 
+net7: Microsoft ISATAP Adapter #3 /fe80:0:0:0:0:5efe:a09:88a3%net7, Address: /fe80:0:0:0:0:5efe:a09:88a3%net7 -> Broadcast: null
+eth8: VirtualBox Host-Only Ethernet Adapter /192.168.56.1, /fe80:0:0:0:d80a:e9ac:e371:a0e5%eth8, Address: /192.168.56.1 -> Broadcast: /192.168.56.255, Address: /fe80:0:0:0:d80a:e9ac:e371:a0e5%eth8 -> Broadcast: null
+net8: Microsoft ISATAP Adapter #4 /fe80:0:0:0:0:5efe:c0a8:3801%net8, Address: /fe80:0:0:0:0:5efe:c0a8:3801%net8 -> Broadcast: null
+net9: WAN Miniport (PPTP) 
+eth9: PANGP Virtual Ethernet Adapter-WFP Native MAC Layer LightWeight Filter-0000 
+eth10: PANGP Virtual Ethernet Adapter-VirtualBox NDIS Light-Weight Filter-0000 
+eth11: PANGP Virtual Ethernet Adapter-QoS Packet Scheduler-0000 
+eth12: PANGP Virtual Ethernet Adapter-WFP 802.3 MAC Layer LightWeight Filter-0000 
+eth13: VirtualBox Host-Only Ethernet Adapter-WFP Native MAC Layer LightWeight Filter-0000 
+eth14: VirtualBox Host-Only Ethernet Adapter-VirtualBox NDIS Light-Weight Filter-0000 
+eth15: VirtualBox Host-Only Ethernet Adapter-QoS Packet Scheduler-0000 
+eth16: VirtualBox Host-Only Ethernet Adapter-WFP 802.3 MAC Layer LightWeight Filter-0000 
+eth17: TunnelBear Adapter V9-WFP Native MAC Layer LightWeight Filter-0000 
+eth18: TunnelBear Adapter V9-VirtualBox NDIS Light-Weight Filter-0000 
+eth19: TunnelBear Adapter V9-QoS Packet Scheduler-0000 
+eth20: TunnelBear Adapter V9-WFP 802.3 MAC Layer LightWeight Filter-0000 
+eth21: Realtek PCIe GBE Family Controller-WFP Native MAC Layer LightWeight Filter-0000 
+eth22: Realtek PCIe GBE Family Controller-VirtualBox NDIS Light-Weight Filter-0000 
+eth23: Realtek PCIe GBE Family Controller-QoS Packet Scheduler-0000 
+eth24: Realtek PCIe GBE Family Controller-WFP 802.3 MAC Layer LightWeight Filter-0000 
+wlan3: Qualcomm Atheros AR956x Wireless Network Adapter-WFP Native MAC Layer LightWeight Filter-0000 
+wlan4: Qualcomm Atheros AR956x Wireless Network Adapter-Virtual WiFi Filter Driver-0000 
+wlan5: Qualcomm Atheros AR956x Wireless Network Adapter-Native WiFi Filter Driver-0000 
+wlan6: Qualcomm Atheros AR956x Wireless Network Adapter-VirtualBox NDIS Light-Weight Filter-0000 
+wlan7: Qualcomm Atheros AR956x Wireless Network Adapter-QoS Packet Scheduler-0000 
+wlan8: Qualcomm Atheros AR956x Wireless Network Adapter-WFP 802.3 MAC Layer LightWeight Filter-0000 
+wlan9: Microsoft Wi-Fi Direct Virtual Adapter-WFP Native MAC Layer LightWeight Filter-0000 
+wlan10: Microsoft Wi-Fi Direct Virtual Adapter-Native WiFi Filter Driver-0000 
+wlan11: Microsoft Wi-Fi Direct Virtual Adapter-VirtualBox NDIS Light-Weight Filter-0000 
+wlan12: Microsoft Wi-Fi Direct Virtual Adapter-QoS Packet Scheduler-0000 
+wlan13: Microsoft Wi-Fi Direct Virtual Adapter-WFP 802.3 MAC Layer LightWeight Filter-0000 
+
+Hostname: DESKTOP-5RB1AS6
+Java localhost ip: 192.168.56.1
+Local address designating initial default interface for multicast: 192.168.56.1
+
+
+2017-08-21 10:36:25.416~425791428 GaianNode -------------> Initialising GaianNode...
+2017-08-21 10:36:25.416~425938969 GaianNode -------------> GAIANDB.jar library has not been changed (and db folder is more recent), so initialisation data (e.g. stored procs/funcs) is expected to be already loaded
+2017-08-21 10:36:25.416~426037757 GaianNode -------------> Node details: DESKTOP5RB1AS6 gaiandb <password>
+2017-08-21 10:36:25.416~426202832 GaianNode -------------> Autonomic Discovery: Maintained connections sought through discovery: MIN_DISCOVERED_CONNECTIONS = 2
+2017-08-21 10:36:25.416~426301192 GaianNode -------------> Autonomic Discovery: DISCOVERY_IP = 230.255.255.255
+2017-08-21 10:36:25.416~426395704 GaianNode -------------> Autonomic Discovery: DISCOVERY_GATEWAYS = <Default=No gateways to other networks>
+2017-08-21 10:36:25.416~426486795 GaianNode -------------> Autonomic Discovery: MULTICAST_INTERFACES = ALL
+2017-08-21 10:36:25.416~426579168 GaianNode -------------> Connectivity: ACCESS_CLUSTERS = <Default=Connect to nodes which are not cluster members>
+2017-08-21 10:36:25.416~426670686 GaianNode -------------> Connectivity: ACCESS_HOSTS_PERMITTED = <Default=Accept further connections from any host outside the defined clusters>
+2017-08-21 10:36:25.416~426764343 GaianNode -------------> Connectivity: ACCESS_HOSTS_DENIED = <Default=Do not deny connections from any host in or outside the defined clusters>
+2017-08-21 10:36:25.416~426908034 GaianNode -------------> Log level set to: NONE
+2017-08-21 10:36:25.541~549448646 GaianNode -------------> Starting Derby Network Server, host mask 0.0.0.0, port 6414
+
+Mon Aug 21 10:36:26 BST 2017 : Apache Derby Network Server - 10.8.3.1 - (1505077) started and ready to accept connections on port 6414
+2017-08-21 10:36:26.416~423159213 GaianNode -------------> 
+Derby Version: CSS10081/10.8.3.1 - (1505077)  - Java Version: 1.8.0_131 (Java HotSpot(TM) Client VM)
+
+GaianNode started for Derby network server with sslMode=off on port: 6414 at Mon Aug 21 10:36:26 BST 2017, startup time: 1750ms
+
+Mon Aug 21 10:36:31 BST 2017 : Max threads changed to 1000.Mon Aug 21 10:36:31 BST 2017 : Max threads changed to 1000.
+
