@@ -1,0 +1,55 @@
+
+******************************************
+
+JSON IN to INFO SERVICE -step 2 p1
+
+
+- Possible Input example 
+{
+"dest":"Joe", //destination of the message: username (eg. Joe) or affiliation (eg. US) or everyone (eg UK/US) 
+"stream":"Moira", //this is for provenance records. 
+"info": [
+	{
+	"nodeID": "df222a6d-ec6c-4f0c-a424-3cd8bb683e02",
+	"text": "There is a person named John Doe and is in Kish.",
+	"source": "Alun Patrol",
+	"dtg": "2014/08/28 02:14:50"
+	},
+	......
+	]
+}
+
+
+******************************************
+
+
+JSON IN FROM CISPACES TO CISPACES for parsing Moira results: step 6-7 page 4
+
+
+INPUT  
+
+{
+
+"moiraMsg":"a=>b;b:c=>d", 	//the graph to be added 
+"nodeID":"24b67354-30dc-44d8-8975-fb2fac8aa93d",//the root node selected together with "askMoira"
+"con":true,//if it is added as pro or con ( This decision is made in CISpaces)
+"sources":"some source; some source",
+"dtg":"2015/07/17 11:45:56",
+"users":["user1","user2"] //the users connected to the workbox 
+
+}
+Example of car in Bootcamp slides 
+
+"MoiraMsg": "Blue car registration ABC123 leaving Kish North:Patrol Reports car ABC123 as suspicious=>ABC123 is a suspicious vehicle;ABC123 is a suspicious vehicle:ABC123 is associated with Blue group=>Blue group is suspicious"
+
+Attached to "Blue group may have planted IED" as a Pro Link
+
+OUTPUT: 
+{
+"edges":[ ],
+"nodes":[ ],
+"prov": {....}
+}
+
+
+

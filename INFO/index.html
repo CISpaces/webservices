@@ -1,0 +1,43 @@
+<!--
+  This research was sponsored by the U.S. Army Research Laboratory and the
+  U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+  Project 6, Task 3: Collaborative Intelligence Analysis.
+  The U.S. and U.K. Governments are authorized to reproduce and distribute
+  reprints for Government purposes notwithstanding any copyright notation
+  hereon.
+  
+ 
+  This is used to see whether INFO service is available
+  
+  @author      Alice Toniolo  
+  @version     1.0  
+  @since 		June 2014           
+
+-->
+
+
+
+
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns = "http://www.w3.org/1999/xhtml">
+<head>
+<title>INFO SERVICE
+</title>
+</head>
+ <body>
+ <p>Hello World!</p>
+ 
+ <p>Check INFO Web Service availability <a href="./rest/GetInfo">HERE</a></p>
+  <h2>To get INFO for USER</h2>
+<p>curl -X POST -H "Content-Type: application/json" -d '{"user":"uhx","aff":"US","status":true}' http://localhost:8080/info/rest/GetInfo <br/>
+curl -X POST -H "Content-Type: application/json" -d '{"user":"ux","aff":"UK","status":false}' http://localhost:8080/info/rest/GetInfo
+</p>
+ <h2>To post INFO for USER/AFF</h2>
+  <p>Check INFO INPUT Web Service availability <a href="./rest/PostInfo">HERE</a></p>
+
+ 
+
+ </body>
+ </html>
