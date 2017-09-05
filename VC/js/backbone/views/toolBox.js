@@ -210,7 +210,7 @@ app.ToolBoxView = Backbone.View.extend({
 							}).appendTo(options);
 							
 							var span = $("<span></span>", {
-								"text": d.title,
+								"text": d.title + " Created on " + d.timest,
 								"class": "history-text"
 							}).appendTo(options);
 						});
