@@ -1,4 +1,13 @@
-.idea/*
+# IntelliJ Project files
+**/.idea
+
+# Compiled output
+**/*.class
+**/*.war
+
+# Other internal files
 .DS_STORE
 cispaces-web-services-integration.iml
+
+# Out folder
 out/*
