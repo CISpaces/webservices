@@ -1,0 +1,32 @@
+<!--
+Build /deploy the CISpaces Web Service
+J.S.Robinson@soton.ac.uk
+-->
+<project name="cispaces-web-services" default="build-all">
+	<property environment="env"/>
+
+	<target name="build-all">
+		<echo message="Building the CIS Web Services"/>		
+		<subant target="">
+           		<fileset dir="." includes="*/build.xml"/>
+       		</subant>
+	</target>
+
+	<target name="clean-all">
+                <echo message="Removing compiled classes and web archives"/>     
+                <subant target="clean">
+                        <fileset dir="." includes="*/build.xml"/>
+                </subant>
+        </target>
+
+	<target name="deploy" depends="build-all">
+		<echo message="Deploying the CIS Web Services to ${env.CATALINA_HOME}"/> 
+		<copy todir="${env.CATALINA_HOME}/webapps/">
+			<fileset dir=".">
+				<include name="**/*.war"/>
+			</fileset>
+		</copy>
+	</target>
+
+	
+</project>
