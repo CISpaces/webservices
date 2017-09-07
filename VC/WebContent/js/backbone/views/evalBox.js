@@ -27,6 +27,8 @@ app.EvalBoxView = Backbone.View.extend({
 
 	evaluate: function(){
 		
+		app.evalBoxView.clear();
+
 		var param = {
 			"action": "eval",
 			"graph": {
@@ -144,7 +146,12 @@ app.EvalBoxView = Backbone.View.extend({
 						});
 
 						// error message should be hidden
-						$("#eval_fail").hide();						
+						$("#eval_fail").hide();
+
+						// colors and chunks should be shown
+						$("#eval_colors").show();
+						$("#eval_chunks").show();
+
 					}
 				}
 			},
@@ -164,6 +171,10 @@ app.EvalBoxView = Backbone.View.extend({
 			$("#draw_" + d.nodeID + " rect")
 				.removeAttr("stroke")
 				.removeAttr("stroke-width");
+
+			$("#node_" + d.nodeID + " .modal_eval_value")
+				.html("<em>N/A</em>");
+
 		});
 	
 		// error message should be hidden
@@ -216,6 +227,7 @@ app.EvalBoxView = Backbone.View.extend({
 		keys.forEach(function(d){
 			var eval_value = target[d];
 			
+			// the strike of text are changed accordin to evaluated values
 			var className = null;
 			if(eval_value == "V"){
 				className = "success";
@@ -226,6 +238,7 @@ app.EvalBoxView = Backbone.View.extend({
 			}
 			
 			$("#draw_" + d + " text").addClass(className);
+			$("#node_" + d + " .modal_eval_value").html("<em>" + eval_value + "</em>");
 		});
 		
 		return keys;

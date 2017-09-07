@@ -119,15 +119,6 @@ function draw(nodes, edges){
 		} else {
 			className = (d['type'] == "CA")? 'con-node' : 'pro-node';
 		}
-		
-		if(d['eval'] == "V"){
-			className += ' node-eval success';
-		} else if(d['eval'] == "X"){
-			className += ' node-eval fail';
-		} else if(d['eval'] == "?"){
-			className += ' node-eval question';
-		}
-		
 		return className;
 	})
 	.append("title")
@@ -137,12 +128,21 @@ function draw(nodes, edges){
 	.attr("dx", 12)
 	.attr("dy", ".35em")
 	.attr("font-size", node_style_data.font_size)
+	.attr("class", function(d){
+		if(d['eval'] == "V"){
+			return 'success';
+		} else if(d['eval'] == "X"){
+			return 'fail';
+		} else if(d['eval'] == "?"){
+			return 'question';
+		}
+	})
 	.text(function(d) { return parseText(d['text']); });
 
 	ret.node.each( function(d){
 		// debugger;
 		app.workBoxView.createNodeModelFromData(d);
-	});	
+	});
 
 	ret.edge = zoom.append("g")
 	.attr("class", "links")
