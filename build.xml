@@ -21,7 +21,7 @@ J.S.Robinson@soton.ac.uk
 
 	<target name="deploy" depends="build-all">
 		<echo message="Deploying the CIS Web Services to ${env.CATALINA_HOME}"/> 
-		<copy todir="${env.CATALINA_HOME}/webapps/">
+		<copy todir="${env.CATALINA_HOME}/webapps/" flatten="true">
 			<fileset dir=".">
 				<include name="**/*.war"/>
 			</fileset>
