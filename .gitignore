@@ -1,6 +1,9 @@
 # IntelliJ Project files
 **/.idea
 
+# Nebeans project files
+**/nbproject
+
 # Compiled output
 **/*.class
 **/*.war
