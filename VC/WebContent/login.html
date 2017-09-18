@@ -73,7 +73,7 @@ img.avatar {
 		var object =  { "username"  : uname, "password" : psw };
 		$.ajax({
 			type: 'POST',
-			url: 'http://localhost:8080/VC/rest/user',
+			url: 'rest/user',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -83,7 +83,7 @@ img.avatar {
 				}else{
 					var userID = result.substring(9,result.length-1);
 					createCookie('user_id',userID,2);
-					window.location.assign("http://localhost:8080/index.html");
+					window.location.assign("index.html");
 				}
 			},
 			error: function(result){
