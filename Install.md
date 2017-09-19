@@ -14,14 +14,15 @@ http://tomcat.apache.org/download-80.cgi
 
 ### Clone CISpaces repository
 
-1. Currently, the up to date version of code is in the Integration branch, so clone the Integration branch
+- Currently, the up to date version of code is in the Integration branch, so clone the Integration branch
 
 ```$ git clone -b Integration https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
 
-2. Run the installation script
+- Run the installation script from the cispaces directory
 
-```$ ./install.sh```
+```$ cd cispaces-web-services
+$ ./install.sh```
 
-3. Build and deploy the project using ant
+- Build and deploy the project using ant
 
 ```$ ant deploy```
