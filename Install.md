@@ -12,42 +12,17 @@ http://tomcat.apache.org/download-80.cgi
 
 ## Installation
 
-### Ubuntu Linux 16.04
-0. Clone this repository:
-`$ git clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git`
+### Clone CISpaces repository
 
-1. Install Java 8
+- Currently, the up to date version of code is in the Integration branch, so clone the Integration branch
 
-`$ sudo apt install default-jdk`
+```$ git clone -b Integration https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
 
-2. Install Apache Ant
+- Run the installation script from the cispaces directory
 
-`$ sudo apt install ant`
+```$ cd cispaces-web-services
+$ ./install.sh```
 
-3. Install Tomcat:
+- Build and deploy the project using ant
 
-`$ wget http://www-us.apache.org/dist/tomcat/tomcat-8/v8.0.45/bin/apache-tomcat-8.0.45.tar.gz`
-`$ tar xf apache-tomcat-8.0.45.tar.gz`
-
-4. Install Maven:
-`$ sudo apt install maven`
-
-Set up the environment
-
-`$ echo "export CATALINA_HOME=$(readlink -f apache-tomcat-8.0.45)" >> ~/.profile`
-`$ source ~/.profile`
-
-4. Build the services:
-
-`$ ant `
-
-Build VC using maven. Run this command from VC folder.
-
-`$ cd VC`
-`$ mvn clean install`
-
-5. Deploy the services to Tomcat
-
-`$ ant deploy`
-
-TODO - Install / configure Derby / Context
+```$ ant deploy```
