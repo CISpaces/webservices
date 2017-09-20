@@ -38,15 +38,19 @@ $ cd $GAIAN
 $ ./launchGaianServer.sh
 $ <CTRL+A>,<D>
 ```
-To re-attach:
+
+- To re-attach:
 
 ```$ screen -r```
+
 
 - Start Tomcat web server:
 
 ```$CATALINA_HOME/bin/startup.sh```
 
+
 - Point browser to https://<your-ip>:8080/VC
+
 
 - To stop Tomcat:
 
