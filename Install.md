@@ -43,10 +43,10 @@ $ <CTRL+A>,<D>```
 
 - Start Tomcat web server:
 
-```$CATALINA_HOME/bin/startup.sh```
+```$ $CATALINA_HOME/bin/startup.sh```
 
 - To use CISpaces we interface, point your web browser to https://<your-ip>:8080/VC
 
 - To stop Tomcat:
 
-```$CATALINA_HOME/bin/shutdown.sh```
+```$ $CATALINA_HOME/bin/shutdown.sh```
