@@ -1,4 +1,4 @@
-# Installing the CISPaces web services
+# Installing the CISPaces web UI and services
 
 ## Prerequisites
 The CISPaces web services are Java based and have tested with OpenJDK 8 and Oracle JDK 8
