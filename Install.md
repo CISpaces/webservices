@@ -32,30 +32,21 @@ $ ./install.sh```
 ```$ ant deploy```
 
 - Start GAIANDB in a GNU Screen session (allows it to continue running in the background)
-```
-$ screen
+```$ screen
 $ cd $GAIAN
 $ ./launchGaianServer.sh
-$ <CTRL+A>,<D>
-```
+$ <CTRL+A>,<D>```
 
 - To re-attach:
 
-```
-$ screen -r
-```
+```$ screen -r```
 
 - Start Tomcat web server:
 
-```
-$CATALINA_HOME/bin/startup.sh
-```
+```$CATALINA_HOME/bin/startup.sh```
 
 - To use CISpaces we interface, point your web browser to https://<your-ip>:8080/VC
 
-
 - To stop Tomcat:
 
-```
-$CATALINA_HOME/bin/shutdown.sh
-```
+```$CATALINA_HOME/bin/shutdown.sh```
