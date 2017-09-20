@@ -36,8 +36,7 @@ J.S.Robinson@soton.ac.uk
                 <fileset dir="src/">
                         <exclude name ="**/*.java"/>
                 </fileset>
-        </copy>
-            
+        </copy>         
                 
         <copy todir="WebContent/WEB-INF/lib">                  
             <fileset dir="lib/">
@@ -49,6 +48,10 @@ J.S.Robinson@soton.ac.uk
         </copy> 
                           
         <war destfile="dist/${service.name}.war" basedir="WebContent" webxml="WebContent/WEB-INF/web.xml"/>
+    </target>
+
+    <target name="deploy" depends="war">
+        <copy file="dist/${service.name}.war" todir="${env.CATALINA_HOME}/webapps/" flatten="true"/>
     </target>
 
     <target name="clean">

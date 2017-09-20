@@ -1,3 +1,7 @@
+<!--
+Build the CISpaces VC Service
+J.S.Robinson@soton.ac.uk
+-->
 <project name="cispaces-provsimp" default="war">
     
     <property name="service.name" value="provsimp"/>
@@ -34,7 +38,6 @@
                 </fileset>
         </copy>
             
-                
         <copy todir="WebContent/WEB-INF/lib">                  
             <fileset dir="lib/">
                 <exclude name="servlet-api.jar"/>
@@ -45,6 +48,10 @@
         </copy> 
                           
         <war destfile="dist/${service.name}.war" basedir="WebContent" webxml="WebContent/WEB-INF/web.xml"/>
+    </target>
+
+    <target name="deploy" depends="war">
+    	<copy file="dist/${service.name}.war" todir="${env.CATALINA_HOME}/webapps/" flatten="true"/>
     </target>
 
     <target name="clean">
