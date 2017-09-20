@@ -14,3 +14,6 @@ cispaces-web-services-integration.iml
 
 # Out folder
 out/*
+
+# CISpaces tools
+cispaces/*
