@@ -10,7 +10,7 @@ http://ant.apache.org/bindownload.cgi
 The services run under a Java web application server, and have been test with Apache Tomcat 8.0.45
 http://tomcat.apache.org/download-80.cgi
 
-## Installation
+## Installation - Ubuntu 16.04
 
 ### Clone CISpaces repository
 
