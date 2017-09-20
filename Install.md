@@ -46,7 +46,7 @@ $ <CTRL+A>,<D>```
 
 ```$ $CATALINA_HOME/bin/startup.sh```
 
-- To use CISpaces we interface, point your web browser to https://<your-ip>:8080/VC
+- To use CISpaces we interface, point your web browser to https://YOUR_IP:8080/VC
 
 - To stop Tomcat:
 
