@@ -12,9 +12,9 @@ echo "# - Updating environment..."
 echo "export CISPACES=${PWD}" >> ~/.profile
 source ~/.profile
 
-echo "# - Installing prerequisites...(Y/n)" 
+echo "# - Installing prerequisites [default-jdk, ant, zip, screen]...(Y/n)" 
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
-sudo apt-get install --yes default-jdk ant unzip
+sudo apt-get install --yes default-jdk ant unzip screen
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Updating environment..."
