@@ -5,11 +5,11 @@
 TOMCAT_VERSION="8.0.46"
 GAIAN_VERSION="2.1.6d_20150804"
 
-echo "### - Install CISPACES on Ubuntu 16.04...? (Y/n)" 
+echo "### - Install CISPACES Prerequisites on Ubuntu 16.04...? (Y/n)" 
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
 
 echo "# - Updating environment..."
-echo "export CISPACES=${PWD}" >> ~/.profile
+echo "export CISPACES=${PWD}/cispaces" >> ~/.profile
 source ~/.profile
 
 echo "# - Installing prerequisites [default-jdk, ant, zip, screen]...(Y/n)" 
@@ -35,7 +35,7 @@ echo "# - Apache Tomcat...(Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
 mkdir -p $CISPACES/tools/Tomcat
 if [ ! -e "apache-tomcat-${TOMCAT_VERSION}.tar.zxf" ]; then
-	wget http://www-eu.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && tar xf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/Tomcat/
+	wget http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && tar xf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/Tomcat/
 fi
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
@@ -65,4 +65,4 @@ cat << 'EOF' >> ${CISPACES}/tools/Tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/co
     />
 </Context>
 EOF
-if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
+if [ $? -eq 0 ]; then echo "[OK] - Your system is now ready to install CISpaces."; else echo "[Failed]"; exit; fi
