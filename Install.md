@@ -32,6 +32,7 @@ $ ./install.sh```
 ```$ ant deploy```
 
 - Start GAIANDB in a GNU Screen session (allows it to continue running in the background)
+
 ```$ screen
 $ cd $GAIAN
 $ ./launchGaianServer.sh
