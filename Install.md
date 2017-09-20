@@ -41,17 +41,21 @@ $ <CTRL+A>,<D>
 
 - To re-attach:
 
-```$ screen -r```
-
+```
+$ screen -r
+```
 
 - Start Tomcat web server:
 
-```$CATALINA_HOME/bin/startup.sh```
+```
+$CATALINA_HOME/bin/startup.sh
+```
 
-
-- Point browser to https://<your-ip>:8080/VC
+- To use CISpaces we interface, point your web browser to https://<your-ip>:8080/VC
 
 
 - To stop Tomcat:
 
-```$CATALINA_HOME/bin/shutdown.sh```
+```
+$CATALINA_HOME/bin/shutdown.sh
+```
