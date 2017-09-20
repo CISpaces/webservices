@@ -24,6 +24,7 @@ http://tomcat.apache.org/download-80.cgi
 $ ./install.sh```
 
 - Update the environment
+
 ```$ source ~/.profile```
 
 - Build and deploy the project using ant
@@ -38,12 +39,15 @@ $ ./launchGaianServer.sh
 $ <CTRL+A>,<D>
 ```
 To re-attach:
+
 ```$ screen -r```
 
 - Start Tomcat web server:
+
 ```$CATALINA_HOME/bin/startup.sh```
 
 - Point browser to https://<your-ip>:8080/VC
 
 - To stop Tomcat:
+
 ```$CATALINA_HOME/bin/shutdown.sh```
