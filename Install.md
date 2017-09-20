@@ -18,10 +18,10 @@ http://tomcat.apache.org/download-80.cgi
 
 ```$ git clone -b Integration https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
 
-- Run the installation script from the cispaces directory
+- Run the pre-requisites installation script from the cispaces directory
 
 ```$ cd cispaces-web-services
-$ ./install.sh```
+$ ./install-prereqs.sh```
 
 - Update the environment
 
