@@ -22,9 +22,11 @@ echo "export JAVA_HOME=/usr/lib/jvm/default-java" >> ~/.profile
 
 echo "# - Installing GaianDB...(Y/n)" 
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
-mkdir -p $CISPACES/tools/GaianDB/GAIANDB_V${GAIAN_VERSION}
-wget -O GAIANDB_V${GAIAN_VERSION}.zip https://github.com/gaiandb/gaiandb/blob/master/build/GAIANDB_V${GAIAN_VERSION}.zip?raw=true
-unzip GAIANDB_V${GAIAN_VERSION}.zip -d $CISPACES/tools/GaianDB/GAIANDB_V${GAIAN_VERSION}
+if [ ! -e "GAIANDB_V${GAIAN_VERSION}.zip" ]; then
+	wget -O GAIANDB_V${GAIAN_VERSION}.zip https://github.com/gaiandb/gaiandb/blob/master/build/GAIANDB_V${GAIAN_VERSION}.zip?raw=true
+	mkdir -p $CISPACES/tools/GaianDB/GAIANDB_V${GAIAN_VERSION}
+	unzip GAIANDB_V${GAIAN_VERSION}.zip -d $CISPACES/tools/GaianDB/GAIANDB_V${GAIAN_VERSION}
+fi
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Updating environment..."
@@ -34,7 +36,7 @@ source ~/.profile
 echo "# - Apache Tomcat...(Y/n)" 
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
 mkdir -p $CISPACES/tools/Tomcat
-if [ ! -e "apache-tomcat-${TOMCAT_VERSION}.tar.zxf" ]; then
+if [ ! -e "apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
 	wget http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && tar xf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/Tomcat/
 fi
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi

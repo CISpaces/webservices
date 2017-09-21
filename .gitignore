@@ -17,3 +17,7 @@ out/*
 
 # CISpaces tools
 cispaces/*
+
+# Downloaded by install_prereqs.sh
+GAIANDB_V*.zip
+apache-tomcat-*.tar.gz
