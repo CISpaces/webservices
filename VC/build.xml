@@ -4,7 +4,7 @@ J.S.Robinson@soton.ac.uk
 -->
 <project name="cispaces-vc" default="war">
     
-    <property name="service.name" value="vc"/>
+    <property name="service.name" value="VC"/>
     <property file="build.properties"/>
     <property environment="env"/>
 
