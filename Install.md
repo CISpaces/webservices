@@ -14,9 +14,7 @@ http://tomcat.apache.org/download-80.cgi
 
 ### Clone CISpaces repository
 
-- Currently, the up to date version of code is in the Integration branch, so clone the Integration branch
-
-```$ git clone -b Integration https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
+```$ git clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
 
 - Run the pre-requisites installation script from the cispaces directory
 
