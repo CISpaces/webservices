@@ -10,9 +10,11 @@ http://ant.apache.org/bindownload.cgi
 The services run under a Java web application server, and have been test with Apache Tomcat 8.0.45
 http://tomcat.apache.org/download-80.cgi
 
-## Installation - Ubuntu 16.04
+## Installation
 
-### Clone CISpaces repository
+### Ubuntu 16.04
+
+- Clone CISpaces repository
 
 ```$ git clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
 
@@ -29,11 +31,15 @@ $ ./install-prereqs.sh```
 
 ```$ ant deploy```
 
-- Start GAIANDB in a GNU Screen session (allows it to continue running in the background)
+## Running
+
+### Ubuntu 16.04
+
+- Start the Apache Derby database in a GNU Screen session (allows it to continue running in the background)
 
 ```$ screen
-$ cd $GAIAN
-$ ./launchGaianServer.sh
+$ cd ${CISPACES}/tools/derby
+$ ${GAIAN}/bin/startNetworkServer
 $ <CTRL+A>,<D>```
 
 - To re-attach:
