@@ -29,11 +29,11 @@ $ ./install-prereqs.sh```
 
 ```$ ant deploy```
 
-- Start GAIANDB in a GNU Screen session (allows it to continue running in the background)
+- Start the Apache Derby database in a GNU Screen session (allows it to continue running in the background)
 
 ```$ screen
-$ cd $GAIAN
-$ ./launchGaianServer.sh
+$ cd ${CISPACES}/tools/derby
+$ ${GAIAN}/bin/startNetworkServer &
 $ <CTRL+A>,<D>```
 
 - To re-attach:
