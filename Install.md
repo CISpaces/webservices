@@ -29,6 +29,8 @@ $ ./install-prereqs.sh```
 
 ```$ ant deploy```
 
+## Running - Ubuntu 16.04
+
 - Start the Apache Derby database in a GNU Screen session (allows it to continue running in the background)
 
 ```$ screen
