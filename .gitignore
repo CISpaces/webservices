@@ -7,6 +7,8 @@
 # Compiled output
 **/*.class
 **/*.war
+**/WebContent/WEB-INF/classes
+**/WebContent/WEB-INF/lib
 
 # Other internal files
 .DS_STORE
@@ -18,6 +20,4 @@ out/*
 # CISpaces tools
 cispaces/*
 
-# Downloaded by install_prereqs.sh
-GAIANDB_V*.zip
-apache-tomcat-*.tar.gz
+
