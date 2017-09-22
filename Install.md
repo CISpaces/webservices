@@ -13,6 +13,9 @@ http://tomcat.apache.org/download-80.cgi
 ## Installation
 
 ### Ubuntu 16.04
+- Install git
+
+```$ sudo apt-get install git```
 
 - Clone CISpaces repository
 
