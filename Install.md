@@ -39,7 +39,7 @@ $ ./install-prereqs.sh```
 
 ```$ screen
 $ cd ${CISPACES}/tools/derby
-$ ${GAIAN}/bin/startNetworkServer &
+$ ${GAIAN}/bin/startNetworkServer
 $ <CTRL+A>,<D>```
 
 - To re-attach:
