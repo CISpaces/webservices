@@ -177,10 +177,17 @@ public class DBConnect {
 		        HashMap<String,Object> row = new HashMap<String, Object>(columns);
 		        for(int i=1; i<=columns; ++i) {
 		        	//import org.apache.derby.client.am.Clob;
+                    /*
+                    j.robinson@software.ac.uk - 
+                    Prevent Exception - java.sql.SQLException: Stream or LOB value cannot be retrieved more than once
+                    http://db.apache.org/derby/releases/release-10.6.1.0.cgi#Note+for+DERBY-3844
+                    
 		        	Object test=rs.getObject(i);
 		        	if(test instanceof java.sql.Clob){
 		        		test=rs.getString(i);
 		        	}
+                    */
+                    String test=rs.getString(i);
 		            row.put(md.getColumnName(i).toLowerCase(),test);
 		        }
 		        list.add(row);
