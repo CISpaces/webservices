@@ -76,7 +76,7 @@ app.ToolBoxView = Backbone.View.extend({
 					"isshared" : false, "parentgraphid" : null};
 	$.ajax({
 			type: 'POST',
-			url: 'rest/new',
+			url: 'VC/rest/new',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -165,7 +165,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object =  { "graphID"  : graphID, "userID" : userID, "title" : title};
 		  $.ajax({
 			type: 'POST',
-			url: 'rest/save',
+			url: 'VC/rest/save',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -182,7 +182,7 @@ app.ToolBoxView = Backbone.View.extend({
   analysisHistory: function(){
 		var graphID = readCookie('graph_id');
 		var object = {"graphID"  : graphID};
-      	$.get( "rest/history", object )
+      	$.get( "VC/rest/history", object )
           .done(function( result ) {
               		if(result){
 					
@@ -228,7 +228,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object = { "graphID" : json.graphID, "nodes" : json.nodes, "edges" : json.edges };
 			$.ajax({
 			type: 'POST',
-			url: 'rest/updateAnalysis',
+			url: 'VC/rest/updateAnalysis',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
 			success: function(result){
