@@ -31,9 +31,9 @@ echo "# - Install Apache Derby...? (Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
 if [ ! -e "$CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz" ]; then
         mkdir -p $CISPACES/tools/derby/ \
-	&& wget -O $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz http://mirrors.ukfast.co.uk/sites/ftp.apache.org//db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz?raw=true \
-	&& tar xf $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz -C $CISPACES/tools/derby
-fi
+	&& wget -O $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz http://mirrors.ukfast.co.uk/sites/ftp.apache.org//db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz?raw=true 
+fi	
+tar xf $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz -C $CISPACES/tools/derby
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
@@ -46,9 +46,11 @@ echo "# - Install Apache Tomcat...? (Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
 mkdir -p $CISPACES/tools/tomcat
 if [ ! -e "$CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
-	wget -O $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
-	&& tar xf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/tomcat/
+	wget -O $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
 fi
+tar xf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/tomcat/ \
+	&& rm -rf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/ROOT.war \
+	&& rm -rf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/ROOT 
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo 
 
