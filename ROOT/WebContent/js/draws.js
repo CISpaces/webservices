@@ -13,27 +13,27 @@ var charge_scales = d3.scaleLinear().domain([1, 250]).range([-200, -70]);
 
 function init_chart_data(){
 	var ret = {};
-	
+
 	ret.svg_width = $('#d3-area-chart').width();
 	ret.svg_height = $('#d3-area-chart').height() < chart_data.min_svg_height ? chart_data.min_svg_height : $('#d3-area-chart').height();
 
 	ret.svg = d3.select('svg')
 	.attr('width', ret.svg_width + 'px')
 	.attr('height', ret.svg_height + 'px');
-	
+
 	return ret;
 }
 
 function set_simulation(nodes_length){
-	
+
 	var ret = {};
-	
+
 	ret.i_width = i_node_size_scales(nodes_length);
 	ret.i_height = i_node_size_scales(nodes_length);
-	
+
 	ret.a_width = a_node_size_scales(nodes_length);
 	ret.a_height = a_node_size_scales(nodes_length);
-	
+
 	ret.font_size = font_size_scales(nodes_length);
 
 	ret.distance = distance_scales(nodes_length);
@@ -43,33 +43,33 @@ function set_simulation(nodes_length){
 	.force("link", d3.forceLink().id(function(d) { return d.nodeID; }).distance(ret.distance))
 	.force("charge", d3.forceManyBody().theta(0.5).distanceMin(ret.min_distance).strength(ret.charge_strength))
 	.force("center", d3.forceCenter(chart_data.svg_width / 2, chart_data.svg_height / 2));
-	
+
 	return ret;
 }
 
-function set_zoom(){	
-	
+function set_zoom(){
+
 	// add encompassing group for the zoom
 	var ret = chart_data.svg.append("g")
 	.attr("class", "zoom");
-	
+
 	// add zoom capabilities
 	var zoom_handler = d3.zoom().on("zoom", function(){
 		ret.attr("transform", d3.event.transform);
 	});
 
 	zoom_handler(chart_data.svg);
-	
+
 	return ret;
 }
 
 function draw(nodes, edges){
-	
+
 	var ret = {};
-	
+
 	ret.nodes = nodes;
 	ret.edges = edges;
-	
+
 	ret.node = zoom.append("g")
 	.attr("class", "nodes")
 	.selectAll("g")
@@ -139,9 +139,9 @@ function draw(nodes, edges){
 	})
 	.text(function(d) { return parseText(d['text']); });
 
-	ret.node.each( function(d){
+	ret.node.each( function(data){
 		// debugger;
-		app.workBoxView.createNodeModelFromData(d);
+		var attr = app.workBoxView.createNodeModelFromData(data);
 	});
 
 	ret.edge = zoom.append("g")
@@ -160,10 +160,10 @@ function draw(nodes, edges){
 		} else if(className.includes('pro-')){
 			this.setAttribute('marker-end', 'url(#pro-triangle)');
 		}
-		
+
 		return className;
 	});
-	
+
 	return ret;
 }
 
@@ -186,20 +186,20 @@ function dragended(d) {
 
 function ticked() {
 	graph_data.edge
-	.attr("x1", function(d) { 
-		return d.source.x + node_style_data.a_width/4; 
+	.attr("x1", function(d) {
+		return d.source.x + node_style_data.a_width/4;
 	})
-	.attr("y1", function(d) { 
-		return d.source.y + node_style_data.a_height/4; 
+	.attr("y1", function(d) {
+		return d.source.y + node_style_data.a_height/4;
 	})
-	.attr("x2", function(d) { 
+	.attr("x2", function(d) {
 		if(d.source.x < d.target.x){
 			return d.target.x;
 		} else {
 			return d.target.x + node_style_data.a_width/2;
-		}		
+		}
 	})
-	.attr("y2", function(d) {		
+	.attr("y2", function(d) {
 		if(d.source.y < d.target.y){
 			return d.target.y;
 		} else {
@@ -214,9 +214,9 @@ function ticked() {
 }
 
 function restart_simulation(restart){
-	
+
 	var ret_simulation = simulation;
-	
+
 	if(!restart){
 		ret_simulation.nodes(graph_data.nodes)
 		.on("tick", ticked);
@@ -227,15 +227,15 @@ function restart_simulation(restart){
 		// Update and restart the simulation.
 		ret_simulation.nodes(graph_data.nodes);
 		ret_simulation.force("link").links(graph_data.edges);
-		
+
 		ret_simulation.restart();
 	}
-	
+
 	return ret_simulation;
 }
 
 function addNewNode(attr){
-	
+
 	var data = {
 			"source": "user",
 			"uncert":"Confirmed",
@@ -251,9 +251,9 @@ function addNewNode(attr){
 				"prem_assump":{}
 			}
 	}
-	
+
 	graph_data.nodes.push(data);
-		
+
 	// Apply the general update pattern to the nodes.
 	graph_data.node = graph_data.node.data(graph_data.nodes, function(d) { return d.nodeID; });
 	graph_data.node.exit().remove();
@@ -272,7 +272,7 @@ function addNewNode(attr){
 
 	new_node.append("rect")
 	.attr("x", -8)
-	.attr("y", -8)	
+	.attr("y", -8)
 	.attr("width", function(d){
 		if(d['type'] == "I"){
 			return node_style_data.i_width;
@@ -304,7 +304,7 @@ function addNewNode(attr){
 		} else {
 			return (d['type'] == "CA")? 'con-node' : 'pro-node';
 		}
-	})		
+	})
 	.append("title")
 	.text(function(d) { return d['text']; });
 
@@ -313,7 +313,7 @@ function addNewNode(attr){
 	.attr("dy", ".35em")
 	.attr("font-size", node_style_data.font_size)
 	.text(parseText(data['text']));
-	
+
 	return ret_node;
 }
 
@@ -324,7 +324,7 @@ function deleteNode(index){
 	// Apply the general update pattern to the nodes.
 	graph_data.node = graph_data.node.data(graph_data.nodes, function(d) { return d.nodeID; });
 	graph_data.node.exit().remove();
-	
+
 	return ret;
 }
 
@@ -344,10 +344,10 @@ function addNewEdge(attr){
 	// Apply the general update pattern to the edges.
 	graph_data.edge = graph_data.edge.data(graph_data.edges, function(d) { return d.edgeID; });
 	graph_data.edge.exit().remove();
-	
+
 	var className = attr['className'];
 	var markerClass = "url(#triangle)";
-	
+
 	if(className.includes('pref-')){
 		markerClass = "url(#pref-triangle)";
 	} else if(className.includes('con-')){
@@ -355,13 +355,13 @@ function addNewEdge(attr){
 	} else if(className.includes('pro-')){
 		markerClass = "url(#pro-triangle)";
 	}
-	
+
 	var ret_edge = graph_data.edge.enter()
 	.append("line")
 	.attr("marker-end", markerClass)
 	.attr("class", className)
-	.merge(graph_data.edge);	
-	
+	.merge(graph_data.edge);
+
 	return ret_edge;
 }
 

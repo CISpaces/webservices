@@ -1,5 +1,18 @@
 @CHARSET "UTF-8";
 
+hr {
+	height: 1px;
+	background-color: #aaa;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 90%
+}
+
+.alert-infobox {
+	margin-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
 /**
 	styles for nodes
 */
@@ -9,7 +22,7 @@
 }
 
 .claim-node {
-	fill: #d9534f;
+	fill: #b366ff;
 	/* fill: #bf29d9; */
 }
 
@@ -19,8 +32,8 @@
 }
 
 .con-node {
-	fill: #337ab7;
-	/* fill: #ff0000; */
+	fill: #d9534f;
+	/* fill: #337ab7; */
 }
 
 .pro-node {

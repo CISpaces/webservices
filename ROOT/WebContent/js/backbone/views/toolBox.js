@@ -3,8 +3,8 @@
 var app = app || {};
 
 /**
- * ToolBox 
- * --------------------------------- 
+ * ToolBox
+ * ---------------------------------
  * the UI for 'toolBox'
  */
 
@@ -12,20 +12,15 @@ app.ToolBoxView = Backbone.View.extend({
   el: '.navbar',
 
   events: {
-    'click #settings': 'settings',
-    'click #help': 'help',
+      'click #settings': 'settings',
+      'click #help': 'help',
 
-	/*
-    'click #nProv': 'nProv',
-    'click #aProv': 'aProv',
-	*/
-	
-    'click #newWorkBox': 'newWorkBox',
-    'click #callFile': 'file',
-	'click #saveProgress' : 'save',
-	'click #history' : 'analysisHistory',
+      'click #newWorkBox': 'newWorkBox',
+      'click #callFile': 'file',
+      'click #saveProgress' : 'save',
+	    'click #history' : 'analysisHistory',
 
-    'click .btn-sm': 'createNode'
+      'click .btn-sm': 'createNode'
   },
 
   initialize: function() {
@@ -44,19 +39,10 @@ app.ToolBoxView = Backbone.View.extend({
     // alert('help');
   },
 
-  /*
-  nProv: function() {
-    alert('nProv');
-  },
-
-  aProv: function() {
-    alert('aProv');
-  },
-	*/
   newWorkBox: function() {
     app.workBoxView.clearWorkBox();
-	
-	// generates created time using format string type 
+
+	// generates created time using format string type
 	var now = new Date();
 
 	var year = now.getFullYear();
@@ -76,7 +62,7 @@ app.ToolBoxView = Backbone.View.extend({
 					"isshared" : false, "parentgraphid" : null};
 	$.ajax({
 			type: 'POST',
-			url: 'VC/rest/new',
+			url: 'rest/new',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -84,30 +70,30 @@ app.ToolBoxView = Backbone.View.extend({
 					createCookie('graph_id',graphID,2);
 					/* -------------------- initialisation for drawing a graph -------------------- */
 					// set the size of the SVG element using the size of a window
-					var ret_chart = init_chart_data();			
+					var ret_chart = init_chart_data();
 					sync_chart_data(ret_chart);
 
 					// set the zoom functionality
 					zoom = set_zoom();
-					
+
 					// set up simulations for force-directed graphs
 					var ret_simulation = set_simulation(15);
 					sync_node_style_data(ret_simulation);
 					sync_simulation_data(ret_simulation);
-					
+
 					var ret_graph = draw([],[]);
-					sync_graph_data(ret_graph);	
-					restart_simulation(false); 
-					
+					sync_graph_data(ret_graph);
+					restart_simulation(false);
+
 					app.workBoxView.listenTo(app.Nodes, 'add', this.addNode);
 					// this.listenTo(app.Edges, 'add', this.addEdge);
-					
+
 			},
 			error: function(result){
 				alert('Something went wrong. Please try again.');
 			}
 		});
-		
+
 	function createCookie(name,value,days) {
 		if (days) {
 			var date = new Date();
@@ -117,7 +103,7 @@ app.ToolBoxView = Backbone.View.extend({
 		else var expires = "";
 		document.cookie = name+"="+value+expires+"; path=/";
 	}
-	
+
 	function readCookie(name) {
 		var nameEQ = name + "=";
 		var ca = document.cookie.split(';');
@@ -126,17 +112,17 @@ app.ToolBoxView = Backbone.View.extend({
 			while (c.charAt(0)==' ') c = c.substring(1,c.length);
 			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
 		}
-	
+
 		return null;
 	}
   },
 
   file: function() {
-	  
+
     app.workBoxView.clearWorkBox();
-	  
+
     var input_file = $("#myFile").click();
-	
+
 	return input_file;
   },
 
@@ -156,7 +142,7 @@ app.ToolBoxView = Backbone.View.extend({
 	// re-start changed graph
 	simulation = restart_simulation(restart);
   },
-  
+
   save: function(){
 	  var title = prompt("Please enter a title", "Analysis1");
 	  if(title != null){
@@ -165,7 +151,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object =  { "graphID"  : graphID, "userID" : userID, "title" : title};
 		  $.ajax({
 			type: 'POST',
-			url: 'VC/rest/save',
+			url: 'rest/save',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -178,49 +164,49 @@ app.ToolBoxView = Backbone.View.extend({
 		});
 	  }
   },
-  
+
   analysisHistory: function(){
 		var graphID = readCookie('graph_id');
 		var object = {"graphID"  : graphID};
-      	$.get( "VC/rest/history", object )
+      	$.get( "rest/history", object )
           .done(function( result ) {
               		if(result){
-					
-					$("#history_list").html("");						
 
-					if(result.history){	
+					$("#history_list").html("");
+
+					if(result.history){
 						var arr = result.history;
 						arr.forEach(function(d){
 
 							var options = $("<label></label>", {
 								"class": "list-group-item"
-							}).appendTo($("#history_list"));							
-							
-							
+							}).appendTo($("#history_list"));
+
+
 							var radio_btn = $("<input/>", {
 								"type": "radio",
 								"name": "history_options_radio",
 								"id": d.title
-							}).click(function(obj){		
+							}).click(function(obj){
 								//display graph upon clicking on a radio button
 								// console.log(d.analysis);
 								if(d.analysis){
 									$("#selectedAnalysis").text(d.analysis);
 								}
 							}).appendTo(options);
-							
+
 							var span = $("<span></span>", {
 								"text": d.title + " Created on " + d.timest,
 								"class": "history-text"
 							}).appendTo(options);
 						});
 					}
-					
+
 					$("#history_result").modal('show');
 				}
           });
   },
-  
+
   importAnalysis: function(){
 	  var analysis = document.getElementById('selectedAnalysis').innerHTML;
 	  if(analysis){
@@ -228,7 +214,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object = { "graphID" : json.graphID, "nodes" : json.nodes, "edges" : json.edges };
 			$.ajax({
 			type: 'POST',
-			url: 'VC/rest/updateAnalysis',
+			url: 'rest/updateAnalysis',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
 			success: function(result){
@@ -239,16 +225,16 @@ app.ToolBoxView = Backbone.View.extend({
 						//callback(result);
 					}
 			});
-		  
+
 		  app.workBoxView.clearWorkBox();
-		  
+
 		  var ret_graph = draw(json.nodes,json.edges);
-		  sync_graph_data(ret_graph);	
-		  restart_simulation(false); 
-	
+		  sync_graph_data(ret_graph);
+		  restart_simulation(false);
+
 		  $('#history_result').modal('hide');
 	  }
-	  
+
 	  	function createCookie(name,value,days) {
 		if (days) {
 			var date = new Date();
