@@ -8,13 +8,11 @@
 package vcservlet;
 
 import database.DBQuery;
-import vcontrol.VControl;
-
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -75,22 +73,51 @@ public class VCServlet {
 
 
     /**
-     * @param userData a json containing the user login details
+     * Authenticate the user
+     * @param userData JSON String of form {"username":"Test user","password":"password"}
      * @return a response indicating whether the user has been validated
      * URL: http://localhost:8080/VC/rest/user
      */
     @POST
-    @Path("/user")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String checkUser(String userData){
+    public Response checkUser(String userData){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Login Request ***");
         log.log(Level.INFO, "Login payload " + userData);
         VCForkControl vcForkControl = new VCForkControl();
-        String response = vcForkControl.evalJSONUser(userData);
-
-        return response;
+        String userInfo = vcForkControl.evalJSONLoginUser(userData);
+        if(userInfo != null)
+            return Response.status(Response.Status.OK).entity(userInfo).build();
+        else
+            return Response.status(Response.Status.FORBIDDEN).build();
     }
+    
+    /**
+     * Add a user with the supplied properties
+     * @param userData JSON String of form {"username":"Test user","password":"password","affiliation":"None"}
+     * @return 
+     */
+    @POST
+    @Path("/user/add")
+    public Response addUser(String userData){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Add user Request ***");
+        log.log(Level.INFO, "Payload " + userData);
+        VCForkControl vcForkControl = new VCForkControl();
+        String userInfo = null;
+        try {
+                userInfo = vcForkControl.evalJSONAddUser(userData);
+        }
+        catch(IllegalArgumentException e) {
+            //Username already exists
+            return Response.status(Response.Status.CONFLICT).build();        
+        }
+        if(userInfo != null)
+            return Response.status(Response.Status.CREATED).entity(userInfo).build();
+        else
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    }//AddUser
+    
 
     /**
      * @param graph a json containing the basic information for a new graph
