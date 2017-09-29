@@ -30,26 +30,19 @@ app.WorkBoxView = Backbone.View
       			sync_simulation_data(ret_simulation);
 
       			getLatestAnalysis(function(data){
-      				// initiate the SVG on the work box for drawing a graph
+
+                // $("#modal_select_analysis").modal('show');
+
+      				  // initiate the SVG on the work box for drawing a graph
       					if(data.graphID && !_.isEmpty(data.graphID)){
       						createCookie('graph_id',data.graphID,2);
       					}
-      					var ret_graph = draw(data.nodes,data.edges);
+      					var ret_graph = draw(data.nodes, data.edges);
       					sync_graph_data(ret_graph);
       					restart_simulation(false);
       				/* ------------------------------------------------------------------------------- */
 
       			});
-
-      			function createCookie(name,value,days) {
-      				if (days) {
-      					var date = new Date();
-      					date.setTime(date.getTime()+(days*24*60*60*1000));
-      					var expires = "; expires="+date.toGMTString();
-      				}
-      				else var expires = "";
-      				document.cookie = name+"="+value+expires+"; path=/";
-      			}
 
       			this.listenTo(app.Nodes, 'add', this.addNode);
             // this.listenTo(app.Edges, 'add', this.addEdge);
