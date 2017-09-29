@@ -1,6 +1,7 @@
 <!--
 Build the CISpaces ROOT Service
 J.S.Robinson@soton.ac.uk
+J.Graham@soton.ac.uk
 -->
 <project name="cispaces-root" default="war">
     
@@ -10,54 +11,21 @@ J.S.Robinson@soton.ac.uk
 
     <target name="init">            
         <echo message="Building the ${service.name} Service"/>
-        <echo message="The output of this script is dist/${service.name}.war"/>
-        <mkdir dir="WebContent/WEB-INF/classes"/>
-        <mkdir dir="WebContent/WEB-INF/lib"/>
-        <mkdir dir="dist" />
     </target>
 
-    <target name="compile" depends="init">
-        <javac srcdir="src/" destdir="WebContent/WEB-INF/classes" nowarn="on" debug="on" target="1.8" source="1.8">
-            <classpath>                                                
-                <fileset dir="lib/">
-                    <include name ="**/*.jar"/>
-                </fileset>
-                <fileset dir="WebContent/WEB-INF/classes/">
-                    <include name ="**/*.class"/>
-                </fileset>
-            </classpath>
-        </javac>
-    </target>
-        
-    <target name="war" depends="compile">
-        <!-- Resources. Normally these would be in a resources/ directory, rather than the src/ -->
-        
-        <copy todir="WebContent/WEB-INF/classes">
-                <fileset dir="src/">
-                        <exclude name ="**/*.java"/>
-                </fileset>
-        </copy>
-            
-        <copy todir="WebContent/WEB-INF/lib">                  
-            <fileset dir="lib/">
-                <exclude name="servlet-api.jar"/>
-                <exclude name="jsp-api.jar"/>
-                <exclude name="el-api.jar"/>
-                <include name ="**/*"/>
-            </fileset>
-        </copy> 
-                          
-        <war destfile="dist/${service.name}.war" basedir="WebContent" webxml="WebContent/WEB-INF/web.xml"/>
-    </target>
-
-    <target name="deploy" depends="war">
-    	<copy file="dist/${service.name}.war" todir="${env.CATALINA_HOME}/webapps/" flatten="true"/>
+    <target name="war">
+	    <!-- Nothing to do -->
     </target>
 
     <target name="clean">
-        <delete dir="WebContent/WEB-INF/classes" />
-        <delete dir="WebContent/WEB-INF/lib"/>
-        <delete dir="dist/"/>
+        <!--Nothing to do-->
+    </target>
+
+    <target name="deploy">
+	<mkdir dir="${env.CATALINA_HOME}/webapps/ROOT"/>
+	<copy todir="${env.CATALINA_HOME}/webapps/ROOT">  
+		<fileset dir="WebContent" includes="**"/>  
+	</copy>
     </target>
 
 </project>

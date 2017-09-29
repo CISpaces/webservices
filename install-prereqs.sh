@@ -24,7 +24,7 @@ echo "export JAVA_HOME=/usr/lib/jvm/default-java" >> ~/.profile
 echo 
 
 echo "# - Creating tools directory.."
-mkdir -p mkdir -p $CISPACES/tools/
+mkdir -p $CISPACES/tools/
 echo
 
 echo "# - Install Apache Derby...? (Y/n)" 
