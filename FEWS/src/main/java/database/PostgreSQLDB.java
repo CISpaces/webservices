@@ -6,6 +6,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class handles queries to the PostgreSQL database for FEWS (Fact Extraction Web Service)
+ *
+ * <p/>Queries return ArrayLists of Tweets and Topics.
+ *
+ * @see Tweet
+ * @see Topic
+ */
 public class PostgreSQLDB {
 
     private Connection conn;
@@ -15,6 +23,11 @@ public class PostgreSQLDB {
         log = Logger.getLogger(getClass().getName());
     }
 
+    /**
+     * Connects to the Fact-Extraction PostgreSQL database.
+     *
+     * @return Was connection successful?
+     */
     private boolean connect() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -32,6 +45,35 @@ public class PostgreSQLDB {
         }
     }
 
+    /**
+     * Closes the connection to the Fact-Extraction PostgreSQL database.
+     *
+     * @param rs SQL ResultSet to close
+     * @param s SQL Statement to close
+     * @param c SQL Connection to close
+     */
+    private void finalize(ResultSet rs, Statement s, Connection c) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException exc) { /* Ignored */ }
+            try {
+                s.close();
+            } catch (SQLException exc) { /* Ignored */ }
+            try {
+                c.close();
+            } catch (SQLException exc) { /* Ignored */ }
+        }
+    }
+
+    /**
+     * Get a list of Tweets referring to the specified Topic.
+     *
+     * @param topic Topic to which Tweets should refer
+     * @return ArrayList of Tweets referring to the specified Topic
+     * @see Topic
+     * @see Tweet
+     */
     public List<Tweet> tweetsForTopic(Topic topic) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -92,6 +134,11 @@ public class PostgreSQLDB {
         return tweetList;
     }
 
+    /**
+     * Get the list of all known Topics.
+     *
+     * @return List of all Topics present in database
+     */
     public List<Topic> listTopics() {
         Statement statement = null;
         ResultSet resultSet = null;
@@ -125,19 +172,5 @@ public class PostgreSQLDB {
         }
 
         return topicList;
-    }
-
-    private void finalize(ResultSet rs, Statement s, Connection c) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException exc) { /* Ignored */ }
-            try {
-                s.close();
-            } catch (SQLException exc) { /* Ignored */ }
-            try {
-                c.close();
-            } catch (SQLException exc) { /* Ignored */ }
-        }
     }
 }
