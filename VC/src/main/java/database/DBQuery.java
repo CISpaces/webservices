@@ -271,7 +271,7 @@ public class DBQuery {
         if(rs.isEmpty()){
             //Username doesn't exist, try to add it        
             String userID = UUID.randomUUID().toString();
-            String sql = "INSERT INTO CISPACES_USERS (USER_ID, USERNAME, PASSWORD, AFFILIATION, LOGGED_IN) VALUES( "
+            String sql = "INSERT INTO CISPACES_USERS (USER_ID, USERNAME, PASSWORD, AFFILIATION, IS_ADMIN) VALUES( "
                 + "'" + userID + "',"
                 + "'" + username + "',"
                 + "'" + generatedSecuredPasswordHash + "',"
