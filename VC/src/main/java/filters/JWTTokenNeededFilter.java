@@ -15,27 +15,27 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.logging.Logger;
 
-@Provider
 @JWTTokenNeeded
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class JWTTokenNeededFilter implements ContainerRequestFilter {
-
-
-    @Inject
-    private Logger logger;
-
     
+    private static Logger log;
+    
+    public JWTTokenNeededFilter() {
+        log = Logger.getLogger(getClass().getName());
+    }    
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
         // Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        logger.info("#### authorizationHeader : " + authorizationHeader);
+        log.info("#### authorizationHeader : " + authorizationHeader);
 
         // Check if the HTTP Authorization header is present and formatted correctly
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            logger.severe("#### invalid authorizationHeader : " + authorizationHeader);
+            log.severe("#### invalid authorizationHeader : " + authorizationHeader);
             throw new NotAuthorizedException("Authorization header must be provided");
         }
 
@@ -47,10 +47,10 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
             // Validate the token
             Key key = KeyGenerator.generateKey();
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            logger.info("#### valid token : " + token);
+            log.info("#### valid token : " + token);
 
         } catch (Exception e) {
-            logger.severe("#### invalid token : " + token);
+            log.severe("#### invalid token : " + token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }

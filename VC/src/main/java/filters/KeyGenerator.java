@@ -6,7 +6,8 @@ import java.security.Key;
 
 public class KeyGenerator {
     public static Key generateKey() {
-        String keyString = "simplekey";
+        //FIXME - This needs to be generated randomly at install time.
+        String keyString = "4egte#;!";
         Key key = new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
         return key;
     }

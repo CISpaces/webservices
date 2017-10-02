@@ -84,6 +84,7 @@ public class VCServlet {
      */
     @POST
     @Path("/getAnalysis")
+    //@JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public String getLatestAnalysis(String userID)
     {
