@@ -1,107 +1,7 @@
-# CISpaces Web Service Calls
-
-## VC web service
-
-Handles the version control of the graph analysis.
-
-There is a  ``` HTTP_requests_inputs_outputs.pdf ``` file in docs folder that gives information about different HTTP request made by different web services.
-
-Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
-
-- VC/rest/getInfo
- Shows the message ``` Hello Jersey``` the web service is running successfully.
-
-- VC/rest/history
-  Gets version of the graph from history table
-
-  ``` JSON Response:
-
-  "history":[{"timest":"2017-10-02 06:17:30.0","snapid":"d1b53b9c-d5e6-4b0c-9e72-771864f32c44","graphID":"08852bca-23f1-40a0-b57e-c8a44c2620a8","analysis":"{\"nodes\":[{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\",\"uncert\":\"Confirmed\"},{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"uncert\":\"Confirmed\"}],\"edges\":[],\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\"}","title":"Analysis1","userid":"5a90c91f-1884-4f45-bc2e-49057745293c"},{"timest":"2017-10-02 06:18:59.0","snapid":"6915ce74-30da-4ddb-9c80-578c11aecc06","graphID":"08852bca-23f1-40a0-b57e-c8a44c2620a8","analysis":"{\"nodes\":[{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\",\"uncert\":\"Confirmed\"},{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"uncert\":\"Confirmed\"},{\"input\":\"PRO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:18:26.0\",\"islocked\":\"false\",\"text\":\"PRO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"RA\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\",\"uncert\":\"Confirmed\"}],\"edges\":[{\"edgeID\":\"27041044-cc9d-4242-cdef-5024149dbea2\",\"islocked\":\"false\",\"source\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"formedgeid\":\"null\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"target\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\"},{\"edgeID\":\"00b9f86a-1f28-433b-e1f0-ad19c4492f5d\",\"islocked\":\"false\",\"source\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\",\"formedgeid\":\"null\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"target\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\"}],\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\"}","title":"Analysis2","userid":"5a90c91f-1884-4f45-bc2e-49057745293c"}]}
-  
-
-- VC/rest/getAnalysis
- Gets the last analysis user worked on and loads the analysis to workbox
-
- ``` 
- JSON response:
- {"nodes":[{"input":"PREF","eval":"N\/A","dtg":"2017-09-26 13:49:28.0","islocked":"false","text":"PREF","source":"user","cmt":"N\/A","type":"P","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"db66b909-b866-4479-ca8c-db575c043405","uncert":"Confirmed"},{"input":"INFO","eval":"N\/A","dtg":"2017-09-26 13:49:11.0","islocked":"false","text":"INFO","source":"user","cmt":"N\/A","type":"I","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"f4f7285b-fabe-42a2-9238-4703e1072d27","uncert":"Confirmed"},{"input":"PRO","eval":"N\/A","dtg":"2017-09-26 13:49:12.0","islocked":"false","text":"PRO","source":"user","cmt":"N\/A","type":"RA","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","uncert":"Confirmed"}],"edges":[{"edgeID":"3af37733-4034-401f-930d-0544e93e4956","islocked":"false","source":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"db66b909-b866-4479-ca8c-db575c043405"},{"edgeID":"7f8c8fac-c9e4-4bb7-935b-b31233f10a3c","islocked":"false","source":"f4f7285b-fabe-42a2-9238-4703e1072d27","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe"}]} 
- 
- ```
-
-- VC/rest/login
-- 
- Handles the login request. Checks username and password
-
-- VC/rest/new
-- 
-  Makes a new graph request
-
-- VC/rest/save
-- 
- Saves the current graph on workbox
-
-- VC/rest/edge/{edgeid}:
-
-  POST request adds edge.
- 
-  DELETE request deletes edge.
-
-
-- VC/rest/node/{nodeid}
- 
-  POST request adds node.
-
-  DELETE request deletes node.
-
-- VC/rest/updateAnalysis
-
- Update the analysis after a history is imported and saved as the current version.
-
-
-## ERS web Service
-
-This web services uses the NLG to do the entity reasoning.
-
-There is a ``` ersdoc.txt``` in the ers folder that gives details of JSON request and response made.
-
-Source file: ``` ers/src/ers/ERSServlet.java```
-
-- ers/rest/WriteRules
-
- This web service performs entity reasoning to the graph and returns the claims made by the reasoner.
- 
- If there is an error in the graph structure, it returns an error response.
-
-
-## PROVSIMP Web Service
-
-This web service keeps the provenance data for the analysis.
-
-This webservice is not called by VC web service, so it is not clear how the request and response are being made by it.
-
-There is a ``` provsimpdoc.txt``` in the PROVSIMP folder that gives details of JSON request and response made.
-
-Source file: ``` PROVSIMP/src/provsimp/ProvSimpServlet.java ```
-
-- provsimp/rest/ProcProv
-
-This web service saves the graph and all the proveneance data as RDF in the database.
-
-
-## Info Web Service
-
-Info web service used to handle the log in feature. Now, this is done by the VC web service.
-
-There is a ``` infodoc.txt``` in the info folder that gives details of JSON request and response made.
-
-- info/rest/PostInfo
-
-Source file: ``` info/src/info/INFInputServlet.java```
-
-This used to creates the graph and tracks provenance of the graph.
-
-- info/rest/GetInfo
-
-Source file: ``` info/src/info/INFOServlet.java```
-
-A request is made with username, password and affiliation. True or false response is made if it is successful or not.
+„©iÇ¬YæÒz»âqàš–[›±êï‰Ç‡jwezËaz÷«²*'r‰í®‰h~Ø^‚¶©…©Ú—+"±8^­è¬htÓ>·ª¹ë-²)éºÛ(ºÚn¶Ê]}ø¥z)Ý¡Ë¢W^®ØZ¶¯zÈ§~ŠæjØ¨¦èº×b}÷«z{GM3ëz«ž²Ùšuæòv'ßz·§·›±êï‰Ç¬J‹«qçâ•åBþÊÜþf¢ŸøÚ½¯ïrÇ«¾W­ýP’z»åzØÚ½¥Bþ·¬·ø´‰ß¡(hÂËazg¬±¨ée —«±ì­…ìnÇ«¾'ŠÊîžx§‚Ëœqë,~éeÉP¿­ë-þ¬¶Šòël½êìŠ‰è~Ø^‚¶©…úèš¬¶Šòµ¦åx”Ž5¬¦‰ìz¬¶Šò¶)ž²Ý´×½tÓm:×½ôÒÉÚ¦']Õ¾wo×åî¸oG={½»ï_:áýösŽ ­ªa =<ó›q­·^4kFùíç<kŽÛ­´kÆ§j\¬ŠÉèuë"ž›­ ÑNzö¥7ð¶´×½tÓmx×½»Ò+%¡Éuö¥±ë^ÆÒë(º·ºÇ«rkMür¥âžz-7ð ­ªa =<ó›q­·^4kFùíç<kŽÛ­´kÉèuâëžÛoÎ]ç×öãN½w^·mÝ;mýžo¦Þºw®Ð¨ø«™çbž›­ ÑNzö¥7ð¶´×½tÓmx×½»Ò+%¡Éuö¥±ë^ÆÒë(º·ºÇ«rkMür¥âžz-7ð ­ªa =<ó›q­·^4kFùíç<kŽÛ­´kÉèuâëGô×¦úéÝ›á¯9óãwïNºuîôºw®Ð¨ø«™ç^v¬‚¶©„€ôóÎvmÆ¶ÝýxÑ­ç·œñ®8sn¶Ñ¯-ŠÙ^v¥ÊÈ¬Öë®'ykÝ÷WõóÎ8Ž[sg¸÷N{ïŽv÷w-Šg¬·m5ï]4ÛNµóŸt²v©‰Þ½×—ïôu®u¿\óN{ñÍuiçÓ¨+j˜HO<çfÜkmß×Ñ¾{yÏã‡6ëmñ©Ú—+"²zzÈ§¦ëH4Sž½©Mümƒm5ï]4Û^5ïnôŠÉhrG}©lz×±´ƒE:Ê.­Ç®±êÜšÓÜ©x†§ž‹Mü+j˜HO<çfÜkmß×Ñ¾{yÏã‡6ëmòzx€úç¶Ûó—yõý¸Ó¯]×­ÛwNÛg›é·®Ç«´*'~*æyØ§¦ëH4Sž½©Mümƒm5ï]4Û^5ïnôŠÉhrG}©lz×±´ƒE:Ê.­Ç®±êÜšÓÜ©x†§ž‹Mü+j˜HO<çfÜkmß×Ñ¾{yÏã‡6ëmòzx€úÑý5é¾ºwføkÎ|ãÆ¸ÝÇ{Ó®{½.Ç«´*'~*æyØ§¦ëODç¯jSÛ`ÛM{×M6×|Û­"²Z‘ç_j[µìm=¬¢êÜzë­É­7ð-Ê—‘©ç¢Ó
+Ú¦ÓÏ9Ù·ÛwõãF´ožÞsÆ¸áÍºÛF¼ž‡^ 6ºõ¿:ãŸ;}¾m·=qÇ·y×œíÎ¼w›§qêí
+‰ßŠ¹žuç`zÇâÛ½8×N8qÏ]ãn6q×ŸçM¸×]mæ¶ŠÉhrG}©lzÊ.­ÇºÑý5é¾ºwføkÎ|ãÆ¸ÝÇ{Ó®{½¢¹žv¢v{¥–
+Ú¦ÓÏ9Ù·ÛwõãF´ožÞsÆ¸áÍºÛF¼µªàzÖºõ¿:ãŸ;}¾m·=qÇ·y×œíÎ¼w—âÓFýÎšÕý¼ã}Û{WôiÝ}sŽ=Ùþ]ŠÉhrG}©lzÊ.­ÇšëÖüëŽ|íöøy¶ÜõÇÝç^s·:ñÞ_¢¹žv¢v{¥–
+Ú¦ÓÏ9Ù·ÛwõãF´ožÞsÆ¸áÍºÛF¼µªàzÞ¹í¶üåÞ}n4ë×uëvÝÓ¶ßÙæúmè+j˜HO<çfÜkmß×Ñ¾{yÏã‡6ëmòØ­•à'j\¬ŠÍ®±êâw–½ÑÏu_<ã‡øå·6{tç¾øçowqP¿­ë-þ­v¥ÊÈ¬ël¶¥jËZ©r²+.±êð¢¹v‰ÚÙhiÛ-…æ§j\¬ŠËhÂŠänŒIHãkzÊhžÇ§¡×¬Šzn´ôDëÚ”ßÀvØ6Ó^ô÷nµßvóH¬–‡$y×Ú–Ç­{ODAl¢êÜzë­É­7ð-Ê—jyè´ßÀ‚¶©„€Ý{×ùí½÷×ÍøÝçß‡5Ñæ÷ß^|ÓÍg¡×ˆÖúé¿tõ¿:ëŽ;õÆ¼qÖùï—4ã~4æéÜz»B¢wâ®gŠzn´ƒE9ëÚ”ßÀvØ6Ó^ô÷nµßu×H¬–‡$y×Ú–Ç­{H4S¬¢êÜzë­É­7ð-Ê—ˆjyè´ßÀ‚¶©„€Ý{×ùí½÷×ÍøÝçß‡5Ñæ÷ß^|ÓÍg¡×ˆþïo9mö›{šÛÝ·óŽôÝítïgvîéÜz»B¢wâ®gŠzn´ôNzö¥7ð¶´×½=Û­wãÝvÒ+%¡Éuö¥±ë^ÆÓÑ:Ê.­Ç®±êÜšÓÜ©yžz-7ð ­ªa 7^õþ{o}õó~7yÆ·áÍty½÷×Ÿ4óYèuâßÖ´ñ§vñ×{ãÞ4sN»ã–¸ußíçÞºw®Ð¨ø«™ç^v¬yØ =Ú~ûß~4ßŽ4ÕÿwÑÝ9ã‡½Ýî=ç¨¬–‡$y×Ú–Ç¬¢êÜ{ZÓÆÛÇ]ïxÑÍ:ïŽZá×|·Ÿyú+™ç`z'gºY`­ªa 7^õþ{o}õó~7yÆ·áÍty½÷×Ÿ4ó[Z®­u¾ºoÝ=oÎºãŽýq¯u¾{åÍ8ß9yØ >ßñÏiÇ={Žo¿wå¶÷×m÷]ÝÈ¬–‡$y×Ú–Ç¬¢êÜyþïo9mö›{šÛÝ·óŽôÝítïgvíú+™ç`z'gºY`­ªa 7^õþ{o}õó~7yÆ·áÍty½÷×Ÿ4ó[Z®­ßÖ´ñ§vñ×{ãÞ4sN»ã–¸ußíçÞT/ëzË–ˆ"œv§vW¬¶¥¢§­ê®zËB…ç$²ë®v¦y©Ý¥«,ÂŠÝT/ëzËìjG¬jw°‚¶©†·ª¹ë-T/ëzË±«ÞI«Þ²Ø^rêëz{`­ªa¢|(®FèÅP¿­ë-ýç`{÷è<ä“­ê®zËZuÛvƒ±·ª¹ë-ué^µëv•úÞ²ßç¡×¿ž‡^‰ÓÎI:Þªç¬µ§]²zx11+z«ž²×^•ë^²zyP¿­ë-þê]j×€©r²+¥Ö­zØ^jv¥ÊÈ¬iû^­¨b²Ú+Ê+"šš+µçZÛ½çZ²Ø^rêëz{oz»"¢qK›Iêï‰Ç“†+0y»®øœzË¬zËaxÒÆ¶‡h¶žžØ­Ê·š²‰âžáz·¢±§«±Ú·bžØ^z»¢W^®ØZ¶¯zÇ^µ¨¥²‡ÉHãkz«ž²Ö§v·¬¦‰ìzfy*.­ÇŸŠWž®Ïì­ÏÞ®ÏÄE$ž®ù^¶6¯iêìþ·¬·õ«Š×‘ºW¬N¬Áæìz»âqê^­ú+šÇ§¶+r­æ¬¢x§‚Ú-…è+j˜ZÚÞ¶êç²Ø^rV¢šÉšuæò¶«y«(êÈ~Ø^­è¬jw«®ŠâžØ^‚¶©†Ëk¹Ën­è­­ën®{êë¢ºÞ²š'±ãÑ9Tˆ0õžm'«¾'N¬Áæìz»âqéz›-…êk¢÷§jwu«Z~Ší…æ§j\¬ŠÄáŠÌnÇ«¾'ŠÉèµÆ¥•ç[ÉP°y»®øœzÊ"¶+'¢×%yªá£az·ª¹ë-jwkzÊhžÇš­æÞŠx&i×›Ê+S…êÞŠÆ©®‹ìŠj]¡Ëq¶)í…ãÑ9Tˆ0÷è•×«¶­‚+Þ±×­j)l¡òR8ÚÞªç¬µ©Ý­ë)¢{™§^J‹«qçâ•ãÑ9Tˆ0ÿì­Ïé®‹ìŠj>º/J)©Iêï•ëcjö©®‹ìŠj­ë-üúèpúè½8b³›±êï‰Ç¬j÷¬¶ ­ªajwZ–[azšè½éÞjwu«ZjÄC)í…çZµ¦Ú±â'~…žm'«¾'"wèÁæìz»âqë¬yÛh…©Ý•ëazZ ŠwÞjÛ«xÚ0¶¬ŠÇhæò¶•›±êï‰Ç“…êÞŠÆ¢ú¡Ëq¶)í…è§~‡è•×«¶­‚+Þ±×­j)l¡òR8ÚÞªç¬µ©Ý­ë)¢{™§^Šwèþ·¬·óè²Ò'~„¨º·~)^ŠwèþÊÜþ)ß£ò‰éºÔž®ù^¶6¯i8b²ëvÚ­æ­zËaz
+Ú¦§vÚÚrK)®‹Þ©Üz‡í…è+j˜bú?­ë-üg­"wèJ‹«qçâ•è§~ì­Ïâú? ÑNIêï•ëcjö€­ê®zËb²f{­†ë®v¦z–¬³
++u©Ýi÷â–&­Š‰Ó®ç¨­ö¥±êÞ²š'±è¬™§^‰ø­ŠË.qÇ¬±û¥¢¹è
