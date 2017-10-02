@@ -29,26 +29,32 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
  ```
 
 - VC/rest/login
+- 
  Handles the login request. Checks username and password
 
 - VC/rest/new
+- 
   Makes a new graph request
 
 - VC/rest/save
+- 
  Saves the current graph on workbox
 
 - VC/rest/edge/{edgeid}:
 
- POST request adds edge. 
- DELETE request deletes edge.
+  POST request adds edge.
+ 
+  DELETE request deletes edge.
 
 
 - VC/rest/node/{nodeid}
  
- POST request adds node. 
- DELETE request deletes node.
+  POST request adds node.
+
+  DELETE request deletes node.
 
 - VC/rest/updateAnalysis
+
  Update the analysis after a history is imported and saved as the current version.
 
 
@@ -63,6 +69,7 @@ Source file: ``` ers/src/ers/ERSServlet.java```
 - ers/rest/WriteRules
 
  This web service performs entity reasoning to the graph and returns the claims made by the reasoner.
+ 
  If there is an error in the graph structure, it returns an error response.
 
 
