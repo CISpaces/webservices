@@ -4,12 +4,14 @@ function getLatestAnalysis(callback){
 		type: 'POST',
 		url: 'VC/rest/getAnalysis',
 		contentType: 'text/plain',
+        //Supply the JWT auth token
+        headers: {"Authorization": localStorage.getItem('auth_token')}, 
 		data: userID,
 		success: function(result){
 					callback(result);
 				},
 		error: function(result){
-					alert('Error in the ajax request.');
+					alert('An error occurred fetching data.');
 					//callback(result);
 				}
 		});	
