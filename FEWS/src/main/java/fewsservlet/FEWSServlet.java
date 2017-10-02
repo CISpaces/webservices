@@ -3,21 +3,32 @@ package fewsservlet;
 import database.Topic;
 import database.PostgreSQLDB;
 import database.Tweet;
+import messagebus.MessageBus;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Path("/")
 public class FEWSServlet {
 
     private PostgreSQLDB postgreSQLDB;
+    private MessageBus messageBus;
+
+    private static Logger log;
 
     public FEWSServlet() {
+        log = Logger.getLogger(getClass().getName());
+
         postgreSQLDB = new PostgreSQLDB();
+        try {
+            messageBus = new MessageBus();
+        } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) {
+            log.log(Level.SEVERE, "Failed to open RabbitMQ message bus", exc);
+            exc.printStackTrace();
+        }
     }
 
     /**
@@ -66,5 +77,23 @@ public class FEWSServlet {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Topic> listTopics() {
         return postgreSQLDB.listTopics();
+    }
+
+
+    /**
+     * Add a new Topic to Fact-Extraction's index.
+     *
+     * @param message Topic to add to index
+     * @return
+     */
+    @POST
+    @Path("/control/{message}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String sendMessage(@PathParam("message") String message) {
+        if (messageBus.sendMessage(message)) {
+            return "OK";
+        } else {
+            return "NOK";
+        }
     }
 }

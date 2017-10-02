@@ -13,9 +13,9 @@ echo "# - Updating environment..."
 echo "export CISPACES=${PWD}/cispaces" >> ~/.profile
 source ~/.profile
 
-echo "# - Install prerequisite OS packages [default-jdk, ant, zip, screen]...? (Y/n)" 
+echo "# - Install prerequisite OS packages [default-jdk, ant, zip, screen, rabbitmq-server]...? (Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
-sudo apt-get install --yes default-jdk ant unzip screen
+sudo apt-get install --yes default-jdk ant unzip screen rabbitmq-server
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
