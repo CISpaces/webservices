@@ -16,9 +16,17 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
   Gets version of the graph from history table
 
+  @param graphID a graph id
+
+  @return all saved variations of an analysis which can be imported into the work box
+
 - VC/rest/getAnalysis
 
  Gets the last analysis user worked on and loads the analysis to workbox
+
+ @param userID a user id coming from the client
+
+ @return either a json representing the latest analysis this user has worked on, or a new graph id for starting a new analysis
 
  ``` JSON response:
  {"nodes":[{"input":"PREF","eval":"N\/A","dtg":"2017-09-26 13:49:28.0","islocked":"false","text":"PREF","source":"user","cmt":"N\/A","type":"P","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"db66b909-b866-4479-ca8c-db575c043405","uncert":"Confirmed"},{"input":"INFO","eval":"N\/A","dtg":"2017-09-26 13:49:11.0","islocked":"false","text":"INFO","source":"user","cmt":"N\/A","type":"I","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"f4f7285b-fabe-42a2-9238-4703e1072d27","uncert":"Confirmed"},{"input":"PRO","eval":"N\/A","dtg":"2017-09-26 13:49:12.0","islocked":"false","text":"PRO","source":"user","cmt":"N\/A","type":"RA","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","uncert":"Confirmed"}],"edges":[{"edgeID":"3af37733-4034-401f-930d-0544e93e4956","islocked":"false","source":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"db66b909-b866-4479-ca8c-db575c043405"},{"edgeID":"7f8c8fac-c9e4-4bb7-935b-b31233f10a3c","islocked":"false","source":"f4f7285b-fabe-42a2-9238-4703e1072d27","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe"}]} ```
@@ -27,13 +35,33 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
  Handles the login request. Checks username and password
 
+@param userData JSON String of form {"username":"Test user","password":"password"}
+
+@return a response indicating whether the user has been validated
+
+- VC/rest/user/add
+
+Add a user with the supplied properties
+
+@param userData JSON String of form {"username":"Test user","password":"password","affiliation":"None"}
+
+
 - VC/rest/new
 
   Makes a new graph request
 
+  @param graph a json containing the basic information for a new graph
+  
+  @return a response indicating whether the graph has been inserted into the database
+
 - VC/rest/save
 
  Saves the current graph on workbox
+
+ @param graphInfo a json containing the graph id, the creator of the analysis' id and the title of the analysis
+ 
+ @return a response indicating whether the analysis has been saved
+
 
 - VC/rest/edge/{edgeid}:
 
@@ -41,11 +69,19 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
  ``` DELETE ``` request deletes edge.
 
+ @param edge the JSON for an edge coming from the front-end upon the creation of a new edge
+ 
+ @return a response indicating whether the JSON has been processed and the relevant bits put into the database
+
 - VC/rest/node/{nodeid}
 
  ``` POST``` request adds node.
  
  ``` DELETE``` request deletes node.
+
+ @param json the JSON for a node coming from the front-end upon the creation of a new node
+ 
+ @return a response indicating whether the JSON has been processed and the relevant bits put into the database
 
 
 - VC/rest/updateAnalysis
