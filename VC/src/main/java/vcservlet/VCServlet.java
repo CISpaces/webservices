@@ -2,19 +2,35 @@
  * This class contains the methods that handle the HTTP requests coming from the front-end.
  *
  * @author Yordanka Ivanova
+ * @author j.s.robinson@software.ac.uk
  * @since July 2017
  */
 
 package vcservlet;
 
 import database.DBQuery;
-import vcontrol.VControl;
-
-import javax.print.attribute.standard.Media;
+import filters.JWTTokenNeeded;
+import filters.KeyGenerator;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.logging.Logger;
+import filters.KeyGenerator;
+
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 
 /**
@@ -23,6 +39,12 @@ import java.util.logging.Logger;
 @Path("/")
 public class VCServlet {
 
+    @Context
+    private UriInfo uriInfo;
+
+    @PersistenceContext
+    private EntityManager em;
+    
     //a logger which prints to stdout
     private static Logger log;
 
@@ -62,6 +84,7 @@ public class VCServlet {
      */
     @POST
     @Path("/getAnalysis")
+    //@JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public String getLatestAnalysis(String userID)
     {
@@ -75,22 +98,80 @@ public class VCServlet {
 
 
     /**
-     * @param userData a json containing the user login details
+     * Authenticate the user
+     * @param userData JSON String of form {"username":"Test user","password":"password"}
      * @return a response indicating whether the user has been validated
      * URL: http://localhost:8080/VC/rest/user
      */
     @POST
-    @Path("/user")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String checkUser(String userData){
+    public Response checkUser(String userData){
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Login Request ***");
         log.log(Level.INFO, "Login payload " + userData);
         VCForkControl vcForkControl = new VCForkControl();
-        String response = vcForkControl.evalJSONUser(userData);
-
-        return response;
+        String userInfo = vcForkControl.evalJSONLoginUser(userData);
+        if(userInfo != null) {
+            
+            // Authenticated successfully - Issue a token for the user
+            String token = issueToken(userInfo);
+ 
+            // Return the token on the response
+            return Response.ok()
+                .header(AUTHORIZATION, "Bearer " + token)
+                .entity(userInfo)
+                .build();
+            //return Response.status(Response.Status.OK).entity(userInfo).build();
+        }    
+        else
+            return Response.status(Response.Status.FORBIDDEN).build();
     }
+    
+    private String issueToken(String login) {
+    Key key = KeyGenerator.generateKey();
+    String jwtToken = Jwts.builder()
+            .setSubject(login)
+            .setIssuer(uriInfo.getAbsolutePath().toString())
+            .setIssuedAt(new Date())
+            .setExpiration(toDate(LocalDateTime.now().plusMinutes(15L)))
+            .signWith(SignatureAlgorithm.HS512, key)
+            .compact();
+    log.info("#### generating token for a key : " + jwtToken + " - " + key);
+    return jwtToken;
+
+    }
+    
+    private Date toDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+    
+    /**
+     * Add a user with the supplied properties
+     * @param userData JSON String of form {"username":"Test user","password":"password","affiliation":"None"}
+     * @return 
+     */
+    @JWTTokenNeeded
+    @POST
+    @Path("/user/add")
+    public Response addUser(String userData){
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - Add user Request ***");
+        log.log(Level.INFO, "Payload " + userData);
+        VCForkControl vcForkControl = new VCForkControl();
+        String userInfo = null;
+        try {
+                userInfo = vcForkControl.evalJSONAddUser(userData);
+        }
+        catch(IllegalArgumentException e) {
+            //Username already exists
+            return Response.status(Response.Status.CONFLICT).build();        
+        }
+        if(userInfo != null)
+            return Response.status(Response.Status.CREATED).entity(userInfo).build();
+        else
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    }//AddUser
+    
 
     /**
      * @param graph a json containing the basic information for a new graph
