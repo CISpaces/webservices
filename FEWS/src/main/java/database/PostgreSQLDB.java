@@ -31,9 +31,9 @@ public class PostgreSQLDB {
     private boolean connect() {
         try {
             Class.forName("org.postgresql.Driver");
-//            TODO put these in a config file - and use localhost
+//            TODO put these in a config file
             conn = DriverManager.getConnection(
-                    "jdbc:postgresql://192.168.124.122:5432/factextract",
+                    "jdbc:postgresql://rsg-xen-vm04.ecs.soton.ac.uk:5432/factextract",
                     "factextract",
                     "passw0rd"
             );
