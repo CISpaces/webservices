@@ -16,7 +16,11 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
   Gets version of the graph from history table
 
+  ``` JSON Response:
+
+  "history":[{"timest":"2017-10-02 06:17:30.0","snapid":"d1b53b9c-d5e6-4b0c-9e72-771864f32c44","graphID":"08852bca-23f1-40a0-b57e-c8a44c2620a8","analysis":"{\"nodes\":[{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\",\"uncert\":\"Confirmed\"},{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"uncert\":\"Confirmed\"}],\"edges\":[],\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\"}","title":"Analysis1","userid":"5a90c91f-1884-4f45-bc2e-49057745293c"},{"timest":"2017-10-02 06:18:59.0","snapid":"6915ce74-30da-4ddb-9c80-578c11aecc06","graphID":"08852bca-23f1-40a0-b57e-c8a44c2620a8","analysis":"{\"nodes\":[{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\",\"uncert\":\"Confirmed\"},{\"input\":\"INFO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:17:27.0\",\"islocked\":\"false\",\"text\":\"INFO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"I\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"uncert\":\"Confirmed\"},{\"input\":\"PRO\",\"eval\":\"N\/A\",\"dtg\":\"2017-10-02 14:18:26.0\",\"islocked\":\"false\",\"text\":\"PRO\",\"source\":\"user\",\"cmt\":\"N\/A\",\"type\":\"RA\",\"annot\":\"N\/A\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"nodeID\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\",\"uncert\":\"Confirmed\"}],\"edges\":[{\"edgeID\":\"27041044-cc9d-4242-cdef-5024149dbea2\",\"islocked\":\"false\",\"source\":\"60f016b6-6d2b-4a85-848a-43cd7066de70\",\"formedgeid\":\"null\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"target\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\"},{\"edgeID\":\"00b9f86a-1f28-433b-e1f0-ad19c4492f5d\",\"islocked\":\"false\",\"source\":\"a69b8645-87fb-4ebb-c9cc-e3edec7c68d5\",\"formedgeid\":\"null\",\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\",\"target\":\"657bb85d-59f2-4069-d163-bd07bf2eb6be\"}],\"graphID\":\"08852bca-23f1-40a0-b57e-c8a44c2620a8\"}","title":"Analysis2","userid":"5a90c91f-1884-4f45-bc2e-49057745293c"}]}
   
+  ```
 
 - VC/rest/getAnalysis
 
@@ -45,7 +49,8 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
 - VC/rest/node/{nodeid}
 
- ``` POST``` request adds node. 
+ ``` POST``` request adds node.
+ 
  ``` DELETE``` request deletes node.
 
 
