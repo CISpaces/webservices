@@ -1,31 +1,85 @@
 @CHARSET "UTF-8";
 
 /**
+	styles for login.html
+*/
+.input_text, .input_passwd {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.btn_login {
+  background-color: #2984c3;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 20%;
+	float: right;
+}
+
+.btn_login:hover {
+  opacity: 0.8;
+}
+
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 25%;
+}
+
+.container {
+	padding: 10px;
+	width: 60%;
+	margin: auto;
+	display: block;
+}
+
+/**
+	styles for infoBox
+*/
+hr {
+	height: 1px;
+	background-color: #aaa;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 90%
+}
+
+.alert-infobox {
+	margin-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/**
 	styles for nodes
 */
 .info-node {
 	fill: #5bc0de;
-	/* fill: #31c292; */
 }
 
 .claim-node {
-	fill: #d9534f;
-	/* fill: #bf29d9; */
+	fill: #b366ff;
 }
 
 .pref-node {
 	fill: #f0ad4e;
-	/* fill: #f54ce9; */
 }
 
 .con-node {
-	fill: #337ab7;
-	/* fill: #ff0000; */
+	fill: #d9534f;
 }
 
 .pro-node {
 	fill: #5cb85c;
-	/* fill: #67c600; */
 }
 
 .node-highlight {
@@ -46,18 +100,15 @@
 
 .pref-edge {
 	stroke: #d58512;
-	/* stroke: #f54ce9; */
 }
 
 .con-edge {
 	stroke: #204d74;
-	/* stroke: #ff0000; */
 	stroke-dasharray: 5, 5;
 }
 
 .pro-edge {
 	stroke: #398439;
-	/* stroke: #67c600; */
 	stroke-dasharray: 8, 2;
 }
 
@@ -77,7 +128,7 @@
 }
 
 /**
-	styles for eval box
+	styles for evalBox
 */
 .evalbox-text {
 	color: #555;

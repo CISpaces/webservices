@@ -2,15 +2,15 @@ var app = app || {};
 
 app.NodeView = Backbone.View.extend({
 
-  className: 'modal fade',
-
+  tagName: 'form',
   template: _.template($('#node-template').html()),
 
   events: {
-    'click .modal-footer button': 'close'
+    'click .btn-outline': 'update'
   },
 
   initialize: function() {
+    this.listenTo(this.collection, 'add', this.create);
     this.listenTo(this.model, 'destroy', this.remove);
   },
 
@@ -18,12 +18,14 @@ app.NodeView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     this.$el.attr("id", "node_" + this.model.attributes['nodeID']);
-    this.$el.attr("role", "dialog");
+    this.$el.attr("role", "form");
+    this.$el.attr("style", "display: none");
 
     return this;
   },
 
-  close: function() {
+  update: function() {
+
     var nodeID = "node_" + this.model.get('nodeID');
 
     var origin_text = this.model.get('text');
@@ -33,13 +35,13 @@ app.NodeView = Backbone.View.extend({
       this.model.save({
         'text': updated_text
       });
-	  
-	  $("#draw_" + this.model.get('nodeID') + ' text').html(parseText(updated_text));
-	  $("#draw_" + this.model.get('nodeID') + ' rect title').text(updated_text);
+
+  	  $("#draw_" + this.model.get('nodeID') + ' text').html(parseText(updated_text));
+  	  $("#draw_" + this.model.get('nodeID') + ' rect title').text(updated_text);
     }
 
-    this.$el.hide();
-	
-	return this.model;
+    // this.$el.hide();
+
+	  return this.model;
   }
 });

@@ -9,52 +9,52 @@ var app = app || {};
 app.WorkBoxView = Backbone.View
     .extend({
         el: '#d3-area-chart',
-		
+
         events: {
-            'click .node': 'editForm',
+            'click .node': 'viewDetails',
             'contextmenu .node': 'onRightClick'
         },
 
         initialize: function() {
-			/* -------------------- initialisation for drawing a graph -------------------- */
-			// set the size of the SVG element using the size of a window
-			var ret_chart = init_chart_data();			
-			sync_chart_data(ret_chart);
+      			/* -------------------- initialisation for drawing a graph -------------------- */
+            var area_id = this.el.id;
 
-			// set the zoom functionality
-			zoom = set_zoom();
-			
-			// set up simulations for force-directed graphs
-			var ret_simulation = set_simulation(15);
-			sync_node_style_data(ret_simulation);
-			sync_simulation_data(ret_simulation);
+      			// set the size of the SVG element using the size of a window
+      			var ret_chart = init_chart_data(area_id, 700);
+      			push_chart_data(area_id, ret_chart);
 
-			getLatestAnalysis(function(data){
-				// initiate the SVG on the work box for drawing a graph	
-					if(data.graphID && !_.isEmpty(data.graphID)){
-						createCookie('graph_id',data.graphID,2);
-					}
-					var ret_graph = draw(data.nodes,data.edges);
-					sync_graph_data(ret_graph);	
-					restart_simulation(false);					
-				/* ------------------------------------------------------------------------------- */
-	
-			});
-			
-			function createCookie(name,value,days) {
-				if (days) {
-					var date = new Date();
-					date.setTime(date.getTime()+(days*24*60*60*1000));
-					var expires = "; expires="+date.toGMTString();
-				}
-				else var expires = "";
-				document.cookie = name+"="+value+expires+"; path=/";
-			}
-	
-			this.listenTo(app.Nodes, 'add', this.addNode);
+      			// set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      			var zoom = set_zoom(chart.svg);
+            chart.zoom = zoom;
+
+      			// set up simulations for force-directed graphs
+      			var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      			push_node_style_data(ret_simulation);
+
+            // the simulation used when drawing a force-directed graph
+            chart.simulation = ret_simulation.simulation;
+
+      			getLatestAnalysis(function(data){
+
+                // $("#modal_select_analysis").modal('show');
+
+      				  // initiate the SVG on the work box for drawing a graph
+      					if(data.graphID && !_.isEmpty(data.graphID)){
+      						createCookie('graph_id', data.graphID, 2);
+      					}
+
+      					var ret_graph = draw(data.nodes, data.edges, chart);
+      					push_graph_data(ret_graph);
+
+      					chart.simulation = restart_simulation(false);
+      				/* ------------------------------------------------------------------------------- */
+
+      			});
+
+      			this.listenTo(app.Nodes, 'add', this.addNode);
             // this.listenTo(app.Edges, 'add', this.addEdge);
         },
-		
+
         onRightClick: function(obj) {
 
             // return native menu if pressing control
@@ -97,7 +97,7 @@ app.WorkBoxView = Backbone.View
 								// re-start force-directed graph
 								simulation = restart_simulation(true);
 
-                            } else if (opt.currentTarget.id == "link-from") {								
+                            } else if (opt.currentTarget.id == "link-from") {
 								app.workBoxView.changeLinkFrom(target);
                             } else if (opt.currentTarget.id == "link-to") {
                                 var attr = null;
@@ -108,20 +108,20 @@ app.WorkBoxView = Backbone.View
                                 } else {
 									// create a new model of edge
 									attr = app.workBoxView.createEdge(link_from, target);
-									
-									if (attr) {									
+
+									if (attr) {
 										// draw the node
-										graph_data.edge = addNewEdge(attr);	
+										chart.edge = addNewEdge(attr);
 
 										// re-start graph
 										simulation = restart_simulation(true);
-										
+
 										app.workBoxView.changeLinkFrom(target);
 									} else {
 										// if the edge connects between i-nodes(Info, Claim), shows an error message
 										alertMessage(obj, "This connection looks not correct. You should choose at least one between Pref, Con or Pro.");
 									}
-                                }                                
+                                }
                             }
 
                             menu.hide();
@@ -129,51 +129,46 @@ app.WorkBoxView = Backbone.View
 
             return false;
         },
-		
-		changeLinkFrom: function(target){			
+
+		changeLinkFrom: function(target){
 			if(!link_from){
 				// save id in the flag of first point
 				link_from = target;
-				
+
 				// changes style for designating the first point of linking
 				$("#draw_" + link_from + " rect").toggleClass("node-highlight");
-			} else {				
+			} else {
 				// changes styles and initialize the flag of the first point
 				$("#draw_" + link_from + " rect").toggleClass("node-highlight");
-				
+
 				link_from = null;
 			}
-			
+
 			$("#link-from").toggleClass("disabled");
 			$("#link-to").toggleClass("disabled");
-			
+
 			return link_from;
 		},
 
-        editForm: function(obj) {
-            var id = obj.currentTarget.id;
-            id = id.substr(5);
+    viewDetails: function(obj) {
+        var id = obj.currentTarget.id;
+        id = id.substr(5);
 
-			// popup the window for editing a node
-            $("#node_" + id).modal('show');
-			
+	      // view details of node via details box
+        var form_list = $("form");
+        for(var i = 0 ; i < form_list.length ; i++){
+          if(form_list[i].id.substr(5) == id){
+            $("#" + form_list[i].id).show();
+          } else {
+            $("#" + form_list[i].id).hide();
+          }
+        }
+
 			return id;
-        },
+    },
 
 		createNode: function(id) {
-			
-			  function readCookie(name) {
-				var nameEQ = name + "=";
-				var ca = document.cookie.split(';');
-				for(var i=0;i < ca.length;i++) {
-					var c = ca[i];
-				while (c.charAt(0)==' ') c = c.substring(1,c.length);
-				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-				}
-	
-				return null;
-			}
-			
+
 			// generates the type of a new node
 			var input = id.toUpperCase();
 
@@ -186,7 +181,7 @@ app.WorkBoxView = Backbone.View
 			  type = "CA";
 			}
 
-			// generates created time using format string type 
+			// generates created time using format string type
 			var now = new Date();
 
 			var year = now.getFullYear();
@@ -214,15 +209,15 @@ app.WorkBoxView = Backbone.View
 			  nodeID: nodeID,
 			  graphID: graphID
 			};
-			
-			// creates model of the node in the collection and sends POST request to a back-end service
-			app.Nodes.create(attr, {type: 'POST'});
-			
+
+      // creates model of the node in the collection and sends POST request to a back-end service
+      app.Nodes.create(attr, {type: 'POST'});
+
 			return attr;
 		},
 
 		createNodeModelFromData: function(data) {
-			
+
 			var attr = {
 				id: data['nodeID'],
 				source: data['source'],
@@ -238,9 +233,9 @@ app.WorkBoxView = Backbone.View
 				graphID: data['graphID']
 			};
 
-			// creates model of the node in the collection and sends POST request to a back-end service
-			app.Nodes.create(attr);
-			
+      // creates model of the node in the collection and sends POST request to a back-end service
+      app.Nodes.create(attr);
+
 			return attr;
 		},
 
@@ -249,20 +244,10 @@ app.WorkBoxView = Backbone.View
 			var view = new app.NodeView({
 			  model: node
 			});
-			this.$el.append(view.render().el);
+			$("#details-node").append(view.render().el);
 		},
 
 		createEdge: function(source, target) {
-			
-			function readCookie(name) {
-				var nameEQ = name + "=";
-				var ca = document.cookie.split(';');
-				for(var i=0;i < ca.length;i++) {
-					var c = ca[i];
-					while (c.charAt(0)==' ') c = c.substring(1,c.length);
-					if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-				}
-			}
 
 			// designates the edge's class using the type of connected nodes
 			var className = 'edge';
@@ -312,7 +297,7 @@ app.WorkBoxView = Backbone.View
 		},
 
 		createEdgeModelFromData: function(data) {
-			
+
 			// designates the edge's class using the type of connected nodes
             var target = data['target'];
             var source = data['source'];
@@ -341,7 +326,7 @@ app.WorkBoxView = Backbone.View
 					className = (className == 'edge') ? 'pref-edge edge' : className;
 				}
             }
-			
+
 			// at least one node should be pref, pro or con node
 			if (className == 'edge') { return null; }
 
@@ -362,23 +347,23 @@ app.WorkBoxView = Backbone.View
           },
 
         clearWorkBox: function(){
-			
+
 			// debugger;
-			
+
 			// clear collections without sending DELETE requests
 			while(app.Nodes.length > 0){
 				var model = app.Nodes.at(0);
 				model.trigger("destroy", model);
 			}
-			
+
 			while(app.Edges.length > 0){
 				var model = app.Edges.at(0);
 				model.trigger("destroy", model);
 			}
-			
+
 			// removes the div used for views of previous nodes.
 			var divElement = this.$el[0].childNodes;
-			
+
 			while(divElement.length > 3){
 				divElement.forEach(function(ch){
 					if(ch.nodeName.toLowerCase() == 'div'){
@@ -386,10 +371,10 @@ app.WorkBoxView = Backbone.View
 					}
 				});
 			}
-			
+
 			// removes the g used for the previous graph
 			var svgElement = this.$el.children()[0].childNodes;
-			
+
 			while(svgElement.length > 3){
 				svgElement.forEach(function(ch){
 					if(ch.nodeName.toLowerCase() == 'g'){
@@ -397,23 +382,25 @@ app.WorkBoxView = Backbone.View
 					}
 				});
 			}
-			
-			/* -------------------- initialisation for drawing a graph -------------------- */
-			// set the size of the SVG element using the size of a window
-			var ret_chart = init_chart_data();			
-			sync_chart_data(ret_chart);
 
-			// set the zoom functionality
-			zoom = set_zoom();
-			
-			// set up simulations for force-directed graphs
-			var ret_simulation = set_simulation(15);
-			sync_node_style_data(ret_simulation);
-			sync_simulation_data(ret_simulation);
-			
-			this.listenTo(app.Nodes, 'add', this.addNode);
-            // this.listenTo(app.Edges, 'add', this.addEdge);
-			
+			/* -------------------- initialisation for drawing a graph -------------------- */
+      var area_id = this.el.id;
+
+      // set the size of the SVG element using the size of a window
+      var ret_chart = init_chart_data(area_id, 700);
+      push_chart_data(area_id, ret_chart);
+
+      // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      var zoom = set_zoom(chart.svg);
+      chart.zoom = zoom;
+
+      // set up simulations for force-directed graphs
+      var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      push_node_style_data(ret_simulation);
+
+      // the simulation used when drawing a force-directed graph
+      chart.simulation = ret_simulation.simulation;
+
 			return svgElement;
 		}
     });
