@@ -17,17 +17,22 @@ app.WorkBoxView = Backbone.View
 
         initialize: function() {
       			/* -------------------- initialisation for drawing a graph -------------------- */
-      			// set the size of the SVG element using the size of a window
-      			var ret_chart = init_chart_data();
-      			sync_chart_data(ret_chart);
+            var area_id = this.el.id;
 
-      			// set the zoom functionality
-      			zoom = set_zoom();
+      			// set the size of the SVG element using the size of a window
+      			var ret_chart = init_chart_data(area_id, 700);
+      			push_chart_data(area_id, ret_chart);
+
+      			// set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      			var zoom = set_zoom(chart.svg);
+            chart.zoom = zoom;
 
       			// set up simulations for force-directed graphs
-      			var ret_simulation = set_simulation(15);
-      			sync_node_style_data(ret_simulation);
-      			sync_simulation_data(ret_simulation);
+      			var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      			push_node_style_data(ret_simulation);
+
+            // the simulation used when drawing a force-directed graph
+            chart.simulation = ret_simulation.simulation;
 
       			getLatestAnalysis(function(data){
 
@@ -35,11 +40,13 @@ app.WorkBoxView = Backbone.View
 
       				  // initiate the SVG on the work box for drawing a graph
       					if(data.graphID && !_.isEmpty(data.graphID)){
-      						createCookie('graph_id',data.graphID,2);
+      						createCookie('graph_id', data.graphID, 2);
       					}
-      					var ret_graph = draw(data.nodes, data.edges);
-      					sync_graph_data(ret_graph);
-      					restart_simulation(false);
+
+      					var ret_graph = draw(data.nodes, data.edges, chart);
+      					push_graph_data(ret_graph);
+
+      					chart.simulation = restart_simulation(false);
       				/* ------------------------------------------------------------------------------- */
 
       			});
@@ -104,7 +111,7 @@ app.WorkBoxView = Backbone.View
 
 									if (attr) {
 										// draw the node
-										graph_data.edge = addNewEdge(attr);
+										chart.edge = addNewEdge(attr);
 
 										// re-start graph
 										simulation = restart_simulation(true);
@@ -161,18 +168,6 @@ app.WorkBoxView = Backbone.View
     },
 
 		createNode: function(id) {
-
-			  function readCookie(name) {
-				var nameEQ = name + "=";
-				var ca = document.cookie.split(';');
-				for(var i=0;i < ca.length;i++) {
-					var c = ca[i];
-				while (c.charAt(0)==' ') c = c.substring(1,c.length);
-				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-				}
-
-				return null;
-			}
 
 			// generates the type of a new node
 			var input = id.toUpperCase();
@@ -253,16 +248,6 @@ app.WorkBoxView = Backbone.View
 		},
 
 		createEdge: function(source, target) {
-
-			function readCookie(name) {
-				var nameEQ = name + "=";
-				var ca = document.cookie.split(';');
-				for(var i=0;i < ca.length;i++) {
-					var c = ca[i];
-					while (c.charAt(0)==' ') c = c.substring(1,c.length);
-					if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-				}
-			}
 
 			// designates the edge's class using the type of connected nodes
 			var className = 'edge';
@@ -399,20 +384,22 @@ app.WorkBoxView = Backbone.View
 			}
 
 			/* -------------------- initialisation for drawing a graph -------------------- */
-			// set the size of the SVG element using the size of a window
-			var ret_chart = init_chart_data();
-			sync_chart_data(ret_chart);
+      var area_id = this.el.id;
 
-			// set the zoom functionality
-			zoom = set_zoom();
+      // set the size of the SVG element using the size of a window
+      var ret_chart = init_chart_data(area_id, 700);
+      push_chart_data(area_id, ret_chart);
 
-			// set up simulations for force-directed graphs
-			var ret_simulation = set_simulation(15);
-			sync_node_style_data(ret_simulation);
-			sync_simulation_data(ret_simulation);
+      // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      var zoom = set_zoom(chart.svg);
+      chart.zoom = zoom;
 
-			this.listenTo(app.Nodes, 'add', this.addNode);
-            // this.listenTo(app.Edges, 'add', this.addEdge);
+      // set up simulations for force-directed graphs
+      var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      push_node_style_data(ret_simulation);
+
+      // the simulation used when drawing a force-directed graph
+      chart.simulation = ret_simulation.simulation;
 
 			return svgElement;
 		}

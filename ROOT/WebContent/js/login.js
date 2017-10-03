@@ -6,11 +6,6 @@ $("#login").on("click", function(event){
      "password" : $("#psw").val()
    };
 
-   var userID = "5a90c91f-1884-4f45-bc2e-49057745293c";
-   createCookie('user_id', userID, 2);
-   window.location.assign("index.html");
-
-   /*
    $.ajax({
      type: 'POST',
      url: 'VC/rest/user',
@@ -29,6 +24,5 @@ $("#login").on("click", function(event){
      error: function(result){
        alert('Something went wrong. Please try again.');
      }
-     */
    });
 });

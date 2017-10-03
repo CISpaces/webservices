@@ -42,79 +42,69 @@ app.ToolBoxView = Backbone.View.extend({
   newWorkBox: function() {
     app.workBoxView.clearWorkBox();
 
-	// generates created time using format string type
-	var now = new Date();
+  	// generates created time using format string type
+  	var now = new Date();
 
-	var year = now.getFullYear();
-	var month = now.getMonth() + 1;
-	var date = now.getDate();
-	var hour = now.getHours();
-	var min = now.getMinutes();
-	var sec = now.getSeconds();
+  	var year = now.getFullYear();
+  	var month = now.getMonth() + 1;
+  	var date = now.getDate();
+  	var hour = now.getHours();
+  	var min = now.getMinutes();
+  	var sec = now.getSeconds();
 
-	var time = year + "-" + (month < 10 ? "0" + month : month) + "-"
-					+ (date < 10 ? "0" + date : date) + " "
-					+ (hour < 10 ? "0" + hour : hour) + ":"
-					+ (min < 10 ? "0" + min : min) + ":"
-					+ (sec < 10 ? "0" + sec : sec);
-	var graphID = generateUUID();
-	var object =  { "graphID"  : graphID, "userID" : readCookie('user_id'), "timest" : time,
-					"isshared" : false, "parentgraphid" : null};
-	$.ajax({
-			type: 'POST',
-			url: 'rest/new',
-			//dataType: 'text',
-			contentType: 'application/json',
-			data: JSON.stringify(object),
-			success: function(result){
-					createCookie('graph_id',graphID,2);
-					/* -------------------- initialisation for drawing a graph -------------------- */
-					// set the size of the SVG element using the size of a window
-					var ret_chart = init_chart_data();
-					sync_chart_data(ret_chart);
+  	var time = year + "-" + (month < 10 ? "0" + month : month) + "-"
+  					+ (date < 10 ? "0" + date : date) + " "
+  					+ (hour < 10 ? "0" + hour : hour) + ":"
+  					+ (min < 10 ? "0" + min : min) + ":"
+  					+ (sec < 10 ? "0" + sec : sec);
 
-					// set the zoom functionality
-					zoom = set_zoom();
+  	var graphID = generateUUID();
 
-					// set up simulations for force-directed graphs
-					var ret_simulation = set_simulation(15);
-					sync_node_style_data(ret_simulation);
-					sync_simulation_data(ret_simulation);
+  	var object =  {
+      "graphID"  : graphID,
+      "userID" : readCookie('user_id'),
+      "timest" : time,
+      "isshared" : false,
+      "parentgraphid" : null
+    };
 
-					var ret_graph = draw([],[]);
-					sync_graph_data(ret_graph);
-					restart_simulation(false);
+  	$.ajax({
+  			type: 'POST',
+  			url: 'VC/rest/new',
+  			//dataType: 'text',
+  			contentType: 'application/json',
+  			data: JSON.stringify(object),
+  			success: function(result){
+  					createCookie('graph_id', graphID, 2);
 
-					app.workBoxView.listenTo(app.Nodes, 'add', this.addNode);
-					// this.listenTo(app.Edges, 'add', this.addEdge);
+  					/* -------------------- initialisation for drawing a graph -------------------- */
+            var area_id = app.workBoxView.el.id;
 
-			},
-			error: function(result){
-				alert('Something went wrong. Please try again.');
-			}
-		});
+      			// set the size of the SVG element using the size of a window
+      			var ret_chart = init_chart_data(area_id, 700);
+      			push_chart_data(area_id, ret_chart);
 
-	function createCookie(name,value,days) {
-		if (days) {
-			var date = new Date();
-			date.setTime(date.getTime()+(days*24*60*60*1000));
-			var expires = "; expires="+date.toGMTString();
-		}
-		else var expires = "";
-		document.cookie = name+"="+value+expires+"; path=/";
-	}
+      			// set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      			var zoom = set_zoom(chart.svg);
+            chart.zoom = zoom;
 
-	function readCookie(name) {
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-		}
+      			// set up simulations for force-directed graphs
+      			var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      			push_node_style_data(ret_simulation);
 
-		return null;
-	}
+            // the simulation used when drawing a force-directed graph
+            chart.simulation = ret_simulation.simulation;
+
+            var ret_graph = draw([], [], chart);
+            push_graph_data(ret_graph);
+
+            chart.simulation = restart_simulation(false);
+
+  			},
+  			error: function(result){
+  				alert('Something went wrong. Please try again.');
+  			}
+  		});
   },
 
   file: function() {
@@ -123,24 +113,26 @@ app.ToolBoxView = Backbone.View.extend({
 
     var input_file = $("#myFile").click();
 
-	return input_file;
+	   return input_file;
   },
 
   createNode: function(obj) {
     var id = obj.currentTarget.id;
 
-	// creates model of the node
+	  // creates model of the node
     var attr = app.workBoxView.createNode(id);
 
-	var restart = true;
-	if(graph_data.nodes.length < 1)
-		restart = false;
+    // var index = chart.findIndex(function(e){ return e.id == app.workBoxView.el.id; });
 
-	// draws a new node
-	graph_data.node = addNewNode(attr);
+  	var restart = true;
+  	if(chart.nodes.length < 1)
+  		restart = false;
 
-	// re-start changed graph
-	simulation = restart_simulation(restart);
+  	// draws a new node
+  	chart.node = addNewNode(attr, chart);
+
+  	// re-start changed graph
+  	chart.simulation = restart_simulation(restart);
   },
 
   save: function(){
@@ -151,7 +143,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object =  { "graphID"  : graphID, "userID" : userID, "title" : title};
 		  $.ajax({
 			type: 'POST',
-			url: 'rest/save',
+			url: 'VC/rest/save',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
@@ -168,11 +160,11 @@ app.ToolBoxView = Backbone.View.extend({
   analysisHistory: function(){
 		var graphID = readCookie('graph_id');
 		var object = {"graphID"  : graphID};
-      	$.get( "rest/history", object )
-          .done(function( result ) {
-              		if(result){
 
-					$("#history_list").html("");
+  	$.get( "VC/rest/history", object )
+      .done(function( result ) {
+        if(result){
+          $("#history_list").html("");
 
 					if(result.history){
 						var arr = result.history;
@@ -201,10 +193,9 @@ app.ToolBoxView = Backbone.View.extend({
 							}).appendTo(options);
 						});
 					}
-
-					$("#history_result").modal('show');
-				}
-          });
+          $("#history_result").modal('show');
+        }
+      });
   },
 
   importAnalysis: function(){
@@ -214,7 +205,7 @@ app.ToolBoxView = Backbone.View.extend({
 		  var object = { "graphID" : json.graphID, "nodes" : json.nodes, "edges" : json.edges };
 			$.ajax({
 			type: 'POST',
-			url: 'rest/updateAnalysis',
+			url: 'VC/rest/updateAnalysis',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
 			success: function(result){
@@ -228,21 +219,13 @@ app.ToolBoxView = Backbone.View.extend({
 
 		  app.workBoxView.clearWorkBox();
 
-		  var ret_graph = draw(json.nodes,json.edges);
-		  sync_graph_data(ret_graph);
-		  restart_simulation(false);
+      var ret_graph = draw(json.nodes,json.edges, chart);
+      push_graph_data(ret_graph);
+
+      chart.simulation = restart_simulation(false);
 
 		  $('#history_result').modal('hide');
 	  }
 
-	  	function createCookie(name,value,days) {
-		if (days) {
-			var date = new Date();
-			date.setTime(date.getTime()+(days*24*60*60*1000));
-			var expires = "; expires="+date.toGMTString();
-		}
-		else var expires = "";
-		document.cookie = name+"="+value+expires+"; path=/";
-	}
   }
 });

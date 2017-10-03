@@ -3,7 +3,7 @@ function getLatestAnalysis(callback){
 
 	$.ajax({
 		type: 'POST',
-		url: 'rest/getAnalysis',
+		url: 'VC/rest/getAnalysis',
 		contentType: 'text/plain',
 		data: userID,
 		success: function(result){

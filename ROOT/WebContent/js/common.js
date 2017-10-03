@@ -54,15 +54,17 @@ function readFile(input_files){
 		var edges = jsonData['edges'];
 
 		// set up simulations for force-directed graphs
-		var ret_simulation = set_simulation(nodes.length);
-		sync_node_style_data(ret_simulation);
-		sync_simulation_data(ret_simulation);
+		var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+		push_node_style_data(ret_simulation);
 
-		var ret_graph = draw(nodes, edges);
-		sync_graph_data(ret_graph);
+		// the simulation used when drawing a force-directed graph
+		chart.simulation = ret_simulation.simulation;
 
-		// start simulation for displaying graphs
-		simulation = restart_simulation(false);
+		var ret_graph = draw(nodes, edges, chart);
+		push_graph_data(ret_graph);
+
+		// start simulation for displaying graphsv
+		chart.simulation = restart_simulation(false);
 	};
 
 	reader.onerror = function(event){
