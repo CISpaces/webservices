@@ -14,7 +14,7 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
 - VC/rest/history
 
-  Gets version of the graph from history table
+  Gets all the version of the graph using Graphid from history table. It's sorted from newer version to older version. 
 
   @param graphID a graph id
 
@@ -30,6 +30,7 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
  ``` JSON response:
  {"nodes":[{"input":"PREF","eval":"N\/A","dtg":"2017-09-26 13:49:28.0","islocked":"false","text":"PREF","source":"user","cmt":"N\/A","type":"P","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"db66b909-b866-4479-ca8c-db575c043405","uncert":"Confirmed"},{"input":"INFO","eval":"N\/A","dtg":"2017-09-26 13:49:11.0","islocked":"false","text":"INFO","source":"user","cmt":"N\/A","type":"I","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"f4f7285b-fabe-42a2-9238-4703e1072d27","uncert":"Confirmed"},{"input":"PRO","eval":"N\/A","dtg":"2017-09-26 13:49:12.0","islocked":"false","text":"PRO","source":"user","cmt":"N\/A","type":"RA","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","uncert":"Confirmed"}],"edges":[{"edgeID":"3af37733-4034-401f-930d-0544e93e4956","islocked":"false","source":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"db66b909-b866-4479-ca8c-db575c043405"},{"edgeID":"7f8c8fac-c9e4-4bb7-935b-b31233f10a3c","islocked":"false","source":"f4f7285b-fabe-42a2-9238-4703e1072d27","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe"}]}
+ 
  ```
 
 - VC/rest/login
@@ -44,7 +45,7 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
 
 Add a user with the supplied properties
 
-@param userData JSON String of form {"username":"Test user","password":"password","affiliation":"None"}
+@param userData JSON String of form ```{"username":"Test user","password":"password","affiliation":"None"}```
 
 
 - VC/rest/new
