@@ -7,14 +7,11 @@
  */
 package vcservlet;
 
-import com.google.gson.reflect.TypeToken;
 import database.DBQuery;
 import utils.JsonHelper;
 import vcontrol.VControl;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,18 +79,25 @@ public class VCForkControl {
     }
 
     /**
-     * @param userData the user credentials in a json string format
+     * @param credentials the user credentials in a json string format
      * @return a string indicating whether the user has been validated successfully
      */
-    public String evalJSONUser(String userData) {
+    public String evalJSONLoginUser(String credentials) {
 
+        credentials = credentials.replaceAll("\"\"", "null");
+        HashMap map = jsh.convertInputMap(credentials);
+        VControl vc = new VControl();
+        String result = vc.onLoginUser(map);
+        return result;
+    }
+    
+   
+    public String evalJSONAddUser(String userData) {
         userData = userData.replaceAll("\"\"", "null");
         HashMap map = jsh.convertInputMap(userData);
-
         VControl vc = new VControl();
-        String result = vc.onCheckUserExists(map);
-
-        return result;
+        String result = vc.onAddUser(map);
+        return result;        
     }
 
     /**

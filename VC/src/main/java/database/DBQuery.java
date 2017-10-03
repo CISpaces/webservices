@@ -244,22 +244,50 @@ public class DBQuery {
         return isStatementExecuted;
     }
 
-    /* check if a user exists in the database
-     * @return either 'fail' or the user id if the validation is successful
+    /**
+     * Fetch everything from CISPACES_USERS for the supplied username
+     * @param username The username of interest
+     * @return a JSON representation of the record, null if none
      */
-    public String checkUserExists(String username, String password, String aff) {
-        String sql = "SELECT USER_ID from CISPACES_USERS WHERE USERNAME = " + "'" + username + "'" + " AND PASSWORD = " +  "'" + password + "'";
+    public JSONObject getUserByUsername(String username) {
+        String sql = "SELECT * FROM CISPACES_USERS WHERE USERNAME = '"+username+"'";
         System.out.println(sql);
-        String response;
-        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
-        if(rs.isEmpty()){
-            response = "fail";
-        }else{
-            response = rs.get(0).toString();
-        }
-
-        return response;
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql); 
+        if(rs.isEmpty()) return null;
+        else return (JSONObject) getResultListJSON(rs).get(0);
     }
+    
+    /**
+     * Add a user with the supplied username, password hash and affiliation
+     * @param username The chosen username
+     * @param passwordHash The password hash
+     * @param affiliation The affiliation
+     * @return The newly generated user_id, or null if the user could not be added
+     */
+    public String insertUser(String username, String generatedSecuredPasswordHash, String affiliation) {
+        String sqlCheckUser = "SELECT * FROM CISPACES_USERS WHERE USERNAME = '"+username+"'";
+        System.out.println(sqlCheckUser);
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sqlCheckUser);        
+        if(rs.isEmpty()){
+            //Username doesn't exist, try to add it        
+            String userID = UUID.randomUUID().toString();
+            String sql = "INSERT INTO CISPACES_USERS (USER_ID, USERNAME, PASSWORD, AFFILIATION, IS_ADMIN) VALUES( "
+                + "'" + userID + "',"
+                + "'" + username + "',"
+                + "'" + generatedSecuredPasswordHash + "',"
+                + "'" + affiliation + "',"
+                + "0)";        
+            System.out.println(sql);
+            if(dbcn.updateSQL(sql)){
+                return userID; // User added successfully
+            }
+            else{
+                System.out.println("Failed to add user.");
+                return null;
+            } // Failed to add - we should probably throw an exception here
+        }
+        else throw new IllegalArgumentException("The selected username is already in use");        
+    }//insertUser
 
     /* Retrieves the latest analysis associated with a user upon loading the index page.
      * Checks if a user has worked on an analysis before.
