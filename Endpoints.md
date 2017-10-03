@@ -29,7 +29,8 @@ Source file: ``` VC/src/main/java/vcservlet/VCServlet.java```
  @return either a json representing the latest analysis this user has worked on, or a new graph id for starting a new analysis
 
  ``` JSON response:
- {"nodes":[{"input":"PREF","eval":"N\/A","dtg":"2017-09-26 13:49:28.0","islocked":"false","text":"PREF","source":"user","cmt":"N\/A","type":"P","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"db66b909-b866-4479-ca8c-db575c043405","uncert":"Confirmed"},{"input":"INFO","eval":"N\/A","dtg":"2017-09-26 13:49:11.0","islocked":"false","text":"INFO","source":"user","cmt":"N\/A","type":"I","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"f4f7285b-fabe-42a2-9238-4703e1072d27","uncert":"Confirmed"},{"input":"PRO","eval":"N\/A","dtg":"2017-09-26 13:49:12.0","islocked":"false","text":"PRO","source":"user","cmt":"N\/A","type":"RA","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","uncert":"Confirmed"}],"edges":[{"edgeID":"3af37733-4034-401f-930d-0544e93e4956","islocked":"false","source":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"db66b909-b866-4479-ca8c-db575c043405"},{"edgeID":"7f8c8fac-c9e4-4bb7-935b-b31233f10a3c","islocked":"false","source":"f4f7285b-fabe-42a2-9238-4703e1072d27","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe"}]} ```
+ {"nodes":[{"input":"PREF","eval":"N\/A","dtg":"2017-09-26 13:49:28.0","islocked":"false","text":"PREF","source":"user","cmt":"N\/A","type":"P","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"db66b909-b866-4479-ca8c-db575c043405","uncert":"Confirmed"},{"input":"INFO","eval":"N\/A","dtg":"2017-09-26 13:49:11.0","islocked":"false","text":"INFO","source":"user","cmt":"N\/A","type":"I","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"f4f7285b-fabe-42a2-9238-4703e1072d27","uncert":"Confirmed"},{"input":"PRO","eval":"N\/A","dtg":"2017-09-26 13:49:12.0","islocked":"false","text":"PRO","source":"user","cmt":"N\/A","type":"RA","annot":"N\/A","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","nodeID":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","uncert":"Confirmed"}],"edges":[{"edgeID":"3af37733-4034-401f-930d-0544e93e4956","islocked":"false","source":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"db66b909-b866-4479-ca8c-db575c043405"},{"edgeID":"7f8c8fac-c9e4-4bb7-935b-b31233f10a3c","islocked":"false","source":"f4f7285b-fabe-42a2-9238-4703e1072d27","formedgeid":"null","graphID":"de9f57b3-3183-43ec-a34c-10eb33158081","target":"39a08ad2-8dd7-4940-c067-45a4dd8f7efe"}]}
+ ```
 
 - VC/rest/login
 
@@ -103,6 +104,82 @@ Source file: ``` ers/src/ers/ERSServlet.java```
  
  If there is an error in the graph structure, it returns an error response.
 
+
+## FEWS Web Service
+
+This web service handles interaction with the Fact-Extraction service to include social media reports in an analysis.
+
+Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
+
+- fewsservlet/hello
+
+  Say hello to the world to check the service is running correctly.
+
+- fewsservlet/tweets/{inclusive}/{topic}/{negated}/{genuine}
+
+  ```GET``` a list of Tweets referring to a Topic.
+  
+  @param inclusive Whether the Topic should be included or excluded in the query
+  
+  @param topic The name of the Topic to search for
+  
+  @param negated Whether the Topic is negated
+  
+  @param genuine Whether the Topic is genuine
+  
+  Boolean values must be "true" or "false". e.g.:
+  fewsservlet/tweets/true/topic%20unrest/false/true
+
+  Returns a list of Tweets in JSON representation. e.g.:
+
+  ```
+  [
+    {
+      id: 11,
+      extract: "text extract of Tweet",
+      uri: "Twitter URI"
+    },
+    {
+      id: 23,
+      extract: "another text extract of Tweet",
+      uri: "another Twitter URI"
+    },
+    ...
+  ]
+  ```
+    
+- fewsservlet/topics
+
+  ```GET``` a list of all Topics present in the database.
+  
+  Returns all Topics, including combinations of 'negated' and 'genuine'.
+  
+  i.e. a Topic name may appear twice with a different value of 'negated'
+
+  Topics are returned in JSON representation. e.g.:
+
+  ```
+  [
+    {
+      name: "topic a",
+      negated: false,
+      genuine: true
+    },
+    {
+      name: "topic b",
+      negated: true,
+      genuine: false
+    },
+    ...
+  ]
+  ```
+  
+- fewsservlet/control/{message}
+  
+  ```POST``` Add a new Topic to Fact-Extraction's index.
+
+  @param message Topic name to add to index
+  
 
 ## PROVSIMP Web Service
 

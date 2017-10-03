@@ -46,6 +46,27 @@ public class FEWSServlet {
     /**
      * Get a list of Tweets referring to a Topic.
      *
+     * GET Request at FEWSROOT/tweets/{inclusive}/{topic}/{negated}/{genuine}
+     * Boolean values must be "true" or "false". e.g.:
+     *
+     * FEWSROOT/tweets/true/topic%20unrest/false/true
+     *
+     * Returns a list of Tweets in JSON representation. e.g.:
+     *
+     * [
+     *   {
+     *     id: 11,
+     *     extract: "text extract of Tweet",
+     *     uri: "Twitter URI"
+     *   },
+     *   {
+     *     id: 23,
+     *     extract: "another text extract of Tweet",
+     *     uri: "another Twitter URI"
+     *   },
+     *   ...
+     * ]
+     *
      * @param inclusive Whether the Topic should be included or excluded in the query
      * @param topicName The name of the Topic to search for
      * @param negated Whether the Topic is negated
@@ -72,6 +93,26 @@ public class FEWSServlet {
     /**
      * Get a list of all Topics present in the database.
      *
+     * GET Request at FEWSROOT/topics
+     * Returns all Topics, including combinations of 'negated' and 'genuine'.
+     * i.e. a Topic name may appear twice with a different value of 'negated'
+     *
+     * Topics are returned in JSON representation. e.g.
+     *
+     * [
+     *   {
+     *     name: "topic a",
+     *     negated: false,
+     *     genuine: true
+     *   },
+     *   {
+     *     name: "topic b",
+     *     negated: true,
+     *     genuine: false
+     *   },
+     *   ...
+     * ]
+     *
      * @return A list of all known Topics
      * @see Topic
      */
@@ -85,6 +126,8 @@ public class FEWSServlet {
 
     /**
      * Add a new Topic to Fact-Extraction's index.
+     *
+     * POST Request at FEWSROOT/control/{message} where 'message' is the new topic to add to Fact-Extraction's index
      *
      * @param message Topic to add to index
      * @return "OK" if message was send, else "NOK"
