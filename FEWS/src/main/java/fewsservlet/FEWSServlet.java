@@ -54,6 +54,9 @@ public class FEWSServlet {
      * @see Topic
      * @see Tweet
      */
+    // TODO consider whether it's clearer to use QueryParam instead
+    // TODO inclusive is currently ignored
+    // TODO multiple topics
     @GET
     @Path("/tweets/{inclusive}/{topic}/{negated}/{genuine}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,7 +87,7 @@ public class FEWSServlet {
      * Add a new Topic to Fact-Extraction's index.
      *
      * @param message Topic to add to index
-     * @return
+     * @return "OK" if message was send, else "NOK"
      */
     @POST
     @Path("/control/{message}")
