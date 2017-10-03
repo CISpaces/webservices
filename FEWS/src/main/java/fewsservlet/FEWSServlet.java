@@ -5,7 +5,9 @@ import database.PostgreSQLDB;
 import database.Tweet;
 import messagebus.MessageBus;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.logging.Level;
@@ -87,6 +89,48 @@ public class FEWSServlet {
                                      @PathParam("genuine") boolean genuine) {
 
         Topic topic = new Topic(topicName, negated, genuine);
+        return postgreSQLDB.tweetsForTopic(topic);
+    }
+
+    /**
+     * Get a list of Tweets referring to a Topic.
+     *
+     * POST Request at FEWSROOT/tweets with JSON body describing a Topic. e.g.:
+     *
+     * {
+     *   name: "topic name",
+     *   negated: false,
+     *   genuine: true
+     * }
+     *
+     * Returns a list of Tweets in JSON representation. e.g.:
+     *
+     * [
+     *   {
+     *     id: 11,
+     *     extract: "text extract of Tweet",
+     *     uri: "Twitter URI"
+     *   },
+     *   {
+     *     id: 23,
+     *     extract: "another text extract of Tweet",
+     *     uri: "another Twitter URI"
+     *   },
+     *   ...
+     * ]
+     *
+     * @return A list of Tweets referring to the specified Topic
+     * @see Topic
+     * @see Tweet
+     */
+    // TODO inclusive is currently ignored
+    // TODO multiple topics
+    @POST
+    @Path("/tweets")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Tweet> tweetsByTopic2(Topic topic, @Context HttpServletResponse response) {
+        response.setHeader("topic", topic.toString());
         return postgreSQLDB.tweetsForTopic(topic);
     }
 

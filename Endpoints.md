@@ -135,18 +135,50 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   ```
   [
     {
-      id: 11,
-      extract: "text extract of Tweet",
-      uri: "Twitter URI"
+      "id": 11,
+      "extract": "text extract of Tweet",
+      "uri": "Twitter URI"
     },
     {
-      id: 23,
-      extract: "another text extract of Tweet",
-      uri: "another Twitter URI"
+      "id": 23,
+      "extract": "another text extract of Tweet",
+      "uri": "another Twitter URI"
     },
     ...
   ]
   ```
+  
+- fewsservlet/tweets
+
+  ```POST``` Return a list of Tweets referring to a Topic.
+  
+  Request must contain the JSON representation of a Topic in its body.
+ 
+  ```
+  {
+    "name": "topic name",
+    "negated": false,
+    "genuine": true
+  }
+  ```
+ 
+  Returns a list of Tweets in JSON representation. e.g.:
+
+  ```
+   [
+     {
+       "id": 11,
+       "extract": "text extract of Tweet",
+       "uri": "Twitter URI"
+     },
+     {
+       "id": 23,
+       "extract": "another text extract of Tweet",
+       "uri": "another Twitter URI"
+     },
+     ...
+   ]
+   ```
     
 - fewsservlet/topics
 
@@ -161,14 +193,14 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   ```
   [
     {
-      name: "topic a",
-      negated: false,
-      genuine: true
+      "name": "topic a",
+      "negated": false,
+      "genuine": true
     },
     {
-      name: "topic b",
-      negated: true,
-      genuine: false
+      "name": "topic b",
+      "negated": true,
+      "genuine": false
     },
     ...
   ]

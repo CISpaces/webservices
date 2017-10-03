@@ -26,6 +26,8 @@ public class Topic {
         this.genuine = genuine;
     }
 
+    public Topic() {}
+
     /**
      * Get the name of the Topic.
      *
@@ -52,6 +54,19 @@ public class Topic {
     public boolean isGenuine() {
         return genuine;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNegated(boolean negated) {
+        this.negated = negated;
+    }
+
+    public void setGenuine(boolean genuine) {
+        this.genuine = genuine;
+    }
+
 
     /**
      * Get the String representation of the Topic.
