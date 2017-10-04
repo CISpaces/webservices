@@ -85,19 +85,6 @@ public class PostgreSQLDB {
         try {
             if (!connect()) { return null; }
 
-            String queryNegated, queryGenuine;
-            if (topic.isNegated()) {
-                queryNegated = "AND topic.negated = ? ";
-            } else {
-                queryNegated = "AND (topic.negated = ? OR topic.negated IS NULL) ";
-            }
-
-            if (topic.isGenuine()) {
-                queryGenuine = "AND (topic.genuine = ? OR topic.genuine is NULL) ";
-            } else {
-                queryGenuine = "AND topic.genuine = ? ";
-            }
-
             String queryString =
                     "SELECT extract.item_key, extract.extract, extract.source_uri " +
                             "FROM factextract.phase1_ext_db_topic as topic " +
@@ -106,14 +93,14 @@ public class PostgreSQLDB {
                             "JOIN factextract.phase1_ext_db_item as extract " +
                             "ON (extract.item_key = topic_index.item_key) " +
                             "WHERE topic.topic = ? " +
-                            queryNegated +
-                            queryGenuine +
+                            "AND topic.negated IS NOT ? " +
+                            "AND topic.genuine IS NOT ? " +
                             "LIMIT 10;";
 
             statement = conn.prepareStatement(queryString);
             statement.setString(1, topic.getName());
-            statement.setBoolean(2, topic.isNegated());
-            statement.setBoolean(3, topic.isGenuine());
+            statement.setBoolean(2, !topic.isNegated());
+            statement.setBoolean(3, !topic.isGenuine());
 
             resultSet = statement.executeQuery();
 
