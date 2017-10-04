@@ -67,18 +67,20 @@ public class PostgreSQLDB {
     }
 
     /**
-     * Get a list of Tweets referring to the specified Topic.
+     * Get a list of Tweets referring to the specified Topics.
      *
-     * @param topic Topic to which Tweets should refer
+     * @param topicList List of Topics to which Tweets should refer
      * @return ArrayList of Tweets referring to the specified Topic
      * @see Topic
      * @see Tweet
      */
-    public List<Tweet> tweetsForTopic(Topic topic) {
+    public List<Tweet> tweetsForTopic(List<Topic> topicList) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        List<Tweet> tweetList = new ArrayList<Tweet>();
+        List<Tweet> tweetList = new ArrayList<>();
+
+        Topic topic = topicList.get(0);
 
         try {
             if (!connect()) { return null; }

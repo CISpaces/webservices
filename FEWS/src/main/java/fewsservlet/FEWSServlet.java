@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 public class FEWSServlet {
 
     private PostgreSQLDB postgreSQLDB;
-    private MessageBus messageBus;
+    private MessageBus messageBus = null;
 
     private static Logger log;
 
@@ -25,6 +26,9 @@ public class FEWSServlet {
         log = Logger.getLogger(getClass().getName());
 
         postgreSQLDB = new PostgreSQLDB();
+    }
+
+    private void connectMessageBus() {
         try {
             messageBus = new MessageBus();
         } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) {
@@ -46,12 +50,17 @@ public class FEWSServlet {
     }
 
     /**
-     * Get a list of Tweets referring to a Topic.
+     * Get a list of Tweets referring to a List of Topics.
      *
-     * GET Request at FEWSROOT/tweets/{inclusive}/{topic}/{negated}/{genuine}
-     * Boolean values must be "true" or "false". e.g.:
+     * POST Request at FEWSROOT/tweets with JSON body describing a List of Topics. e.g.:
      *
-     * FEWSROOT/tweets/true/topic%20unrest/false/true
+     * [
+     *   {
+     *     name: "topic name",
+     *     negated: false,
+     *     genuine: true
+     *   }
+     * ]
      *
      * Returns a list of Tweets in JSON representation. e.g.:
      *
@@ -69,69 +78,22 @@ public class FEWSServlet {
      *   ...
      * ]
      *
-     * @param inclusive Whether the Topic should be included or excluded in the query
-     * @param topicName The name of the Topic to search for
-     * @param negated Whether the Topic is negated
-     * @param genuine Whether the Topic is genuine
-     * @return A list of Tweets referring to the specified Topic
+     * @return A list of Tweets referring to the specified Topics
      * @see Topic
      * @see Tweet
      */
-    // TODO consider whether it's clearer to use QueryParam instead
-    // TODO inclusive is currently ignored
-    // TODO multiple topics
-    @GET
-    @Path("/tweets/{inclusive}/{topic}/{negated}/{genuine}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Tweet> tweetsByTopic(@PathParam("inclusive") boolean inclusive,
-                                     @PathParam("topic") String topicName,
-                                     @PathParam("negated") boolean negated,
-                                     @PathParam("genuine") boolean genuine) {
-
-        Topic topic = new Topic(topicName, negated, genuine);
-        return postgreSQLDB.tweetsForTopic(topic);
-    }
-
-    /**
-     * Get a list of Tweets referring to a Topic.
-     *
-     * POST Request at FEWSROOT/tweets with JSON body describing a Topic. e.g.:
-     *
-     * {
-     *   name: "topic name",
-     *   negated: false,
-     *   genuine: true
-     * }
-     *
-     * Returns a list of Tweets in JSON representation. e.g.:
-     *
-     * [
-     *   {
-     *     id: 11,
-     *     extract: "text extract of Tweet",
-     *     uri: "Twitter URI"
-     *   },
-     *   {
-     *     id: 23,
-     *     extract: "another text extract of Tweet",
-     *     uri: "another Twitter URI"
-     *   },
-     *   ...
-     * ]
-     *
-     * @return A list of Tweets referring to the specified Topic
-     * @see Topic
-     * @see Tweet
-     */
-    // TODO inclusive is currently ignored
     // TODO multiple topics
     @POST
     @Path("/tweets")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Tweet> tweetsByTopic2(Topic topic, @Context HttpServletResponse response) {
-        response.setHeader("topic", topic.toString());
-        return postgreSQLDB.tweetsForTopic(topic);
+    public List<Tweet> tweetsByTopic(List<Topic> topicList, @Context HttpServletResponse response) {
+        ListIterator<Topic> topicListIterator = topicList.listIterator();
+        while (topicListIterator.hasNext()) {
+            response.setHeader("topic-" + topicListIterator.nextIndex(),
+                    topicListIterator.next().toString());
+        }
+        return postgreSQLDB.tweetsForTopic(topicList);
     }
 
     /**
@@ -163,8 +125,14 @@ public class FEWSServlet {
     @GET
     @Path("/topics")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Topic> listTopics() {
-        return postgreSQLDB.listTopics();
+    public List<Topic> listTopics(@Context HttpServletResponse response) {
+        List<Topic> topicList = postgreSQLDB.listTopics();
+        ListIterator<Topic> topicListIterator = topicList.listIterator();
+        while (topicListIterator.hasNext()) {
+            response.setHeader("topic-" + topicListIterator.nextIndex(),
+                    topicListIterator.next().toString());
+        }
+        return topicList;
     }
 
 
@@ -180,6 +148,7 @@ public class FEWSServlet {
     @Path("/control/{message}")
     @Produces(MediaType.TEXT_PLAIN)
     public String sendMessage(@PathParam("message") String message) {
+        if (messageBus == null) { connectMessageBus(); }
         if (messageBus.sendMessage(message)) {
             return "OK";
         } else {
