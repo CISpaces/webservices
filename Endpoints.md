@@ -116,50 +116,18 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
 
   Say hello to the world to check the service is running correctly.
 
-- fewsservlet/tweets/{inclusive}/{topic}/{negated}/{genuine}
-
-  ```GET``` a list of Tweets referring to a Topic.
-  
-  @param inclusive Whether the Topic should be included or excluded in the query
-  
-  @param topic The name of the Topic to search for
-  
-  @param negated Whether the Topic is negated
-  
-  @param genuine Whether the Topic is genuine
-  
-  Boolean values must be "true" or "false". e.g.:
-  fewsservlet/tweets/true/topic%20unrest/false/true
-
-  Returns a list of Tweets in JSON representation. e.g.:
-
-  ```
-  [
-    {
-      "id": 11,
-      "extract": "text extract of Tweet",
-      "uri": "Twitter URI"
-    },
-    {
-      "id": 23,
-      "extract": "another text extract of Tweet",
-      "uri": "another Twitter URI"
-    },
-    ...
-  ]
-  ```
-  
 - fewsservlet/tweets
 
   ```POST``` Return a list of Tweets referring to a Topic.
   
   Request must contain the JSON representation of a Topic in its body.
+  The 'negated' and 'genuine' properties are boolean encoded as integers where -1 represents NULL/Unknown.
  
   ```
   {
     "name": "topic name",
-    "negated": false,
-    "genuine": true
+    "negated": -1,
+    "genuine": 0
   }
   ```
  
@@ -186,6 +154,7 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   ```GET``` a list of all Topics present in the database.
   
   Returns all Topics, including combinations of 'negated' and 'genuine'.
+  The 'negated' and 'genuine' properties are boolean encoded as integers where -1 represents NULL/Unknown.
   
   i.e. a Topic name may appear twice with a different value of 'negated'
 
@@ -195,13 +164,13 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   [
     {
       "name": "topic a",
-      "negated": false,
-      "genuine": true
+      "negated": 1,
+      "genuine": -1
     },
     {
       "name": "topic b",
-      "negated": true,
-      "genuine": false
+      "negated": -1,
+      "genuine": 1
     },
     ...
   ]

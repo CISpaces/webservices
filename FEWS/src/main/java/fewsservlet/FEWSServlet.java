@@ -57,10 +57,15 @@ public class FEWSServlet {
      * [
      *   {
      *     name: "topic name",
-     *     negated: false,
-     *     genuine: true
+     *     negated: -1,
+     *     genuine: -1
      *   }
      * ]
+     *
+     * The 'negated' and 'genuine' properties are booleans coded as integers where:
+     *   1 represents True
+     *   0 represents False
+     *  -1 represents NULL or Unknown
      *
      * Returns a list of Tweets in JSON representation. e.g.:
      *
