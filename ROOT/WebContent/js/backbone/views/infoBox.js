@@ -19,6 +19,20 @@ app.InfoBoxView = Backbone.View.extend({
 
 	initialize: function(){
 		// example
+		this.topics = app.Topics;
+		this.topics.fetch({
+			success: function(collection, response) {
+                collection.each(function(model){
+                    console.log(model);
+                    // alert(model.attributes["name"]);
+                    var p = $("<p></p>").appendTo($("#info_box .topic-form"));
+                    var div = $("<div></div>", {
+                        "class": "alert alert-success alert-infobox",
+                        "text": model.attributes["name"]
+                    }).appendTo(p);
+                });
+			}
+		});
 	},
 
 	render: function(){
@@ -119,31 +133,56 @@ app.InfoBoxView = Backbone.View.extend({
 			var topic = p[i].children[0].innerText;
 
 			var obj = {
-				"topic": topic,
-				"negated": $('[name="negated-' + topic + '"]:checked').val(),
-				"genuine": $('[name="genuine-' + topic + '"]:checked').val()
-			}
+				"name": topic,
+				// "negated": $('[name="negated-' + topic + '"]:checked').val(),
+				// "genuine": $('[name="genuine-' + topic + '"]:checked').val()
+                "negated": -1,
+				"genuine": -1
+			};
 
 			topic_list.push(obj);
 		}
 
 		alert(JSON.stringify(topic_list));
 
-		var sample = '{"lastUIUpdate":1506525529305,"tweetList":[{"id":22,"text":"","extract":"it was a false report on virus outbreak doing an occupy wall st and rioting the nyse","uri":"https://twitter.com/Mokamsingh/status/263218154279407616"},{"id":23,"text":"","extract":"report on virus outbreak doing an occupy wall st and rioting the nyse it has nt happened","uri":"https://twitter.com/Mokamsingh/status/263218154279407616"},{"id":26,"text":"","extract":"rt @breakingnews rumors of nyse trading floor rioting are not true says","uri":"https://twitter.com/LasiewickiAnn/status/263222115120082945"},{"id":11,"text":"","extract":"looks like south rioting well into wall street and east rioting","uri":"https://twitter.com/ericisbeautiful/status/263067953761751040"}]}';
+		var tweetList = new app.TweetList();
 
-		var jsonData = JSON.parse(sample).tweetList;
-		jsonData.forEach(function(data){
-			var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
+		Backbone.ajax({
+			type: "POST",
+			url: "http://localhost:8080/fewsservlet/tweets",
+			// data: JSON.stringify([{"name": "blocked", "negated": -1, "genuine": -1}]),
+            data: JSON.stringify(topic_list),
+			dataType: 'json',
+			contentType: "application/json",
+			success: function(result){
+				// console.log("Some stuff");
+				// alert(result);
+                // tweetList.parse(result);
+                // alert(tweetList);
+                // console.log(tweetList);
+                console.log(result);
 
-			var td_extract = $("<td></td>", {
-				"text": data.extract
-			}).appendTo(tr);
+                // tweetList.each(function(model){
+					// console.log(model.attributes["extract"])
+				// });
 
-			var td_uri = $("<td></td>", {
-				"text": data.uri
-			}).appendTo(tr);
+                result.forEach(function(data){
+                    var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
+
+                    var td_extract = $("<td></td>", {
+                        "text": data.extract
+                    }).appendTo(tr);
+
+                    var td_uri = $("<td></td>", {
+                        "text": data.uri
+                    }).appendTo(tr);
+                });
+			},
+			error: function(xhr, textStatus, errorThrown){
+				alert("AJAX failed: " + errorThrown);
+			}
 		});
-		
+
 	},
 
 	clearTopic: function(){

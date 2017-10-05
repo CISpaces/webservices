@@ -6,7 +6,7 @@ test_hostname="localhost"
 test_port="8080"
 test_endpoint="/fewsservlet/tweets"
 test_http_method="POST"
-test_json_payload='[{"name": "loc f", "negated": -1, "genuine": -1},{"name":"topic unrest", "negated": -1, "genuine": -1}]'
+test_json_payload='[{"name": "blocked", "negated": -1, "genuine": -1},{"name":"mentioned_media", "negated": -1, "genuine": -1}]'
 expected_return_code="HTTP/1.1 200 OK"
 
 test_url="${test_protocol}://${test_hostname}:${test_port}${test_endpoint}"
