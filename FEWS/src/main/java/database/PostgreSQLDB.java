@@ -69,6 +69,7 @@ public class PostgreSQLDB {
 
 
     // Stuart's single-topic query
+    // This is replicated and extended in the following function
 //                    "SELECT " +
 //                    "post.source_uri, post.text, extract.extract, extract.item_key " +
 //                    "FROM " +
@@ -93,7 +94,7 @@ public class PostgreSQLDB {
      * @see Tweet
      */
     public List<Tweet> tweetsForTopic(List<Topic> topicList) {
-        PreparedStatement statement = null;
+        Statement statement = null;
         ResultSet resultSet = null;
 
         List<Tweet> tweetList = new ArrayList<>();
@@ -102,43 +103,43 @@ public class PostgreSQLDB {
             if (!connect()) { return null; }
 
             // Build up the SQL query using a subquery for each topic - allows consistency
+            // May as well do it in one pass without PreparedQuery since we need to convert bool3 anyway
             StringBuilder queryString = new StringBuilder(
+                    // Get the tables we want data from
                     "SELECT DISTINCT ON (extract.item_key) " +
                     "extract.item_key, extract.extract, extract.source_uri " +
                     "FROM factextract.phase1_ext_db_item as extract " +
                     "JOIN factextract.phase1_ext_db_topic_index as topic_index " +
                     "ON (extract.item_key = topic_index.item_key) "
             );
+
             for (int i=0; i < topicList.size(); i++) {
+                Topic topic = topicList.get(i);
+
                 if (i == 0) {
                     queryString.append("WHERE extract.item_key IN ");
                 } else {
                     queryString.append("AND extract.item_key IN ");
                 }
                 queryString.append(
+                        // Subquery to get a list of extract.item_key for each Topic
                         "( " +
                             "SELECT DISTINCT topic_index.item_key " +
                             "FROM factextract.phase1_ext_db_topic as topic " +
                             "RIGHT JOIN factextract.phase1_ext_db_topic_index as topic_index " +
                             "ON (topic.topic_key = topic_index.topic_key) " +
-                            "WHERE topic.topic = ? " +
-                            "AND topic.negated IS NOT TRUE " +
-                            "AND topic.genuine IS NOT FALSE " +
+                            "WHERE topic.topic = '" + topic.getName() + "' " +
+                            // Database column has three states in a BOOLEAN
+                            // Simpler to do this than try to use a prepared query
+                            "AND topic.negated IS " + getStringRepOfBool3(topic.isNegated()) + " " +
+                            "AND topic.genuine IS " + getStringRepOfBool3(topic.isGenuine()) + " " +
                         ") "
                 );
             }
             queryString.append("ORDER BY extract.item_key;");
 
-            statement = conn.prepareStatement(queryString.toString());
-            for (int i=0; i < topicList.size(); i++) {
-                Topic topic = topicList.get(i);
-                statement.setString(i + 1, topic.getName());
-//                statement.setString(3*i + 1, topic.getName());
-//                statement.setBoolean(3*i + 2, topic.isNegated());
-//                statement.setBoolean(3*i + 3, topic.isGenuine());
-            }
-
-            resultSet = statement.executeQuery();
+            statement = conn.createStatement();
+            resultSet = statement.executeQuery(queryString.toString());
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("item_key");
@@ -157,6 +158,44 @@ public class PostgreSQLDB {
         }
 
         return tweetList;
+    }
+
+    /**
+     * Get and convert a boolean value that may be NULL (termed here a Bool3).
+     * Value is converted to an int using:
+     *  TRUE  ->  1
+     *  FALSE ->  0
+     *  NULL  -> -1
+     *
+     * @param resultSet SQL query ResultSet from which to get data
+     * @param column Boolean column to get
+     * @return Boolean value as an integer
+     * @throws SQLException
+     */
+    private static int getIntFromBool3(ResultSet resultSet, String column)
+            throws SQLException {
+        boolean bValue = resultSet.getBoolean(column);
+        return resultSet.wasNull() ? -1 : (bValue ? 1 : 0);
+    }
+
+    /**
+     * Get the String representation of a Bool3.
+     * Values:
+     *   1 -> "TRUE"
+     *   0 -> "FALSE"
+     *  -1 -> "NULL"
+     *
+     * @param bool3 Integer representation of a Bool3 {-1, 0, 1}
+     * @return String representation of a Bool3
+     */
+    private static String getStringRepOfBool3(int bool3) {
+        if (bool3 == 0) {
+            return "FALSE";
+        } else if (bool3 == 1) {
+            return "TRUE";
+        } else {
+            return "NULL";
+        }
     }
 
     /**
@@ -182,8 +221,8 @@ public class PostgreSQLDB {
 
             while (resultSet.next()) {
                 String topicName = resultSet.getString("topic");
-                boolean negated = resultSet.getBoolean("negated");
-                boolean genuine = resultSet.getBoolean("genuine");
+                int negated = getIntFromBool3(resultSet, "negated");
+                int genuine = getIntFromBool3(resultSet, "genuine");
 
                 topicList.add(new Topic(topicName, negated, genuine));
             }
