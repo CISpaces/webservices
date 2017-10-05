@@ -18,11 +18,25 @@ app.InfoBoxView = Backbone.View.extend({
 	},
 
 	initialize: function(){
-		// example
+		this.$el.attr("style", "height: " + (chart.svg_height - 60) + "px");
+
+		$.ajax({
+			type: "GET",
+			contentType: "application/json",
+			headers: {"Authorization": localStorage.getItem('auth_token')},
+			url: "/fewsservlet/topics",
+			success: function(data){
+				data.forEach(function(d){
+					app.infoBoxView.addTopic(d);
+				});
+			},
+			error: function(data){
+				console.error(data);
+			}
+		});
 	},
 
 	render: function(){
-
 	},
 
 	createTopic: function(obj){
@@ -38,18 +52,29 @@ app.InfoBoxView = Backbone.View.extend({
 			return;
 		}
 
+		var param = {
+			'name': topic,
+			'negated': true,
+			'genuine': true
+		};
+
+		this.addTopic(param);
+	},
+
+	addTopic: function(topic){
+
 		var p = $("<p></p>").appendTo($("#info_box .topic-form"));
 
 		var div = $("<div></div>", {
 			"class": "alert alert-success alert-infobox",
-			"text": topic
+			"text": topic.name
 		}).appendTo(p);
 
-		var negated_and = $("<input/>", {
+		var negated_true = $("<input/>", {
 			"type": "radio",
-			"name": "negated-" + topic,
-			"value": "and",
-			"checked": "true"
+			"name": "negated-" + topic.name,
+			"value": "true",
+			"checked": topic.negated
 		}).click(function(obj){
 			div.addClass("alert-success");
 			div.removeClass("alert-danger");
@@ -57,16 +82,18 @@ app.InfoBoxView = Backbone.View.extend({
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
+			  .before(
+				$("<label></label>", {"text": "Negated"})
+			)
+		).after(
+			$("<span></span>", {"text":"T"})
 		);
 
-		negated_and.after(
-			$("<span></span>", {"text":"And"})
-		);
-
-		var negated_not = $("<input/>", {
+		var negated_false = $("<input/>", {
 			"type": "radio",
-			"name": "negated-" + topic,
-			"value": "not"
+			"name": "negated-" + topic.name,
+			"value": "false",
+			"checked": !topic.negated
 		}).click(function(){
 			div.addClass("alert-danger");
 			div.removeClass("alert-success");
@@ -76,42 +103,46 @@ app.InfoBoxView = Backbone.View.extend({
 			}).appendTo(p)
 		);
 
-		negated_not.after(
-			$("<span></span>", {"text":"Not"})
+		negated_false.after(
+			$("<span></span>", {"text":"F"})
 		);
 
 		var genuine_true = $("<input/>", {
 			"type": "radio",
-			"name": "genuine-" + topic,
+			"name": "genuine-" + topic.name,
 			"value": "true",
-			"checked": "true"
+			"checked": topic.genuine
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
+			  .before(
+				$("<label></label>", {"text": "Genuine"})
+			)
 		);
 
 		genuine_true.after(
-			$("<span></span>", {"text":"True"})
+			$("<span></span>", {"text":"T"})
 		);
 
-		var genuine_fake = $("<input/>", {
+		var genuine_false = $("<input/>", {
 			"type": "radio",
-			"name": "genuine-" + topic,
-			"value": "fake"
+			"name": "genuine-" + topic.name,
+			"value": "false",
+			"checked": !topic.genuine
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
 		);
 
-		genuine_fake.after(
-			$("<span></span>", {"text":"Fake"})
+		genuine_false.after(
+			$("<span></span>", {"text":"F"})
 		);
-
 	},
 
 	submitTopic: function(){
+		/*
 		var topic_list = [];
 
 		var p = $(".topic-form p");
@@ -128,6 +159,7 @@ app.InfoBoxView = Backbone.View.extend({
 		}
 
 		alert(JSON.stringify(topic_list));
+		*/
 
 		var sample = '{"lastUIUpdate":1506525529305,"tweetList":[{"id":22,"text":"","extract":"it was a false report on virus outbreak doing an occupy wall st and rioting the nyse","uri":"https://twitter.com/Mokamsingh/status/263218154279407616"},{"id":23,"text":"","extract":"report on virus outbreak doing an occupy wall st and rioting the nyse it has nt happened","uri":"https://twitter.com/Mokamsingh/status/263218154279407616"},{"id":26,"text":"","extract":"rt @breakingnews rumors of nyse trading floor rioting are not true says","uri":"https://twitter.com/LasiewickiAnn/status/263222115120082945"},{"id":11,"text":"","extract":"looks like south rioting well into wall street and east rioting","uri":"https://twitter.com/ericisbeautiful/status/263067953761751040"}]}';
 
@@ -143,10 +175,10 @@ app.InfoBoxView = Backbone.View.extend({
 				"text": data.uri
 			}).appendTo(tr);
 		});
-		
 	},
 
 	clearTopic: function(){
 		$(".topic-form").html(" ");
+		$(".fews-form tbody").html(" ");
 	}
 });
