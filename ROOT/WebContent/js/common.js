@@ -50,8 +50,8 @@ function readFile(input_files){
 		// Entire file
 		var jsonData = JSON.parse(this.result);
 
-		var nodes = jsonData['nodes'];
-		var edges = jsonData['edges'];
+		var nodes = jsonData['graph']['nodes'];
+		var edges = jsonData['graph']['edges'];
 
 		// set up simulations for force-directed graphs
 		var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
