@@ -66,6 +66,24 @@ public class PostgreSQLDB {
         }
     }
 
+
+
+    // Stuart's single-topic query
+//                    "SELECT " +
+//                    "post.source_uri, post.text, extract.extract, extract.item_key " +
+//                    "FROM " +
+//                    "factextract.phase1_ext_db_item AS extract, " +
+//                    "factextract.phase1_ext_db_topic_index AS index, " +
+//                    "factextract.phase1_ext_db_topic AS topic, " +
+//                    "factextract.phase1_post_db_item AS post " +
+//                    "WHERE " +
+//                    "extract.item_key = index.item_key AND " +
+//                    "index.topic_key = topic.topic_key AND " +
+//                    "topic.topic = ? AND " +
+//                    "topic.negated IS NOT TRUE AND " +
+//                    "topic.genuine IS NOT FALSE AND " +
+//                    "post.source_uri = extract.source_uri"
+
     /**
      * Get a list of Tweets referring to the specified Topics.
      *
@@ -80,27 +98,45 @@ public class PostgreSQLDB {
 
         List<Tweet> tweetList = new ArrayList<>();
 
-        Topic topic = topicList.get(0);
-
         try {
             if (!connect()) { return null; }
 
-            String queryString =
-                    "SELECT extract.item_key, extract.extract, extract.source_uri " +
+            // Build up the SQL query using a subquery for each topic - allows consistency
+            StringBuilder queryString = new StringBuilder(
+                    "SELECT DISTINCT ON (extract.item_key) " +
+                    "extract.item_key, extract.extract, extract.source_uri " +
+                    "FROM factextract.phase1_ext_db_item as extract " +
+                    "JOIN factextract.phase1_ext_db_topic_index as topic_index " +
+                    "ON (extract.item_key = topic_index.item_key) "
+            );
+            for (int i=0; i < topicList.size(); i++) {
+                if (i == 0) {
+                    queryString.append("WHERE extract.item_key IN ");
+                } else {
+                    queryString.append("AND extract.item_key IN ");
+                }
+                queryString.append(
+                        "( " +
+                            "SELECT DISTINCT topic_index.item_key " +
                             "FROM factextract.phase1_ext_db_topic as topic " +
-                            "JOIN factextract.phase1_ext_db_topic_index as topic_index " +
+                            "RIGHT JOIN factextract.phase1_ext_db_topic_index as topic_index " +
                             "ON (topic.topic_key = topic_index.topic_key) " +
-                            "JOIN factextract.phase1_ext_db_item as extract " +
-                            "ON (extract.item_key = topic_index.item_key) " +
                             "WHERE topic.topic = ? " +
-                            "AND topic.negated IS NOT ? " +
-                            "AND topic.genuine IS NOT ? " +
-                            "LIMIT 10;";
+                            "AND topic.negated IS NOT TRUE " +
+                            "AND topic.genuine IS NOT FALSE " +
+                        ") "
+                );
+            }
+            queryString.append("ORDER BY extract.item_key;");
 
-            statement = conn.prepareStatement(queryString);
-            statement.setString(1, topic.getName());
-            statement.setBoolean(2, !topic.isNegated());
-            statement.setBoolean(3, !topic.isGenuine());
+            statement = conn.prepareStatement(queryString.toString());
+            for (int i=0; i < topicList.size(); i++) {
+                Topic topic = topicList.get(i);
+                statement.setString(i + 1, topic.getName());
+//                statement.setString(3*i + 1, topic.getName());
+//                statement.setBoolean(3*i + 2, topic.isNegated());
+//                statement.setBoolean(3*i + 3, topic.isGenuine());
+            }
 
             resultSet = statement.executeQuery();
 
