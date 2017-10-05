@@ -10,8 +10,8 @@ import javax.json.bind.annotation.JsonbPropertyOrder;
 @JsonbPropertyOrder({"name", "negated", "genuine"})
 public class Topic {
     private String name;
-    private boolean negated;
-    private boolean genuine;
+    private int negated;
+    private int genuine;
 
     /**
      * Construct a new Topic.
@@ -20,11 +20,13 @@ public class Topic {
      * @param negated Whether the Topic is negated - i.e. "there is no unrest"
      * @param genuine Whether the Topic is genuine - i.e. "the report of unrest is false"
      */
-    public Topic(String name, boolean negated, boolean genuine) {
+    public Topic(String name, int negated, int genuine) {
         this.name = name;
         this.negated = negated;
         this.genuine = genuine;
     }
+
+    public Topic() {}
 
     /**
      * Get the name of the Topic.
@@ -40,7 +42,7 @@ public class Topic {
      *
      * @return Is Topic negated
      */
-    public boolean isNegated() {
+    public int isNegated() {
         return negated;
     }
 
@@ -49,9 +51,24 @@ public class Topic {
      *
      * @return Is Topic genuine
      */
-    public boolean isGenuine() {
+    public int isGenuine() {
         return genuine;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNegated(int negated) {
+        if (negated < -1 || negated > 1) { negated = -1; }
+        this.negated = negated;
+    }
+
+    public void setGenuine(int genuine) {
+        if (genuine < -1 || genuine > 1) { genuine = -1; }
+        this.genuine = genuine;
+    }
+
 
     /**
      * Get the String representation of the Topic.

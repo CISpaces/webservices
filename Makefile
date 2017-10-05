@@ -2,7 +2,7 @@
 deploy:
 	${CATALINA_HOME}/bin/shutdown.sh
 	ant deploy
-	${CATALINA_HOME}/bin/catalina.sh jpda start -agentlib:jdwp=transport=dt_socket,address=42137,suspend=n,server=y
+	${CATALINA_HOME}/bin/startup.sh
 
 .PHONY: clean
 clean:
