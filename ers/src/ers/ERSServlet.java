@@ -35,6 +35,12 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * POST request for Entity Reasoning and NLG
+ * @param graph JSON String and action:eval/nlg. Eval action evaluates the graph and NLG generates the Report
+ * @return a response giving information about the hypothesis, colours and chunks of subgroups in the graph. If it fails, it returns the error.
+ * URL: http://localhost:8080/ERS/rest/writeRules
+ */
 
 @Path("/WriteRules")
 public class ERSServlet {

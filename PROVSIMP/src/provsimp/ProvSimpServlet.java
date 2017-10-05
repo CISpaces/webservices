@@ -37,6 +37,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+
+/**
+ * POST request for saving the provenance of the graph
+ * @param graph JSON String of the graph and action (from old prov doc, the actions are- save, load, addnodes, copynode, getnode, getpath, getpathnode)
+ * @return response for success or fail.
+ * URL: http://localhost:8080/ERS/rest/writeRules
+ */
+
 @Path("/ProcProv")
 public class ProvSimpServlet {
 	private boolean PRINT;

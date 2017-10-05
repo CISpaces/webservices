@@ -1,0 +1,88 @@
+#Created using http://sequencediagram.org/
+
+title CIspaces
+
+participant "HTTP Client" as HTTP
+participant "VC Endpoint" as VC
+participant "ERS endpoint" as ERS
+participant "FEWS endpoint" as FEW
+
+entryspacing 3
+autonumber
+
+HTTP->VC: GET VC/rest/getInfo
+VC-->HTTP: Text/HTML "Hello Jersy"
+
+rbox over VC: Login Web Page
+
+HTTP->VC: POST VC/rest/login(username, password)
+VC-->HTTP: Status: (Sucess + Token)/(Fail + error message)
+
+HTTP->VC: POST VC/rest/user/add(username, password, affliation)
+VC-->HTTP: Status: created/Conflict/Error
+
+rbox over VC: Index Page
+
+HTTP->VC: POST VC/rest/getAnalysis(userid)
+VC-->HTTP: JSON response: lastest Graph or new graph
+
+HTTP->VC: POST VC/rest/new(graphid)
+VC-->HTTP: Status: Success/Fail
+
+rbox over VC: Index Page(Work Box)
+
+HTTP->VC: POST VC/rest/node(nodeid, attr, graphid) - add node
+VC-->HTTP: Status: Success/Fail
+
+HTTP->VC: PUT VC/rest/node(nodeid, attr, graphid) - update node
+VC-->HTTP:Status: Success/Fail
+
+HTTP->VC: DELETE VC/rest/node(nodeid) - delete node
+VC-->HTTP:Status: Success/Fail
+
+HTTP->VC: POST VC/rest/edge(edgeid, attr, graphid) - add new edge
+VC-->HTTP: Status: Success/Fail
+
+HTTP->VC: PUT VC/rest/edge(edgeid, attr, graphid) -  update edge
+VC-->HTTP:Status: Success/Fail
+
+HTTP->VC: DELETE VC/rest/edge(edgeid) - delete edge
+VC-->HTTP:Status: Success/Fail
+
+rbox over VC: Index Page(History)
+
+HTTP->VC: POST VC/rest/save(graphid, userid, title, graph json)
+VC-->HTTP: Status: Success/Fail
+
+HTTP->VC: GET VC/rest/history(graphid)
+VC-->HTTP: JSON response: All saved version of the graph
+
+HTTP->VC: POST VC/rest/updateAnalysis(analysis id)
+VC-->HTTP: Status: Success/Fail
+
+rbox over ERS: Index Page(Eval Box)
+autonumber 1
+
+HTTP->ERS: POST ERS/rest/writeRule (action:eval, graph json string)
+ERS-->HTTP: Status: (Success + Graph info)/(Fail + Error message)
+
+HTTP->ERS: POST ERS/rest/writeRule (action:nlg, graph json string)
+ERS-->HTTP: Status: (Success + text report)/(Fail + Error message)
+
+HTTP->ERS: GET ERS/rest/
+ERS-->HTTP: Text/HTML "Hello ERS"
+
+rbox over FEW: Index Page(Info Box)
+autonumber 1
+
+HTTP->FEW: GET FEWS/rest/hello
+FEW-->HTTP: Text/HTML "Hello"
+
+HTTP->FEW: GET FEWS/rest/topics
+FEW-->HTTP: JSON response topics(including negated and genuine topics)
+
+HTTP->FEW: GET FEWS/rest/tweets/{inclusive}/{topic}/{negated}/{genuine}
+FEW-->HTTP: JSON response with list of Tweets
+
+HTTP->FEW: POST FEWS/rest/control/{message}
+FEW-->HTTP: Status: Success/Fail

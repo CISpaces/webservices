@@ -326,6 +326,11 @@ public class VCServlet {
         return isDelelted;
     }
 
+    /**
+     * @param analysisid a string containing the id of the analysis to be loaded
+     * @return a response indicating whether the JSON has been processed and the analysis updated in the database
+     * URL: http://localhost:8080/VC/rest/updateAnalysis
+     */
     @Path("/updateAnalysis")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
