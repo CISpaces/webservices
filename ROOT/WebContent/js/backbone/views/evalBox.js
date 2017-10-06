@@ -59,7 +59,7 @@ app.EvalBoxView = Backbone.View.extend({
 						$("#eval_chunks").hide();
 					} else {
 						// makes a list of evaluation options from the result
-						var colors_keys = Object.keys(data.colors);
+						var colors_keys = Object.keys(data.colors).sort();
 
 						// First row is for explaining which color means
 						var explain = $("<label></label>", {
@@ -115,7 +115,7 @@ app.EvalBoxView = Backbone.View.extend({
 						});
 
 						// makes a list of evaluation chunks according to the result
-						var chunks_keys = Object.keys(data.chunks);
+						var chunks_keys = Object.keys(data.chunks).sort();
 
 						var color = d3.scaleOrdinal(d3.schemeCategory10);
 
