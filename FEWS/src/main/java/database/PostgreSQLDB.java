@@ -52,7 +52,7 @@ public class PostgreSQLDB {
      * @param s SQL Statement to close
      * @param c SQL Connection to close
      */
-    private void finalize(ResultSet rs, Statement s, Connection c) {
+    private void finalise(ResultSet rs, Statement s, Connection c) {
         if (rs != null) {
             try {
                 rs.close();
@@ -154,7 +154,7 @@ public class PostgreSQLDB {
             exc.printStackTrace();
             return null;
         } finally {
-            finalize(resultSet, statement, conn);
+            finalise(resultSet, statement, conn);
         }
 
         return tweetList;
@@ -232,7 +232,7 @@ public class PostgreSQLDB {
             exc.printStackTrace();
             return null;
         } finally {
-            finalize(resultSet, statement, conn);
+            finalise(resultSet, statement, conn);
         }
 
         return topicList;

@@ -13,59 +13,79 @@ import java.util.logging.Logger;
  * @see ControlMessage
  */
 public class MessageBus {
-    private static final String QUEUE_NAME = "factextract";
+    private static final String EXCHANGE_NAME = "factextract";
 
+    private ConnectionFactory connectionFactory = null;
     private Connection connection = null;
     private Channel channel = null;
     private static Logger log;
 
     /**
      * Construct a new MessageBus pointing to a RabbitMQ server on localhost.
-     *
-     * @throws java.io.IOException
-     * @throws java.util.concurrent.TimeoutException
      */
-    public MessageBus()
-            throws java.io.IOException, java.util.concurrent.TimeoutException {
-        this("localhost");
-    }
+    public MessageBus() { this("localhost"); }
 
     /**
      * Construct a new MessageBus pointing to a RabbitMQ server on a remote host.
      *
      * @param queueHost Hostname of RabbitMQ server
-     * @throws java.io.IOException
-     * @throws java.util.concurrent.TimeoutException
      */
-    public MessageBus(String queueHost)
-            throws java.io.IOException, java.util.concurrent.TimeoutException {
+    public MessageBus(String queueHost) {
         log = Logger.getLogger(getClass().getName());
 
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(queueHost);
-
-        connection = factory.newConnection();
-        channel = connection.createChannel();
-
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost(queueHost);
     }
 
     /**
-     * Send a message down the RabbitMQ bus.
+     * Connect to the RabbitMQ server.
      *
-     * @param message Message to send
-     * @return Was sending successful?
+     * Define a 'fanout' (pub/sub) exchange.
+     *
+     * @return Was the connection successful?
      */
-    public boolean sendMessage(String message) {
+    private boolean connect() {
         try {
-            ControlMessage cMessage = new ControlMessage(message);
-            channel.basicPublish("", QUEUE_NAME, null, cMessage.serialize().getBytes());
+            connection = connectionFactory.newConnection();
+            channel = connection.createChannel();
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
             return true;
-        } catch (java.io.IOException exc) {
-            log.log(Level.SEVERE, "Failed to send RabbitMQ message", exc);
+        } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) {
+            log.log(Level.SEVERE, "Failed RabbitMQ message bus connection", exc);
             exc.printStackTrace();
             return false;
         }
     }
 
+    /**
+     * Close the connection to the RabbitMQ server.
+     */
+    private void finalise() {
+        try {
+            channel.close();
+        } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) { /* Nothing */ }
+        try {
+            connection.close();
+        } catch (java.io.IOException exc) { /* Nothing */ }
+    }
+
+    /**
+     * Send a ControlMessage down the RabbitMQ bus.
+     *
+     * @param message Message to send
+     * @return Was sending successful?
+     */
+    public boolean sendMessage(ControlMessage message) {
+        if (!connect()) { return false; }
+        try {
+            channel.basicPublish(EXCHANGE_NAME, "", null, message.serialize().getBytes());
+            finalise();
+            return true;
+        } catch (java.io.IOException exc) {
+            log.log(Level.SEVERE, "Failed to send RabbitMQ message", exc);
+            exc.printStackTrace();
+            finalise();
+            return false;
+        }
+    }
 }
