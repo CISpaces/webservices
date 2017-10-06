@@ -164,6 +164,9 @@ app.WorkBoxView = Backbone.View
           }
         }
 
+        $("#details-node").show();
+        $("#details-tweet").hide();
+
 			return id;
     },
 

@@ -65,18 +65,17 @@ hr {
   width: 100%;
 }
 
-.topic-form label {
+.topic-form label, button {
   margin-left: 10px
 }
 
 .float_left {
   float: left;
-  width: 65%;
+  width: 63%;
 }
 
 .float_right {
   float: right;
-  width: 35%;
 }
 
 /**

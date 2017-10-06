@@ -276,7 +276,21 @@
 						<!-- /.panel-heading -->
 						<div id="div-details" class="panel-collapse collapse in">
 							<div class="panel-body" id="details">
-									<div id="details-node">
+									<div id="details-node" style="display: none;">
+									</div>
+									<div id="details-tweet" style="display: none;">
+										<div class="form-group">
+											<label>Extract</label>
+											<p class="form-control-static"></p>
+										</div>
+										<div class="form-group">
+											<label>Twitter URI</label>
+											<p class="form-control-static"></p>
+										</div>
+										<div class="form-group">
+											<label>Time</label>
+											<p class="form-control-static"></p>
+										</div>
 									</div>
 							</div>
 							<!-- /.panel-body -->
@@ -405,12 +419,11 @@
 
 	<script type="text/javascript" src="js/backbone/models/node.js"></script>
 	<script type="text/javascript" src="js/backbone/models/edge.js"></script>
-    <script type="text/javascript" src="js/backbone/models/topic.js"></script>
-    <script type="text/javascript" src="js/backbone/models/tweet.js"></script>
+  <script type="text/javascript" src="js/backbone/models/topic.js"></script>
 	<script type="text/javascript" src="js/backbone/collections/nodes.js"></script>
 	<script type="text/javascript" src="js/backbone/collections/edges.js"></script>
 	<script type="text/javascript" src="js/backbone/collections/topics.js"></script>
-    <script type="text/javascript" src="js/backbone/collections/tweets.js"></script>
+
 	<script type="text/javascript" src="js/backbone/views/nodes.js"></script>
 	<script type="text/javascript" src="js/backbone/views/toolBox.js"></script>
 	<script type="text/javascript" src="js/backbone/views/infoBox.js"></script>

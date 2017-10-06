@@ -59,6 +59,8 @@ app.InfoBoxView = Backbone.View.extend({
 		};
 
 		this.addTopic(param);
+
+    $("#info_box .input-group input").val("");
 	},
 
 	addTopic: function(topic){
@@ -66,81 +68,118 @@ app.InfoBoxView = Backbone.View.extend({
 		var p = $("<p></p>").appendTo($("#info_box .topic-form"));
 
 		var div = $("<div></div>", {
-			"class": "alert alert-success alert-infobox",
+			"class": "form-group"
+		}).appendTo(p);
+
+		var alert_class = "alert-success";
+		if(topic.negated == 0){
+			alert_class = "alert-danger";
+		} else if(topic.negated == -1){
+			alert_class = "alert-warning";
+		}
+
+		var div_alert = $("<div></div>", {
+			"class": "alert " + alert_class + " alert-infobox float_left",
 			"text": topic.name
+		}).appendTo(div);
+
+		var button = $("<i></i>", {
+			"class": "fa fa-minus"
+		}).appendTo($("<button></button>", {
+				"type": "button",
+				"class": "btn btn-default"
+			}).click(function(){
+				p.remove();
+			}).appendTo(div)
+		);
+
+		var div_negated = $("<div></div>", {
+			"class": "form-group"
 		}).appendTo(p);
 
 		var negated_true = $("<input/>", {
 			"type": "radio",
 			"name": "negated-" + topic.name,
-			"value": "true",
-			"checked": topic.negated
+			"value": 1,
+			"checked": (topic.negated == 1)
 		}).click(function(obj){
 			div.addClass("alert-success");
 			div.removeClass("alert-danger");
+			div.removeClass("alert-warning");
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
-			}).appendTo(p)
-			  .before(
-				$("<label></label>", {"text": "Negated"})
-			)
-		).after(
-			$("<span></span>", {"text":"T"})
-		);
+			}).appendTo(div_negated)
+			  .before($("<label></label>", {"text": "negated"}))
+		).after($("<span></span>", {"text": "true"}));
 
 		var negated_false = $("<input/>", {
 			"type": "radio",
 			"name": "negated-" + topic.name,
-			"value": "false",
-			"checked": !topic.negated
+			"value": 0,
+			"checked": (topic.negated == 0)
 		}).click(function(){
-			div.addClass("alert-danger");
 			div.removeClass("alert-success");
+			div.addClass("alert-danger");
+			div.removeClass("alert-warning");
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
-			}).appendTo(p)
-		);
+			}).appendTo(div_negated)
+		).after($("<span></span>", {"text": "false"}));
 
-		negated_false.after(
-			$("<span></span>", {"text":"F"})
-		);
+		var negated_unknown = $("<input/>", {
+			"type": "radio",
+			"name": "negated-" + topic.name,
+			"value": -1,
+			"checked": (topic.negated == -1)
+		}).click(function(){
+			div.removeClass("alert-success");
+			div.removeClass("alert-danger");
+			div.addClass("alert-warning");
+		}).appendTo(
+			$("<label></label>", {
+				"class": "radio-inline"
+			}).appendTo(div_negated)
+		).after($("<span></span>", {"text": "unknown"}));
+
+		var div_genuine = $("<div></div>", {
+			"class": "form-group"
+		}).appendTo(p);
 
 		var genuine_true = $("<input/>", {
 			"type": "radio",
 			"name": "genuine-" + topic.name,
-			"value": "true",
-			"checked": topic.genuine
+			"value": 1,
+			"checked": (topic.genuine == 1)
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
-			}).appendTo(p)
-			  .before(
-				$("<label></label>", {"text": "Genuine"})
-			)
-		);
-
-		genuine_true.after(
-			$("<span></span>", {"text":"T"})
-		);
+			}).appendTo(div_genuine)
+			  .before($("<label></label>", {"text": "genuine"}))
+		).after($("<span></span>", {"text":"ture"}));
 
 		var genuine_false = $("<input/>", {
 			"type": "radio",
 			"name": "genuine-" + topic.name,
-			"value": "false",
-			"checked": !topic.genuine
+			"value": 0,
+			"checked": (topic.genuine == 0)
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
-			}).appendTo(p)
-		);
+			}).appendTo(div_genuine)
+		).after($("<span></span>", {"text":"false"}));
 
-		genuine_false.after(
-			$("<span></span>", {"text":"F"})
-		);
-
-        $("#info_box .input-group input").val("");
+		var genuine_unknown = $("<input/>", {
+			"type": "radio",
+			"name": "genuine-" + topic.name,
+			"value": -1,
+			"checked": (topic.genuine == -1)
+		}).appendTo(
+			$("<label></label>", {
+				"class": "radio-inline"
+			}).appendTo(div_genuine)
+		).after($("<span></span>", {"text": "unknown"}));
 	},
 
 	submitTopic: function(){
@@ -154,7 +193,7 @@ app.InfoBoxView = Backbone.View.extend({
 				"name": topic,
 				// "negated": $('[name="negated-' + topic + '"]:checked').val(),
 				// "genuine": $('[name="genuine-' + topic + '"]:checked').val()
-                "negated": -1,
+        "negated": -1,
 				"genuine": -1
 			};
 
@@ -163,31 +202,42 @@ app.InfoBoxView = Backbone.View.extend({
 
 		// alert(JSON.stringify(topic_list));
 
-		var tweetList = new app.TweetList();
+		// var tweetList = new app.TweetList();
 
-        // TODO can this use an actual Backbone Model instead
+    // TODO can this use an actual Backbone Model instead
 		Backbone.ajax({
 			type: "POST",
-            url: "/fewsservlet/tweets",
-            data: JSON.stringify(topic_list),
+      url: "/fewsservlet/tweets",
+      data: JSON.stringify(topic_list),
 			dataType: 'json',
 			contentType: "application/json",
 			success: function(result){
-                console.log(result);
+          // console.log(result);
 
-                $(".fews-form table tbody").empty();
+          $(".fews-form table tbody").empty();
 
-                result.forEach(function(data){
-                    var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
+          result.forEach(function(data){
+              var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
 
-                    var td_extract = $("<td></td>", {
-                        "text": data.extract
-                    }).appendTo(tr);
+              var td_extract = $("<td></td>", {
+                  "text": data.extract
+              }).appendTo(tr)
+							.click(function(d){
+								$("#details-node").hide();
+								$("#details-tweet").show();
 
-                    var td_uri = $("<td></td>", {
-                        "text": data.uri
-                    }).appendTo(tr);
-                });
+								var p = $("#details-tweet p");
+								p[0].innerText = data.extract;
+								p[1].innerText = data.uri;
+							});
+
+              var td_uri = $("<td></td>", {
+                  "text": data.uri
+              }).appendTo(tr)
+							.click(function(){
+
+							});
+          });
 			},
 			error: function(xhr, textStatus, errorThrown){
 				alert("AJAX failed: " + errorThrown);
@@ -197,6 +247,6 @@ app.InfoBoxView = Backbone.View.extend({
 
 	clearTopic: function(){
 		$(".topic-form").html(" ");
-		$(".fews-form tbody").html(" ");
+		$(".fews-form table tbody").empty();
 	}
 });
