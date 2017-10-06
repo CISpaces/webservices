@@ -18,25 +18,25 @@ app.InfoBoxView = Backbone.View.extend({
 	},
 
 	initialize: function(){
-		// example
-		this.topics = app.Topics;
-		this.topics.fetch({
-			success: function(collection, response) {
-                collection.each(function(model){
-                    console.log(model);
-                    // alert(model.attributes["name"]);
-                    var p = $("<p></p>").appendTo($("#info_box .topic-form"));
-                    var div = $("<div></div>", {
-                        "class": "alert alert-success alert-infobox",
-                        "text": model.attributes["name"]
-                    }).appendTo(p);
-                });
+		this.$el.attr("style", "height: " + (chart.svg_height - 60) + "px");
+
+		$.ajax({
+			type: "GET",
+			contentType: "application/json",
+			headers: {"Authorization": localStorage.getItem('auth_token')},
+			url: "/fewsservlet/topics",
+			success: function(data){
+				data.forEach(function(d){
+					app.infoBoxView.addTopic(d);
+				});
+			},
+			error: function(data){
+				console.error(data);
 			}
 		});
 	},
 
 	render: function(){
-
 	},
 
 	createTopic: function(obj){
@@ -52,18 +52,29 @@ app.InfoBoxView = Backbone.View.extend({
 			return;
 		}
 
+		var param = {
+			'name': topic,
+			'negated': true,
+			'genuine': true
+		};
+
+		this.addTopic(param);
+	},
+
+	addTopic: function(topic){
+
 		var p = $("<p></p>").appendTo($("#info_box .topic-form"));
 
 		var div = $("<div></div>", {
 			"class": "alert alert-success alert-infobox",
-			"text": topic
+			"text": topic.name
 		}).appendTo(p);
 
-		var negated_and = $("<input/>", {
+		var negated_true = $("<input/>", {
 			"type": "radio",
-			"name": "negated-" + topic,
-			"value": "and",
-			"checked": "true"
+			"name": "negated-" + topic.name,
+			"value": "true",
+			"checked": topic.negated
 		}).click(function(obj){
 			div.addClass("alert-success");
 			div.removeClass("alert-danger");
@@ -71,16 +82,18 @@ app.InfoBoxView = Backbone.View.extend({
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
+			  .before(
+				$("<label></label>", {"text": "Negated"})
+			)
+		).after(
+			$("<span></span>", {"text":"T"})
 		);
 
-		negated_and.after(
-			$("<span></span>", {"text":"And"})
-		);
-
-		var negated_not = $("<input/>", {
+		var negated_false = $("<input/>", {
 			"type": "radio",
-			"name": "negated-" + topic,
-			"value": "not"
+			"name": "negated-" + topic.name,
+			"value": "false",
+			"checked": !topic.negated
 		}).click(function(){
 			div.addClass("alert-danger");
 			div.removeClass("alert-success");
@@ -90,37 +103,41 @@ app.InfoBoxView = Backbone.View.extend({
 			}).appendTo(p)
 		);
 
-		negated_not.after(
-			$("<span></span>", {"text":"Not"})
+		negated_false.after(
+			$("<span></span>", {"text":"F"})
 		);
 
 		var genuine_true = $("<input/>", {
 			"type": "radio",
-			"name": "genuine-" + topic,
+			"name": "genuine-" + topic.name,
 			"value": "true",
-			"checked": "true"
+			"checked": topic.genuine
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
+			  .before(
+				$("<label></label>", {"text": "Genuine"})
+			)
 		);
 
 		genuine_true.after(
-			$("<span></span>", {"text":"True"})
+			$("<span></span>", {"text":"T"})
 		);
 
-		var genuine_fake = $("<input/>", {
+		var genuine_false = $("<input/>", {
 			"type": "radio",
-			"name": "genuine-" + topic,
-			"value": "fake"
+			"name": "genuine-" + topic.name,
+			"value": "false",
+			"checked": !topic.genuine
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
 			}).appendTo(p)
 		);
 
-		genuine_fake.after(
-			$("<span></span>", {"text":"Fake"})
+		genuine_false.after(
+			$("<span></span>", {"text":"F"})
 		);
 
         $("#info_box .input-group input").val("");
@@ -176,11 +193,10 @@ app.InfoBoxView = Backbone.View.extend({
 				alert("AJAX failed: " + errorThrown);
 			}
 		});
-
 	},
 
 	clearTopic: function(){
 		$(".topic-form").html(" ");
-		$(".fews-form table tbody").empty();
+		$(".fews-form tbody").html(" ");
 	}
 });

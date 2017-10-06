@@ -53,6 +53,11 @@ function readFile(input_files){
 		var nodes = jsonData['nodes'];
 		var edges = jsonData['edges'];
 
+		if(!nodes && !edges){
+			nodes = jsonData['graph']['nodes'];
+			edges = jsonData['graph']['edges'];
+		}
+
 		// set up simulations for force-directed graphs
 		var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
 		push_node_style_data(ret_simulation);
