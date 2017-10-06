@@ -4,38 +4,59 @@ title CIspaces
 
 participant "HTTP Client" as HTTP
 participant "VC Endpoint" as VC
+participant "PROVSIMP Endpoint" as PROV
+participant "PROVPLOT Endpoint" as PP
 participant "ERS endpoint" as ERS
 participant "FEWS endpoint" as FEW
 
-entryspacing 3
+entryspacing 2
 autonumber
 
 HTTP->VC: GET VC/rest/getInfo
+space
 VC-->HTTP: Text/HTML "Hello Jersy"
 
 rbox over VC: Login Web Page
 
-HTTP->VC: POST VC/rest/login(username, password)
-VC-->HTTP: Status: (Sucess + Token)/(Fail + error message)
+autonumber 1
 
 HTTP->VC: POST VC/rest/user/add(username, password, affliation)
 VC-->HTTP: Status: created/Conflict/Error
 
-rbox over VC: Index Page
 
-HTTP->VC: POST VC/rest/getAnalysis(userid)
-VC-->HTTP: JSON response: lastest Graph or new graph
+HTTP->VC: POST VC/rest/login(username, password)
+VC-->HTTP: Status: (Sucess + Token)/(Fail + error message)
+
+rbox over VC: Index Page(Browse Box)
+
+autonumber 1
+
+HTTP->VC: POST VC/rest/browseAnalysis(userid)
+VC-->HTTP: JSON respose: All graphids/ Error message
+
+HTTP->VC: POST VC/rest/getAnalysis(graphid)
+VC-->HTTP: JSON response: requested graph/ Error message
 
 HTTP->VC: POST VC/rest/new(graphid)
 VC-->HTTP: Status: Success/Fail
+
 
 rbox over VC: Index Page(Work Box)
 
 HTTP->VC: POST VC/rest/node(nodeid, attr, graphid) - add node
 VC-->HTTP: Status: Success/Fail
 
+HTTP->PROV: POST PROVSIMP/rest/ProcProv/addnode(nodeid, source, time, stream)
+PROV-->HTTP: Status: Success/Fail
+
 HTTP->VC: PUT VC/rest/node(nodeid, attr, graphid) - update node
 VC-->HTTP:Status: Success/Fail
+
+HTTP->PROV: POST PROVSIMP/rest/ProcProv/addnode(nodeid, source, time, stream)
+PROV-->HTTP: Status: Success/Fail
+
+HTTP->PP: POST provgraphs/Prov?action=printprov&json=JSON
+PP-->HTTP: PNG image of the provenance graph/ Fail
 
 HTTP->VC: DELETE VC/rest/node(nodeid) - delete node
 VC-->HTTP:Status: Success/Fail
@@ -49,6 +70,7 @@ VC-->HTTP:Status: Success/Fail
 HTTP->VC: DELETE VC/rest/edge(edgeid) - delete edge
 VC-->HTTP:Status: Success/Fail
 
+autonumber 1
 rbox over VC: Index Page(History)
 
 HTTP->VC: POST VC/rest/save(graphid, userid, title, graph json)
