@@ -123,6 +123,7 @@ app.InfoBoxView = Backbone.View.extend({
 			$("<span></span>", {"text":"Fake"})
 		);
 
+        $("#info_box .input-group input").val("");
 	},
 
 	submitTopic: function(){
@@ -143,28 +144,21 @@ app.InfoBoxView = Backbone.View.extend({
 			topic_list.push(obj);
 		}
 
-		alert(JSON.stringify(topic_list));
+		// alert(JSON.stringify(topic_list));
 
 		var tweetList = new app.TweetList();
 
+        // TODO can this use an actual Backbone Model instead
 		Backbone.ajax({
 			type: "POST",
-			url: "http://localhost:8080/fewsservlet/tweets",
-			// data: JSON.stringify([{"name": "blocked", "negated": -1, "genuine": -1}]),
+            url: "/fewsservlet/tweets",
             data: JSON.stringify(topic_list),
 			dataType: 'json',
 			contentType: "application/json",
 			success: function(result){
-				// console.log("Some stuff");
-				// alert(result);
-                // tweetList.parse(result);
-                // alert(tweetList);
-                // console.log(tweetList);
                 console.log(result);
 
-                // tweetList.each(function(model){
-					// console.log(model.attributes["extract"])
-				// });
+                $(".fews-form table tbody").empty();
 
                 result.forEach(function(data){
                     var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
@@ -187,5 +181,6 @@ app.InfoBoxView = Backbone.View.extend({
 
 	clearTopic: function(){
 		$(".topic-form").html(" ");
+		$(".fews-form table tbody").empty();
 	}
 });
