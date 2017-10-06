@@ -19,4 +19,7 @@ def callback(ch, method, properties, body):
     print(" [x] %r" % body)
 
 channel.basic_consume(callback, queue=queue_name, no_ack=True)
-channel.start_consuming()
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    channel.basic_cancel(None)
