@@ -1,8 +1,8 @@
 package database;
 
-import java.io.InputStream;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,21 +19,8 @@ public class PostgreSQLDB {
     private Connection conn;
     private static Logger log;
 
-    private static final String configFile = "/main/java/database/dbconn.properties";
-    private Properties prop;
-
     public PostgreSQLDB() {
         log = Logger.getLogger(getClass().getName());
-
-        prop = new Properties();
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream resource = classLoader.getResourceAsStream(configFile);
-            prop.loadFromXML(resource);
-        } catch (java.io.IOException exc) {
-            log.log(Level.SEVERE, "Failed reading DB config", exc);
-            exc.printStackTrace();
-        }
     }
 
     /**
@@ -43,17 +30,12 @@ public class PostgreSQLDB {
      */
     private boolean connect() {
         try {
-            Class.forName(prop.getProperty("driver_name"));
-            Properties connectionProps = new Properties();
-            connectionProps.setProperty("user", prop.getProperty("user"));
-            connectionProps.setProperty("password", prop.getProperty("password"));
-
+            Class.forName("org.postgresql.Driver");
+//            TODO put these in a config file
             conn = DriverManager.getConnection(
-                    "jdbc:" + prop.getProperty("dbms") +
-                            "://" + prop.getProperty("hostname") +
-                            ":" + prop.getProperty("port") +
-                            "/" + prop.getProperty("database_name"),
-                    connectionProps
+                    "jdbc:postgresql://rsg-xen-vm04.ecs.soton.ac.uk:5432/factextract",
+                    "factextract",
+                    "passw0rd"
             );
             return true;
         } catch (SQLException | ClassNotFoundException exc) {
