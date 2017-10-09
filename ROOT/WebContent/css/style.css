@@ -78,10 +78,23 @@ hr {
   float: right;
 }
 
+.fews-form table {
+  table-layout: fixed;
+}
+
+.fews-form table td {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#details-tweet div p {
+  word-wrap: break-word;
+}
+
 /**
 	styles for nodes
 */
-
 .btn-claim {
   border-color: #8c66ff;
   background-color: #b366ff;
