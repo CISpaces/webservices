@@ -3,6 +3,7 @@ package fewsservlet;
 import database.Topic;
 import database.PostgreSQLDB;
 import database.Tweet;
+import messagebus.ControlMessage;
 import messagebus.MessageBus;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,15 +27,7 @@ public class FEWSServlet {
         log = Logger.getLogger(getClass().getName());
 
         postgreSQLDB = new PostgreSQLDB();
-    }
-
-    private void connectMessageBus() {
-        try {
-            messageBus = new MessageBus();
-        } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) {
-            log.log(Level.SEVERE, "Failed to open RabbitMQ message bus", exc);
-            exc.printStackTrace();
-        }
+        messageBus = new MessageBus();
     }
 
     /**
@@ -144,20 +137,16 @@ public class FEWSServlet {
     /**
      * Add a new Topic to Fact-Extraction's index.
      *
-     * POST Request at FEWSROOT/control/{message} where 'message' is the new topic to add to Fact-Extraction's index
+     * POST Request at FEWSROOT/topics/{topicName} where 'topicName' is the new topic to add to Fact-Extraction's index
      *
-     * @param message Topic to add to index
-     * @return "OK" if message was send, else "NOK"
+     * @param topicName Topic to add to index
+     * @return "OK" if message was sent, else "NOK"
      */
     @POST
-    @Path("/control/{message}")
+    @Path("/topics/{topicName}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String sendMessage(@PathParam("message") String message) {
-        if (messageBus == null) { connectMessageBus(); }
-        if (messageBus.sendMessage(message)) {
-            return "OK";
-        } else {
-            return "NOK";
-        }
+    public String addTopic(@PathParam("topicName") String topicName) {
+        ControlMessage cMessage = new ControlMessage(topicName);
+        return messageBus.sendMessage(cMessage) ? "OK" : "NOK";
     }
 }

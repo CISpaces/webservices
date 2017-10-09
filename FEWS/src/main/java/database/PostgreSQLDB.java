@@ -52,7 +52,7 @@ public class PostgreSQLDB {
      * @param s SQL Statement to close
      * @param c SQL Connection to close
      */
-    private void finalize(ResultSet rs, Statement s, Connection c) {
+    private void finalise(ResultSet rs, Statement s, Connection c) {
         if (rs != null) {
             try {
                 rs.close();
@@ -107,10 +107,12 @@ public class PostgreSQLDB {
             StringBuilder queryString = new StringBuilder(
                     // Get the tables we want data from
                     "SELECT DISTINCT ON (extract.item_key) " +
-                    "extract.item_key, extract.extract, extract.source_uri " +
+                    "extract.item_key, extract.extract, extract.source_uri, post.text, post.created_at " +
                     "FROM factextract.phase1_ext_db_item as extract " +
                     "JOIN factextract.phase1_ext_db_topic_index as topic_index " +
-                    "ON (extract.item_key = topic_index.item_key) "
+                    "ON (extract.item_key = topic_index.item_key) " +
+                    "LEFT JOIN factextract.phase1_post_db_item as post " +
+                    "ON (extract.source_uri = post.source_uri) "
             );
 
             for (int i=0; i < topicList.size(); i++) {
@@ -126,7 +128,7 @@ public class PostgreSQLDB {
                         "( " +
                             "SELECT DISTINCT topic_index.item_key " +
                             "FROM factextract.phase1_ext_db_topic as topic " +
-                            "RIGHT JOIN factextract.phase1_ext_db_topic_index as topic_index " +
+                            "JOIN factextract.phase1_ext_db_topic_index as topic_index " +
                             "ON (topic.topic_key = topic_index.topic_key) " +
                             "WHERE topic.topic = '" + topic.getName() + "' " +
                             // Database column has three states in a BOOLEAN
@@ -145,8 +147,10 @@ public class PostgreSQLDB {
                 int id = resultSet.getInt("item_key");
                 String extract = resultSet.getString("extract");
                 String uri = resultSet.getString("source_uri");
+                String text = resultSet.getString("text");
+                java.sql.Timestamp created = resultSet.getTimestamp("created_at");
 
-                tweetList.add(new Tweet(id, extract, uri));
+                tweetList.add(new Tweet(id, extract, uri, text, created));
             }
 
         } catch (SQLException exc) {
@@ -154,7 +158,7 @@ public class PostgreSQLDB {
             exc.printStackTrace();
             return null;
         } finally {
-            finalize(resultSet, statement, conn);
+            finalise(resultSet, statement, conn);
         }
 
         return tweetList;
@@ -232,7 +236,7 @@ public class PostgreSQLDB {
             exc.printStackTrace();
             return null;
         } finally {
-            finalize(resultSet, statement, conn);
+            finalise(resultSet, statement, conn);
         }
 
         return topicList;

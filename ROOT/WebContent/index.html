@@ -8,8 +8,6 @@
 
 <title>CISpaces</title>
 
-<link rel="stylesheet" type="text/css" href="css/style.css">
-
 <!-- Bootstrap Core CSS -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -18,6 +16,8 @@
 
 <!-- Custom Fonts -->
 <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -73,7 +73,7 @@
 					<a class="btn btn-default" id="nProv">nProv</a> <a class="btn btn-default" id="aProv">aProv</a>
 					-->
 					<a class="btn btn-info btn-sm" style="margin-left: 20px;" id="info">Info</a>
-					<a class="btn btn-sm" style="border-color: #8c66ff; background-color: #b366ff; color: #ffffff" id="claim">Claim</a>
+					<a class="btn btn-claim btn-sm" id="claim">Claim</a>
 					<a class="btn btn-warning btn-sm" id="pref">Pref</a>
 					<a class="btn btn-danger btn-sm" id="con">Con</a>
 					<a class="btn btn-success btn-sm" id="pro">Pro</a>
@@ -169,17 +169,17 @@
 						<!-- /.panel-heading -->
 						<div id="div-infobox" class="panel-collapse collapse in">
 							<div class="panel-body" id="info_box">
-								<div class="form-group input-group">
-									<input type="text" class="form-control" placeholder="Enter topics...">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button"><i class="fa fa-plus"></i></button>
-									</span>
+								<div class="form-group input-group float_left">
+								    <input type="text" class="form-control" placeholder="Enter topics...">
+								    <span class="input-group-btn">
+								        <button class="btn btn-default" type="button"><i class="fa fa-plus"></i></button>
+								    </span>
+								</div>
+								<div class="form-group float_right">
+								    <button class="btn btn-default btn-clear">Clear</button>
+								    <button class="btn btn-default btn-sm btn-submit">Test</button>
 								</div>
 								<div class="form-group topic-form">
-								</div>
-								<div class="form-group">
-									<button class="btn btn-default btn-sm btn-submit">Submit</button>
-									<button class="btn btn-default btn-sm btn-clear">Clear</button>
 								</div>
 								<hr>
 								<div class="table-responsive fews-form">
@@ -405,8 +405,12 @@
 
 	<script type="text/javascript" src="js/backbone/models/node.js"></script>
 	<script type="text/javascript" src="js/backbone/models/edge.js"></script>
+    <script type="text/javascript" src="js/backbone/models/topic.js"></script>
+    <script type="text/javascript" src="js/backbone/models/tweet.js"></script>
 	<script type="text/javascript" src="js/backbone/collections/nodes.js"></script>
 	<script type="text/javascript" src="js/backbone/collections/edges.js"></script>
+	<script type="text/javascript" src="js/backbone/collections/topics.js"></script>
+    <script type="text/javascript" src="js/backbone/collections/tweets.js"></script>
 	<script type="text/javascript" src="js/backbone/views/nodes.js"></script>
 	<script type="text/javascript" src="js/backbone/views/toolBox.js"></script>
 	<script type="text/javascript" src="js/backbone/views/infoBox.js"></script>

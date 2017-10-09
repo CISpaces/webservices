@@ -48,8 +48,8 @@ img.avatar {
 hr {
 	height: 1px;
 	background-color: #aaa;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	width: 90%
 }
 
@@ -59,9 +59,36 @@ hr {
 	padding-bottom: 5px;
 }
 
+.topic-form, .fews-form{
+  overflow-y: auto;
+  height: 45%;
+  width: 100%;
+}
+
+.topic-form label {
+  margin-left: 10px
+}
+
+.float_left {
+  float: left;
+  width: 65%;
+}
+
+.float_right {
+  float: right;
+  width: 35%;
+}
+
 /**
 	styles for nodes
 */
+
+.btn-claim {
+  border-color: #8c66ff;
+  background-color: #b366ff;
+  color: #ffffff;
+}
+
 .info-node {
 	fill: #5bc0de;
 }

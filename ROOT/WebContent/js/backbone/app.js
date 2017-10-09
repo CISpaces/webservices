@@ -12,10 +12,11 @@ app.detailView;
 
 $(function(){
 	// new app.AppView();
+	app.workBoxView = new app.WorkBoxView();
+	
+	//app.reqBoxView = new app.ReqBoxView();
 	app.toolBoxView = new app.ToolBoxView();
 	app.infoBoxView = new app.InfoBoxView();
-	app.workBoxView = new app.WorkBoxView();
-	//app.reqBoxView = new app.ReqBoxView();
 	app.evalBoxView = new app.EvalBoxView();
 	//app.prefBoxView = new app.PrefBoxView();
 	//app.moiraBoxView = new app.MoiraBoxView();

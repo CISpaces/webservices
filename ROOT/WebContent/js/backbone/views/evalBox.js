@@ -41,6 +41,7 @@ app.EvalBoxView = Backbone.View.extend({
 	    $.ajax({
 			type : "POST",
 			contentType: "application/json",
+			headers: {"Authorization": localStorage.getItem('auth_token')},
 			// dataType : "application/json",
 			url : "/ers/rest/WriteRules",
 			data : JSON.stringify(param),
@@ -199,6 +200,7 @@ app.EvalBoxView = Backbone.View.extend({
 	    $.ajax({
 			type : "POST",
 			contentType: "application/json",
+			headers: {"Authorization": localStorage.getItem('auth_token')},
 			// dataType : "application/json",
 			url : "/ers/rest/WriteRules",
 			data : JSON.stringify(param),

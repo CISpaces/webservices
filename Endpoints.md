@@ -203,11 +203,11 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   ]
   ```
   
-- fewsservlet/control/{message}
+- fewsservlet/topics/{topicName}
   
   ```POST``` Add a new Topic to Fact-Extraction's index.
 
-  @param message Topic name to add to index
+  @param topicName Topic name to add to index
   
 
 ## PROVSIMP Web Service
