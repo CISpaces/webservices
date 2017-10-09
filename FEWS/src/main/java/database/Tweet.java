@@ -1,19 +1,35 @@
 package database;
 
 import javax.json.bind.annotation.JsonbPropertyOrder;
+import java.util.Date;
 
 /**
  * This class represents a Tweet as stored in the Fact-Extraction PostgreSQL database.
  *
  * @see PostgreSQLDB
  */
-@JsonbPropertyOrder({"id", "extract", "uri", "text"})
+@JsonbPropertyOrder({"id", "extract", "uri", "text", "created"})
 public class Tweet {
 
     private int id;
     private String extract;
     private String uri;
     private String text;
+    private Date created;
+
+    /**
+     * Construct a new Tweet.
+     *
+     * @param id Tweet extract item_key in database
+     * @param extract Extract of Tweet text
+     * @param uri Twitter URI of original Tweet
+     * @param text Text content of Tweet
+     * @param created Time that the post was created
+     */
+    public Tweet(int id, String extract, String uri, String text, Date created) {
+        this(id, extract, uri, text);
+        this.created = created;
+    }
 
     /**
      * Construct a new Tweet.
@@ -24,9 +40,7 @@ public class Tweet {
      * @param text Text content of Tweet
      */
     public Tweet(int id, String extract, String uri, String text) {
-        this.id = id;
-        this.extract = extract;
-        this.uri = uri;
+        this(id, extract, uri);
         this.text = text;
     }
 
@@ -43,7 +57,8 @@ public class Tweet {
         this.id = id;
         this.extract = extract;
         this.uri = uri;
-        this.text = "";
+        this.text = null;
+        this.created = null;
     }
 
     /**
@@ -80,6 +95,15 @@ public class Tweet {
      */
     public String getText() {
         return text;
+    }
+
+    /**
+     * Get a Date timestamp of when the Tweet was posted.
+     *
+     * @return Timestamp of when Tweet was posted
+     */
+    public Date getCreated() {
+        return created;
     }
 
     /**
