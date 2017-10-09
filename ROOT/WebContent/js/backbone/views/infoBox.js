@@ -223,7 +223,9 @@ app.InfoBoxView = Backbone.View.extend({
 
 								var p = $("#details-tweet p");
 								p[0].innerText = data.extract;
-								p[1].innerText = data.uri;
+								p[1].innerText = data.text;
+								p[2].innerText = data.uri;
+								p[3].innerText = new Date(data.created.substring(0, data.created.length - 6));
 							});
 
               var td_uri = $("<td></td>", {
