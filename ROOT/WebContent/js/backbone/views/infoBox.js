@@ -23,7 +23,6 @@ app.InfoBoxView = Backbone.View.extend({
 		$.ajax({
 			type: "GET",
 			contentType: "application/json",
-			headers: {"Authorization": localStorage.getItem('auth_token')},
 			url: "/fewsservlet/topics",
 			success: function(data){
 				data.forEach(function(d){
@@ -54,8 +53,8 @@ app.InfoBoxView = Backbone.View.extend({
 
 		var param = {
 			'name': topic,
-			'negated': true,
-			'genuine': true
+			'negated': 1,
+			'genuine': 1
 		};
 
 		this.addTopic(param);
@@ -222,7 +221,7 @@ app.InfoBoxView = Backbone.View.extend({
               var td_extract = $("<td></td>", {
                   "text": data.extract
               }).appendTo(tr)
-							.click(function(d){
+							.click(function(){
 								$("#details-node").hide();
 								$("#details-tweet").show();
 
