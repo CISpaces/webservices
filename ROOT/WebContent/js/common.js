@@ -97,3 +97,23 @@ function alertMessage(obj, msg){
 
 	return alert_msg;
 }
+
+function parseText(content){
+
+	var result = "";
+
+	if(content){
+		if(content.length < 12){
+			result = content;
+		} else {
+			var split = content.split(' ');
+			if(split.length == 1 || split.length == 2){
+				result = content;
+			} else {
+				result = split[0] + ' ' + split[1] + "...";
+			}
+		}
+	}
+
+	return result;
+}
