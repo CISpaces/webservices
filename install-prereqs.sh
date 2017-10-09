@@ -2,7 +2,7 @@
 # J.Robinson@software.ac.uk
 # J.Graham@software.ac.uk
 
-TOMCAT_VERSION="8.0.46"
+TOMCAT_VERSION="8.0.47"
 DERBY_VERSION="10.12.1.1"
 
 echo

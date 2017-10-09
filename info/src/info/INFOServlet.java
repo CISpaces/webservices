@@ -39,10 +39,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import com.google.gson.internal.LinkedTreeMap;
 import utils.JsonHelper;
-
- 
  
 
+/**
+ * POST request for getting the info of the graph. This method is called if APPLICATION_JSON is called
+ * @param graph JSON input- required a JSON String
+ * @return response for success or fail. Output is another JSON STRING
+ * This web service is not used anymore.
+ * URL: http://localhost:8080/INFO/rest/GetInfo
+ */
 @Path("/GetInfo")
 public class INFOServlet {
 	private boolean PRINT=true;

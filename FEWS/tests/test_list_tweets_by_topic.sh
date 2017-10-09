@@ -22,5 +22,5 @@ else
 fi
 
 if (( $# > 0 )) && [ "$1" == "-v" ] ; then
-    echo "$return_data"
+    echo "$return_data" | tail -n 1 | python3 -m json.tool
 fi
