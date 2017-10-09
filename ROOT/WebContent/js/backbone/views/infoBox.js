@@ -20,19 +20,20 @@ app.InfoBoxView = Backbone.View.extend({
 	initialize: function(){
 		this.$el.attr("style", "height: " + (chart.svg_height - 60) + "px");
 
-		$.ajax({
-			type: "GET",
-			contentType: "application/json",
-			url: "/fewsservlet/topics",
+		// Brings a list of topics from FEWS services
+		app.Topics.fetch({
 			success: function(data){
 				data.forEach(function(d){
-					app.infoBoxView.addTopic(d);
+					app.infoBoxView.addTopic(d.attributes);
 				});
 			},
-			error: function(data){
-				console.error(data);
+			error: function(response){
+				console.error(response);
 			}
 		});
+
+		// Brings tweets related to listed topics periodically
+		var timer = setInterval( "app.infoBoxView.submitTopic()", 10000 );
 	},
 
 	render: function(){
@@ -53,8 +54,8 @@ app.InfoBoxView = Backbone.View.extend({
 
 		var param = {
 			'name': topic,
-			'negated': 1,
-			'genuine': 1
+			'negated': -1,
+			'genuine': -1
 		};
 
 		this.addTopic(param);
@@ -102,9 +103,9 @@ app.InfoBoxView = Backbone.View.extend({
 			"value": 1,
 			"checked": (topic.negated == 1)
 		}).click(function(obj){
-			div.addClass("alert-success");
-			div.removeClass("alert-danger");
-			div.removeClass("alert-warning");
+			div_alert.addClass("alert-success");
+			div_alert.removeClass("alert-danger");
+			div_alert.removeClass("alert-warning");
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
@@ -118,9 +119,9 @@ app.InfoBoxView = Backbone.View.extend({
 			"value": 0,
 			"checked": (topic.negated == 0)
 		}).click(function(){
-			div.removeClass("alert-success");
-			div.addClass("alert-danger");
-			div.removeClass("alert-warning");
+			div_alert.removeClass("alert-success");
+			div_alert.addClass("alert-danger");
+			div_alert.removeClass("alert-warning");
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
@@ -133,9 +134,9 @@ app.InfoBoxView = Backbone.View.extend({
 			"value": -1,
 			"checked": (topic.negated == -1)
 		}).click(function(){
-			div.removeClass("alert-success");
-			div.removeClass("alert-danger");
-			div.addClass("alert-warning");
+			div_alert.removeClass("alert-success");
+			div_alert.removeClass("alert-danger");
+			div_alert.addClass("alert-warning");
 		}).appendTo(
 			$("<label></label>", {
 				"class": "radio-inline"
@@ -156,7 +157,7 @@ app.InfoBoxView = Backbone.View.extend({
 				"class": "radio-inline"
 			}).appendTo(div_genuine)
 			  .before($("<label></label>", {"text": "genuine"}))
-		).after($("<span></span>", {"text":"ture"}));
+		).after($("<span></span>", {"text":"true"}));
 
 		var genuine_false = $("<input/>", {
 			"type": "radio",
@@ -190,10 +191,8 @@ app.InfoBoxView = Backbone.View.extend({
 
 			var obj = {
 				"name": topic,
-				// "negated": $('[name="negated-' + topic + '"]:checked').val(),
-				// "genuine": $('[name="genuine-' + topic + '"]:checked').val()
-        "negated": -1,
-				"genuine": -1
+				"negated": $('[name="negated-' + topic + '"]:checked').val(),
+				"genuine": $('[name="genuine-' + topic + '"]:checked').val()
 			};
 
 			topic_list.push(obj);
@@ -201,9 +200,6 @@ app.InfoBoxView = Backbone.View.extend({
 
 		// alert(JSON.stringify(topic_list));
 
-		// var tweetList = new app.TweetList();
-
-    // TODO can this use an actual Backbone Model instead
 		Backbone.ajax({
 			type: "POST",
       url: "/fewsservlet/tweets",
@@ -234,7 +230,7 @@ app.InfoBoxView = Backbone.View.extend({
                   "text": data.uri
               }).appendTo(tr)
 							.click(function(){
-
+								var tweet_popup = window.open(data.uri, parseText(data.extract), "height: 150px,width: 250px");
 							});
           });
 			},
