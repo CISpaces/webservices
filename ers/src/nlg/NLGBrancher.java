@@ -45,9 +45,11 @@ public class NLGBrancher {
  				}
  				
  				HashMap map=new HashMap();
- 				map.put("chunk-1",getGraph(setout,mgraph,graph));
- 				map.put("chunk-2",getGraph(setin,mgraph,graph));
- 				map.put("chunk-3",getGraph(setund,mgraph,graph));
+                map.put("Unknown",getGraph(setund,mgraph,graph));
+                map.put("Rejected",getGraph(setout,mgraph,graph));
+                map.put("Accepted",getGraph(setin,mgraph,graph));
+ 				 				
+ 				
  				return map;
  				
  				
