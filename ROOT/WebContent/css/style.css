@@ -50,7 +50,7 @@ hr {
 	background-color: #aaa;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	width: 90%
+	width: 90%;
 }
 
 .alert-infobox {
@@ -71,7 +71,7 @@ hr {
 
 .float_left {
   float: left;
-  width: 63%;
+  width: 80%;
 }
 
 .float_right {

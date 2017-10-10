@@ -351,59 +351,62 @@ app.WorkBoxView = Backbone.View
 
         clearWorkBox: function(){
 
-			// debugger;
+      			// debugger;
 
-			// clear collections without sending DELETE requests
-			while(app.Nodes.length > 0){
-				var model = app.Nodes.at(0);
-				model.trigger("destroy", model);
-			}
+      			// clear collections without sending DELETE requests
+      			while(app.Nodes.length > 0){
+      				var model = app.Nodes.at(0);
+      				model.trigger("destroy", model);
+      			}
 
-			while(app.Edges.length > 0){
-				var model = app.Edges.at(0);
-				model.trigger("destroy", model);
-			}
+      			while(app.Edges.length > 0){
+      				var model = app.Edges.at(0);
+      				model.trigger("destroy", model);
+      			}
 
-			// removes the div used for views of previous nodes.
-			var divElement = this.$el[0].childNodes;
+      			// removes the div used for views of previous nodes.
+      			var divElement = this.$el[0].childNodes;
 
-			while(divElement.length > 3){
-				divElement.forEach(function(ch){
-					if(ch.nodeName.toLowerCase() == 'div'){
-						ch.outerHTML = "";
-					}
-				});
-			}
+      			while(divElement.length > 3){
+      				divElement.forEach(function(ch){
+      					if(ch.nodeName.toLowerCase() == 'div'){
+      						ch.outerHTML = "";
+      					}
+      				});
+      			}
 
-			// removes the g used for the previous graph
-			var svgElement = this.$el.children()[0].childNodes;
+      			// removes the g used for the previous graph
+      			var svgElement = this.$el.children()[0].childNodes;
 
-			while(svgElement.length > 3){
-				svgElement.forEach(function(ch){
-					if(ch.nodeName.toLowerCase() == 'g'){
-						ch.outerHTML = "";
-					}
-				});
-			}
+      			while(svgElement.length > 3){
+      				svgElement.forEach(function(ch){
+      					if(ch.nodeName.toLowerCase() == 'g'){
+      						ch.outerHTML = "";
+      					}
+      				});
+      			}
 
-			/* -------------------- initialisation for drawing a graph -------------------- */
-      var area_id = this.el.id;
+      			/* -------------------- initialisation for drawing a graph -------------------- */
+            var area_id = this.el.id;
 
-      // set the size of the SVG element using the size of a window
-      var ret_chart = init_chart_data(area_id, 700);
-      push_chart_data(area_id, ret_chart);
+            // set the size of the SVG element using the size of a window
+            var ret_chart = init_chart_data(area_id, 700);
+            push_chart_data(area_id, ret_chart);
 
-      // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-      var zoom = set_zoom(chart.svg);
-      chart.zoom = zoom;
+            // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+            var zoom = set_zoom(chart.svg);
+            chart.zoom = zoom;
 
-      // set up simulations for force-directed graphs
-      var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
-      push_node_style_data(ret_simulation);
+            // set up simulations for force-directed graphs
+            var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+            push_node_style_data(ret_simulation);
 
-      // the simulation used when drawing a force-directed graph
-      chart.simulation = ret_simulation.simulation;
+            // the simulation used when drawing a force-directed graph
+            chart.simulation = ret_simulation.simulation;
 
-			return svgElement;
-		}
+            // reset a current Eval box
+            app.evalBoxView.clear();
+
+      			return svgElement;
+      		}
     });
