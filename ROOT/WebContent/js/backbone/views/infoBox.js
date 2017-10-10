@@ -23,17 +23,19 @@ app.InfoBoxView = Backbone.View.extend({
 		// Brings a list of topics from FEWS services
 		app.Topics.fetch({
 			success: function(data){
-				data.forEach(function(d){
-					app.infoBoxView.addTopic(d.attributes);
-				});
+				if(data){
+					data.forEach(function(d){
+						app.infoBoxView.addTopic(d.attributes);
+					});
+				}
 			},
 			error: function(response){
 				console.error(response);
 			}
 		});
 
-		// Brings tweets related to listed topics periodically
-		var timer = setInterval( "app.infoBoxView.submitTopic()", 10000 );
+		// Brings tweets related to listed topics periodically(30s)
+		var timer = setInterval( "app.infoBoxView.submitTopic()", 30000 );
 	},
 
 	render: function(){
@@ -211,30 +213,32 @@ app.InfoBoxView = Backbone.View.extend({
 
           $(".fews-form table tbody").empty();
 
-          result.forEach(function(data){
-              var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
+					if(result){
+	          result.forEach(function(data){
+	              var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
 
-              var td_extract = $("<td></td>", {
-                  "text": data.extract
-              }).appendTo(tr)
-							.click(function(){
-								$("#details-node").hide();
-								$("#details-tweet").show();
+	              var td_extract = $("<td></td>", {
+	                  "text": data.extract
+	              }).appendTo(tr)
+								.click(function(){
+									$("#details-node").hide();
+									$("#details-tweet").show();
 
-								var p = $("#details-tweet p");
-								p[0].innerText = data.extract;
-								p[1].innerText = data.text;
-								p[2].innerText = data.uri;
-								p[3].innerText = new Date(data.created.substring(0, data.created.length - 6));
-							});
+									var p = $("#details-tweet p");
+									p[0].innerText = data.extract;
+									p[1].innerText = data.text;
+									p[2].innerText = data.uri;
+									p[3].innerText = new Date(data.created.substring(0, data.created.length - 6));
+								});
 
-              var td_uri = $("<td></td>", {
-                  "text": data.uri
-              }).appendTo(tr)
-							.click(function(){
-								var tweet_popup = window.open(data.uri, parseText(data.extract), "height: 150px,width: 250px");
-							});
-          });
+	              var td_uri = $("<td></td>", {
+	                  "text": data.uri
+	              }).appendTo(tr)
+								.click(function(){
+									var tweet_popup = window.open(data.uri, parseText(data.extract), "height: 100px,width: 250px");
+								});
+	          });
+					}
 			},
 			error: function(xhr, textStatus, errorThrown){
 				alert("AJAX failed: " + errorThrown);

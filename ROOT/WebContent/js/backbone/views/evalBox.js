@@ -167,18 +167,20 @@ app.EvalBoxView = Backbone.View.extend({
 	clear: function(){
 
 		// clear all style which were changed by Eval Box
-		chart.nodes.forEach(function(d){
-			$("#draw_" + d.nodeID + " text")
-				.removeAttr("class");
+		if(chart && chart.nodes){
+			chart.nodes.forEach(function(d){
+				$("#draw_" + d.nodeID + " text")
+					.removeAttr("class");
 
-			$("#draw_" + d.nodeID + " rect")
-				.removeAttr("stroke")
-				.removeAttr("stroke-width");
+				$("#draw_" + d.nodeID + " rect")
+					.removeAttr("stroke")
+					.removeAttr("stroke-width");
 
-			$("#node_" + d.nodeID + " .modal_eval_value")
-				.html("<em>N/A</em>");
+				$("#node_" + d.nodeID + " .modal_eval_value")
+					.html("<em>N/A</em>");
 
-		});
+			});
+		}
 
 		// error message should be hidden
 		$("#eval_fail").hide();

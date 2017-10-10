@@ -50,8 +50,8 @@ function readFile(input_files){
 		// Entire file
 		var jsonData = JSON.parse(this.result);
 
-		var nodes = jsonData['graph']['nodes'];
-		var edges = jsonData['graph']['edges'];
+		var nodes = jsonData['nodes'];
+		var edges = jsonData['edges'];
 
 		if(!nodes && !edges){
 			nodes = jsonData['graph']['nodes'];
