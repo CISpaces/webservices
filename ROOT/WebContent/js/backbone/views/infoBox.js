@@ -22,18 +22,20 @@ app.InfoBoxView = Backbone.View.extend({
 
 		// Brings a list of topics from FEWS services
 		app.Topics.fetch({
+            headers: {'Authorization': localStorage.getItem('auth_token')},
 			success: function(data){
 				data.forEach(function(d){
 					app.infoBoxView.addTopic(d.attributes);
 				});
 			},
 			error: function(response){
+				console.error("Could not get Topics");
 				console.error(response);
 			}
 		});
 
 		// Brings tweets related to listed topics periodically
-		var timer = setInterval( "app.infoBoxView.submitTopic()", 10000 );
+		// var timer = setInterval( "app.infoBoxView.submitTopic()", 10000 );
 	},
 
 	render: function(){
@@ -206,6 +208,7 @@ app.InfoBoxView = Backbone.View.extend({
       data: JSON.stringify(topic_list),
 			dataType: 'json',
 			contentType: "application/json",
+            headers: {"Authorization": localStorage.getItem('auth_token')},
 			success: function(result){
           // console.log(result);
 
