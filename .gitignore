@@ -9,6 +9,7 @@
 **/*.war
 **/WebContent/WEB-INF/classes
 **/WebContent/WEB-INF/lib
+**/target
 
 # Other internal files
 .DS_STORE
