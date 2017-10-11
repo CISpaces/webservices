@@ -17,6 +17,9 @@ J.S.Robinson@soton.ac.uk
                 <subant target="clean">
                         <fileset dir="." includes="*/build.xml"/>
                 </subant>
+                <exec dir="." executable="sh">
+                    <arg line="-c 'mvn clean'" />
+                </exec>
         </target>
 
 	<target name="deploy" depends="build-all">
@@ -24,6 +27,9 @@ J.S.Robinson@soton.ac.uk
 		<subant target="deploy">
                         <fileset dir="." includes="*/build.xml"/>
                 </subant>
+		<exec dir="." executable="sh">
+			<arg line="-c 'mvn install'" />
+		</exec>
 	</target>
 
 	
