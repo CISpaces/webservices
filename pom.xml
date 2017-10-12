@@ -9,5 +9,6 @@
         <module>FEWS</module>
         <module>ROOT</module>
         <module>VC</module>
+        <module>ers</module>
     </modules>
 </project>
