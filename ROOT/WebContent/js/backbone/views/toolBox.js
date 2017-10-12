@@ -68,12 +68,11 @@ app.ToolBoxView = Backbone.View.extend({
       "parentgraphid" : null
     };
 
-  	$.ajax({
+  	Backbone.ajax({
   			type: 'POST',
   			url: 'VC/rest/new',
   			//dataType: 'text',
   			contentType: 'application/json',//Supply the JWT auth token
-        headers: {"Authorization": localStorage.getItem('auth_token')},
   			data: JSON.stringify(object),
   			success: function(result){
   					createCookie('graph_id', graphID, 2);
@@ -142,14 +141,13 @@ app.ToolBoxView = Backbone.View.extend({
 		  var graphID = readCookie('graph_id');
 		  var userID = readCookie('user_id');
 		  var object =  { "graphID"  : graphID, "userID" : userID, "title" : title};
-		  $.ajax({
+
+		  Backbone.ajax({
 			type: 'POST',
 			url: 'VC/rest/save',
 			//dataType: 'text',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
-            //Supply the JWT auth token
-            headers: {"Authorization": localStorage.getItem('auth_token')},
 			success: function(result){
 				alert("Version " + title + " saved.");
 			},
@@ -164,7 +162,7 @@ app.ToolBoxView = Backbone.View.extend({
 		var graphID = readCookie('graph_id');
 		var object = {"graphID"  : graphID};
 
-  	$.get( "VC/rest/history", object )
+  	Backbone.get( "VC/rest/history", object )
       .done(function( result ) {
         if(result){
           $("#history_list").html("");
@@ -206,13 +204,11 @@ app.ToolBoxView = Backbone.View.extend({
 	  if(analysis){
 		  var json = JSON.parse(analysis);
 		  var object = { "graphID" : json.graphID, "nodes" : json.nodes, "edges" : json.edges };
-			$.ajax({
+			Backbone.ajax({
 			type: 'POST',
 			url: 'VC/rest/updateAnalysis',
 			contentType: 'application/json',
 			data: JSON.stringify(object),
-            //Supply the JWT auth token
-            headers: {"Authorization": localStorage.getItem('auth_token')},
 			success: function(result){
 						alert('success');
 					},

@@ -22,7 +22,7 @@ app.InfoBoxView = Backbone.View.extend({
 
 		// Brings a list of topics from FEWS services
 		app.Topics.fetch({
-            headers: {'Authorization': localStorage.getItem('auth_token')},
+      // headers: {'Authorization': localStorage.getItem('auth_token')},
 			success: function(data){
 				if(data){
 					data.forEach(function(d){
@@ -210,7 +210,6 @@ app.InfoBoxView = Backbone.View.extend({
       data: JSON.stringify(topic_list),
 			dataType: 'json',
 			contentType: "application/json",
-            headers: {"Authorization": localStorage.getItem('auth_token')},
 			success: function(result){
           // console.log(result);
 
