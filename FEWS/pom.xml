@@ -31,20 +31,24 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
                 <executions>
                     <execution>
+                        <id>copy-resources</id>
                         <phase>install</phase>
-                        <configuration>
-                            <target>
-                                <copy file="target/${project.name}.war" todir="${env.CATALINA_HOME}/webapps/"
-                                      flatten="true"/>
-                            </target>
-                        </configuration>
                         <goals>
-                            <goal>run</goal>
+                            <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${env.CATALINA_HOME}/webapps</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>*.war</includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

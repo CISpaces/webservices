@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cispaces</groupId>
-    <artifactId>VC</artifactId>
+    <artifactId>info</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>VC</name>
+    <name>info</name>
 
     <build>
-        <finalName>VC</finalName>
+        <finalName>info</finalName>
+        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -71,15 +72,19 @@
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
+            <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
+            <!-- artifactId>jersey-container-servlet</artifactId -->
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
         </dependency>
+        <!--&lt;!&ndash; uncomment this to get JSON support-->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-binding</artifactId>
         </dependency>
+        <!--&ndash;&gt;-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -109,6 +114,31 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20170516</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>jena</artifactId>
+            <version>2.6.4</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>arq</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.prov</groupId>
+            <artifactId>prov</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     <properties>

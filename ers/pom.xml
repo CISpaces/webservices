@@ -32,20 +32,24 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
                 <executions>
                     <execution>
+                        <id>copy-resources</id>
                         <phase>install</phase>
-                        <configuration>
-                            <target>
-                                <copy file="target/${project.name}.war" todir="${env.CATALINA_HOME}/webapps/"
-                                      flatten="true"/>
-                            </target>
-                        </configuration>
                         <goals>
-                            <goal>run</goal>
+                            <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${env.CATALINA_HOME}/webapps</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>*.war</includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -56,7 +60,7 @@
                 <executions>
                     <execution>
                         <id>prov-irp</id>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <configuration>
                             <file>lib/prov-irp.jar</file>
                             <repositoryLayout>default</repositoryLayout>
@@ -72,7 +76,7 @@
                     </execution>
                     <execution>
                         <id>prol</id>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <configuration>
                             <file>lib/jprol.jar</file>
                             <repositoryLayout>default</repositoryLayout>
@@ -88,7 +92,7 @@
                     </execution>
                     <execution>
                         <id>jargsemsat</id>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <configuration>
                             <file>lib/jArgSemSAT-0.1.2-1.jar</file>
                             <repositoryLayout>default</repositoryLayout>
@@ -133,11 +137,6 @@
             <artifactId>jersey-media-json-binding</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
@@ -152,11 +151,6 @@
             <artifactId>prov</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.jgrapht</groupId>-->
-            <!--<artifactId>jgrapht</artifactId>-->
-            <!--<version>1.0.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>

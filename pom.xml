@@ -6,9 +6,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>FEWS</module>
         <module>ROOT</module>
         <module>VC</module>
+        <module>FEWS</module>
         <module>ers</module>
+        <!-- Unused services -->
+        <module>info</module>
     </modules>
 </project>

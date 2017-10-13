@@ -1,7 +1,7 @@
 .PHONY: deploy
 deploy:
 	${CATALINA_HOME}/bin/shutdown.sh
-	ant deploy
+	mvn install
 	${CATALINA_HOME}/bin/startup.sh
 
 .PHONY: clean
