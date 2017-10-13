@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Install CISpaces on Ubuntu 16.04
 # J.Robinson@software.ac.uk
 # J.Graham@software.ac.uk
@@ -13,9 +14,9 @@ echo "# - Updating environment..."
 echo "export CISPACES=${PWD}/cispaces" >> ~/.profile
 source ~/.profile
 
-echo "# - Install prerequisite OS packages [default-jdk, ant, zip, screen, rabbitmq-server]...? (Y/n)"
+echo "# - Install prerequisite OS packages [default-jdk, zip, screen, rabbitmq-server, make, maven]...? (Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
-sudo apt-get install --yes default-jdk ant unzip screen rabbitmq-server
+sudo apt-get install --yes default-jdk unzip screen rabbitmq-server make maven
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
