@@ -22,4 +22,7 @@ out/*
 # CISpaces tools
 cispaces/*
 
+# Python venv
+**/env/
+
 
