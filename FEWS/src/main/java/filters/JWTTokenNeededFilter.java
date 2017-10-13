@@ -46,12 +46,9 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
 
             // Validate the token
             Key key = KeyGenerator.generateKey();
-            // TODO actually check the token
-//            JwtParser parser = Jwts.parser();
-//            parser.setSigningKey(key);
-//            parser.parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             log.info("#### valid token : " + token);
-            log.warning("#### all tokens are accepted as valid");
+
         } catch (Exception e) {
             log.severe("#### invalid token : " + token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
