@@ -11,6 +11,7 @@
         <module>FEWS</module>
         <module>ers</module>
         <!-- Unused services -->
-        <module>info</module>
+        <!--<module>info</module>-->
+        <!--<module>PROVSIMP</module>-->
     </modules>
 </project>
