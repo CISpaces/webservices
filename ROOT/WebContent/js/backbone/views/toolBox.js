@@ -124,8 +124,6 @@ app.ToolBoxView = Backbone.View.extend({
     // creates model of the node
     var attr = app.workBoxView.createNode(id);
 
-    // var index = chart.findIndex(function(e){ return e.id == app.workBoxView.el.id; });
-
     var restart = true;
     if (!chart.nodes || chart.nodes.length < 1)
       restart = false;
@@ -243,13 +241,13 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   restartSimulation: function() {
+    chart.simulation = restart_simulation(true);
+
     if (chart.nodes) {
       chart.nodes.forEach(function(d) {
         d.fx = null;
         d.fy = null;
       })
     }
-
-    chart.simulation = restart_simulation(true);
   }
 });

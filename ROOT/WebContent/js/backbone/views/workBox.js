@@ -170,7 +170,7 @@ app.WorkBoxView = Backbone.View
       return id;
     },
 
-    createNode: function(id) {
+    createNode: function(id, text) {
 
       // generates the type of a new node
       var input = id.toUpperCase();
@@ -205,7 +205,7 @@ app.WorkBoxView = Backbone.View
 
       var attr = {
         id: nodeID,
-        text: input,
+        text: (text) ? text : input,
         input: input,
         dtg: time,
         type: type,
