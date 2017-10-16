@@ -70,6 +70,8 @@ function readFile(input_files) {
 
     // start simulation for displaying graph
     chart.simulation = restart_simulation(false);
+
+    $("#saveProgress").attr("disabled", true);
   };
 
   reader.onerror = function(event) {

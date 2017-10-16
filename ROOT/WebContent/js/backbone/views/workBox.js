@@ -51,8 +51,14 @@ app.WorkBoxView = Backbone.View
 
       });
 
-      this.listenTo(app.Nodes, 'add', this.addNode);
-      // this.listenTo(app.Edges, 'add', this.addEdge);
+      this.listenTo(app.Nodes, "add", this.addNode);
+
+      this.listenTo(app.Nodes, "update", function() {
+        $("#saveProgress").attr("disabled", false);
+      });
+      this.listenTo(app.Edges, "update", function() {
+        $("#saveProgress").attr("disabled", false);
+      });
     },
 
     onRightClick: function(obj) {
