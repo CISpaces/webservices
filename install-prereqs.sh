@@ -14,9 +14,9 @@ echo "# - Updating environment..."
 echo "export CISPACES=${PWD}/cispaces" >> ~/.profile
 source ~/.profile
 
-echo "# - Install prerequisite OS packages [default-jdk, zip, screen, rabbitmq-server, make, maven]...? (Y/n)"
+echo "# - Install prerequisite OS packages [default-jdk, zip, screen, rabbitmq-server, maven]...? (Y/n)"
 read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi
-sudo apt-get install --yes default-jdk unzip screen rabbitmq-server make maven
+sudo apt-get install --yes default-jdk unzip screen rabbitmq-server maven
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 

@@ -19,8 +19,8 @@
                 <version>2.5.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -60,7 +60,7 @@
                 <executions>
                     <execution>
                         <id>prov-irp</id>
-                        <phase>validate</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <file>lib/prov-irp.jar</file>
                             <repositoryLayout>default</repositoryLayout>
@@ -76,7 +76,7 @@
                     </execution>
                     <execution>
                         <id>prol</id>
-                        <phase>validate</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <file>lib/jprol.jar</file>
                             <repositoryLayout>default</repositoryLayout>
@@ -92,7 +92,7 @@
                     </execution>
                     <execution>
                         <id>jargsemsat</id>
-                        <phase>validate</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <file>lib/jArgSemSAT-0.1.2-1.jar</file>
                             <repositoryLayout>default</repositoryLayout>
