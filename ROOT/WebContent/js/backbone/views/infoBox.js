@@ -279,6 +279,6 @@ app.InfoBoxView = Backbone.View.extend({
     chart.node = addNewNode(attr, obj.pageX, obj.pageY);
 
     // re-start changed graph
-    chart.simulation = restart_simulation(restart);
+    chart.simulation = restart_simulation(chart.simulation, restart);
   }
 });

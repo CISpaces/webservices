@@ -102,7 +102,7 @@ app.ToolBoxView = Backbone.View.extend({
         var ret_graph = draw([], [], chart);
         push_graph_data(ret_graph);
 
-        chart.simulation = restart_simulation(false);
+        chart.simulation = restart_simulation(chart.simulation, false);
 
       },
       error: function(result) {
@@ -147,7 +147,7 @@ app.ToolBoxView = Backbone.View.extend({
     chart.node = addNewNode(attr, obj.pageX, obj.pageY);
 
     // re-start changed graph
-    chart.simulation = restart_simulation(restart);
+    chart.simulation = restart_simulation(chart.simulation, restart);
   },
 
   save: function() {
@@ -254,7 +254,7 @@ app.ToolBoxView = Backbone.View.extend({
       var ret_graph = draw(json.nodes, json.edges, chart);
       push_graph_data(ret_graph);
 
-      chart.simulation = restart_simulation(false);
+      chart.simulation = restart_simulation(chart.simulation, false);
 
       $('#history_result').modal('hide');
     }
@@ -262,7 +262,13 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   restartSimulation: function() {
-    chart.simulation = restart_simulation(true);
+
+    var length = (chart.nodes) ? chart.nodes.length : 15;
+
+    var ret_simulation = set_simulation(length, chart.svg_width, chart.svg_height);
+    push_node_style_data(ret_simulation);
+
+    chart.simulation = restart_simulation(ret_simulation.simulation, false);
 
     if (chart.nodes) {
       chart.nodes.forEach(function(d) {

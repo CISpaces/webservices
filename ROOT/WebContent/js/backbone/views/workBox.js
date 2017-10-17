@@ -46,7 +46,7 @@ app.WorkBoxView = Backbone.View
         var ret_graph = draw(data.nodes, data.edges, chart);
         push_graph_data(ret_graph);
 
-        chart.simulation = restart_simulation(false);
+        chart.simulation = restart_simulation(chart.simulation, false);
         /* ------------------------------------------------------------------------------- */
 
       });
@@ -101,7 +101,7 @@ app.WorkBoxView = Backbone.View
               });
 
               // re-start force-directed graph
-              chart.simulation = restart_simulation(true);
+              chart.simulation = restart_simulation(chart.simulation, true);
 
             } else if (opt.currentTarget.id == "link-from") {
               app.workBoxView.changeLinkFrom(target);
@@ -120,7 +120,7 @@ app.WorkBoxView = Backbone.View
                   chart.edge = addNewEdge(attr);
 
                   // re-start graph
-                  chart.simulation = restart_simulation(true);
+                  chart.simulation = restart_simulation(chart.simulation, true);
 
                   app.workBoxView.changeLinkFrom(target);
                 } else {

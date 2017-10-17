@@ -69,7 +69,7 @@ function readFile(input_files) {
     push_graph_data(ret_graph);
 
     // start simulation for displaying graph
-    chart.simulation = restart_simulation(false);
+    chart.simulation = restart_simulation(chart.simulation, false);
 
     $("#saveProgress").attr("disabled", true);
   };

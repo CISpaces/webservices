@@ -237,25 +237,23 @@ function ticked() {
   }
 }
 
-function restart_simulation(restart) {
-
-  var ret_simulation = chart.simulation;
+function restart_simulation(simulation, restart) {
 
   if (!restart) {
-    ret_simulation.nodes(chart.nodes)
+    simulation.nodes(chart.nodes)
       .on("tick", ticked);
 
-    ret_simulation.force("link")
+    simulation.force("link")
       .links(chart.edges);
   } else {
     // Update and restart the simulation.
-    ret_simulation.nodes(chart.nodes);
-    ret_simulation.force("link").links(chart.edges);
+    simulation.nodes(chart.nodes);
+    simulation.force("link").links(chart.edges);
 
-    ret_simulation.restart();
+    simulation.restart();
   }
 
-  return ret_simulation;
+  return simulation;
 }
 
 function addNewNode(attr, x, y) {
