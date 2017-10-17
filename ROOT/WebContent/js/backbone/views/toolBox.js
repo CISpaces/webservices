@@ -16,13 +16,15 @@ app.ToolBoxView = Backbone.View.extend({
     'click #help': 'help',
 
     'click #newWorkBox': 'newWorkBox',
-    'click #callFile': 'file',
     'click #saveProgress': 'save',
     'click #history': 'analysisHistory',
+    'click #simulation': 'restartSimulation',
+
+    'click #importFromFile': 'importFromFile',
+    'click #exportToFile': 'exportToFile',
 
     // 'click .btn-sm': 'createNode',
-    'dragend .btn-sm': 'createNode',
-    'click #simulation': 'restartSimulation'
+    'dragend .btn-sm': 'createNode'
   },
 
   initialize: function() {
@@ -109,13 +111,26 @@ app.ToolBoxView = Backbone.View.extend({
     });
   },
 
-  file: function() {
+  importFromFile: function() {
 
     app.workBoxView.clearWorkBox();
 
     var input_file = $("#myFile").click();
 
     return input_file;
+  },
+
+  exportToFile: function(obj) {
+    var param = {
+      "nodes": app.Nodes.toJSON(),
+      "edges": app.Edges.toJSON()
+    }
+
+    var file = new Blob([JSON.stringify(param)], {
+      type: 'text/plain'
+    });
+    obj.target.href = URL.createObjectURL(file);
+    obj.target.download = "export_" + readCookie('graph_id') + ".cis";
   },
 
   createNode: function(obj) {
@@ -168,8 +183,12 @@ app.ToolBoxView = Backbone.View.extend({
       "graphID": graphID
     };
 
-    Backbone.get("VC/rest/history", object)
-      .done(function(result) {
+    Backbone.ajax({
+      type: 'GET',
+      url: 'VC/rest/history',
+      contentType: 'application/json',
+      data: JSON.parse(object),
+      success: function(result) {
         if (result) {
           $("#history_list").html("");
 
@@ -181,14 +200,12 @@ app.ToolBoxView = Backbone.View.extend({
                 "class": "list-group-item"
               }).appendTo($("#history_list"));
 
-
               var radio_btn = $("<input/>", {
                 "type": "radio",
                 "name": "history_options_radio",
                 "id": d.title
               }).click(function(obj) {
                 //display graph upon clicking on a radio button
-                // console.log(d.analysis);
                 if (d.analysis) {
                   $("#selectedAnalysis").text(d.analysis);
                 }
@@ -202,7 +219,11 @@ app.ToolBoxView = Backbone.View.extend({
           }
           $("#history_result").modal('show');
         }
-      });
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        alert("Ajax failed: " + errorThrown);
+      }
+    });
   },
 
   importAnalysis: function() {

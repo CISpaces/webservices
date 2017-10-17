@@ -5,12 +5,13 @@
 var app = app || {};
 
 app.Edge = Backbone.Model.extend({
-	defaults:{
-		target: '',
-		source: '',
-		formEdgeID: '',
-		edgeID: '',
-		className: 'edge',
-		graphID: ''
-	}
+  defaults: {
+    target: '',
+    source: '',
+    formEdgeID: '',
+    edgeID: '',
+    className: 'edge',
+    graphID: '',
+    islocked: false
+  }
 });
