@@ -57,7 +57,7 @@ function validateFile(input_file){ // validate json format of the file
                         return("success");
                 }
                 else{
-                        console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + resu$
+                        console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
                         return("Fail");
                 }
         } else return("Fail");
