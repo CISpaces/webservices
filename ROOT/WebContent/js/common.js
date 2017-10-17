@@ -39,48 +39,80 @@ function readCookie(name) {
 	return null;
 }
 
+function validateFile(input_file){ // validate json format of the file
+
+        var jv = new JSONValidation(); // It uses JSONValidate library
+
+        // Get CIspaces schema
+        var schemaFile = '/CISpaces.schema.json';
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", schemaFile, false);
+        xmlhttp.send();
+        if (xmlhttp.status==200) {
+                schema = JSON.parse(xmlhttp.responseText);
+                //validate the file
+                result = jv.validate(input_file, schema);
+                //console.log(result);
+                if(result.ok){
+                        return("success");
+                }
+                else{
+                        console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + resu$
+                        return("Fail");
+                }
+        } else return("Fail");
+}
+
 function readFile(input_files){
 
-	var file = input_files[0];
+       var file = input_files[0];
+       var reader = new FileReader();
 
-	var reader = new FileReader();
+       reader.onload = function(progressEvent){
 
-	reader.onload = function(progressEvent){
+	        // Entire file
+	        var jsonData = JSON.parse(this.result);
+	        //call the Validate File funtion to validate json
+	        var res = validateFile(jsonData);
 
-		// Entire file
-		var jsonData = JSON.parse(this.result);
+	        if(res == 'success'){
+		        var nodes = jsonData['nodes'];
+	            var edges = jsonData['edges'];
 
-		var nodes = jsonData['nodes'];
-		var edges = jsonData['edges'];
+	            if(!nodes && !edges){
+	                nodes = jsonData['graph']['nodes'];
+	                edges = jsonData['graph']['edges'];
+	            }
 
-		if(!nodes && !edges){
-			nodes = jsonData['graph']['nodes'];
-			edges = jsonData['graph']['edges'];
-		}
+	            // set up simulations for force-directed graphs
+	            var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+	            push_node_style_data(ret_simulation);
 
-		// set up simulations for force-directed graphs
-		var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
-		push_node_style_data(ret_simulation);
+	            // the simulation used when drawing a force-directed graph
+	            chart.simulation = ret_simulation.simulation;
 
-		// the simulation used when drawing a force-directed graph
-		chart.simulation = ret_simulation.simulation;
+	            var ret_graph = draw(nodes, edges, chart);
+	            push_graph_data(ret_graph);
 
-		var ret_graph = draw(nodes, edges, chart);
-		push_graph_data(ret_graph);
+	            // start simulation for displaying graphsv
+	            chart.simulation = restart_simulation(false);
+	        }
+	        else {
+	            console.log("Invalid JSON format");
+	            return("Fail");
+	        }
+        };
 
-		// start simulation for displaying graphsv
-		chart.simulation = restart_simulation(false);
-	};
+        reader.onerror = function(event){
+                console.log("Fail to read the file:");
+                console.log(event);
+        };
 
-	reader.onerror = function(event){
-		console.log("Fail to read the file:");
-		console.log(event);
-	};
+        reader.readAsText(file);
 
-	reader.readAsText(file);
-
-	return reader;
+        return reader;
 }
+
 
 function alertMessage(obj, msg){
 	// if the edge connects between i-nodes(Info, Claim), shows an error message
