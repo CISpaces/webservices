@@ -46,7 +46,7 @@
             ],
             "id": "/properties/edges/items/properties/islocked",
             "title": "The islocked schema.",
-            "type": "string"
+            "type": "boolean"
           },
           "source": {
             "default": "138a1779-ddbc-4150-e3de-6eb3b7f6666a",
