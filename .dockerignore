@@ -1,0 +1,27 @@
+# IntelliJ Project files
+**/.idea
+**/*.iml
+
+# Nebeans project files
+**/nbproject
+
+# Compiled output
+**/*.class
+**/*.war
+**/WebContent/WEB-INF/classes
+**/WebContent/WEB-INF/lib
+**/target
+
+# Other internal files
+.DS_STORE
+cispaces-web-services-integration.iml
+
+# Out folder
+out/*
+
+# CISpaces tools
+cispaces/*
+
+# Ignore own files
+Dockerfile
+.dockerignore
