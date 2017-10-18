@@ -1,0 +1,9 @@
+GraphStream
+ 
+A Dynamic Graph Library 
+
+GNU GPL license (according to Wikipedia)
+
+location: http://graphstream-project.org/
+
+gs-core-1.3 and gs-ui-1.3
