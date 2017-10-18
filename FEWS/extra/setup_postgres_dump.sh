@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Import PostgreSQL dump on Ubuntu 16.04
 # J.Graham@software.ac.uk
 
