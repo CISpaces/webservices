@@ -120,7 +120,13 @@ app.ToolBoxView = Backbone.View.extend({
     return input_file;
   },
 
-  exportToFile: function(obj) {
+  exportToFile: function() {
+
+    if((!app.Nodes && !app.Edges) || (app.Nodes.length < 1 && app.Edges.length < 1)){
+      alert("There is no analysis in Work Box.");
+      return;
+    }
+
     var param = {
       "nodes": app.Nodes.toJSON(),
       "edges": app.Edges.toJSON()
