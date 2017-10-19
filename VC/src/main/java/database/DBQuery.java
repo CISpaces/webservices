@@ -217,7 +217,7 @@ public class DBQuery {
                     + " '" + formEdgeID + "' ,"
                     + " '" + graphID + "' ,"
                     + " '" + isLocked + "' ,"
-                    +  " '" + revisionID + "'"
+                    + " '" + revisionID + "'"
                     + " )";
             dbcn.updateSQL(sql);
         }

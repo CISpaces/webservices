@@ -1,0 +1,85 @@
+/******************************************************************************
+ * This research was sponsored by the U.S. Army Research Laboratory and the
+ * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
+ * Project 6, Task 3: Collaborative Intelligence Analysis.
+ * The U.S. and U.K. Governments are authorized to reproduce and distribute
+ * reprints for Government purposes notwithstanding any copyright notation
+ * hereon.
+ * **************************************************************************  
+ */
+ 
+ Installation:
+
+1. download Apache Tomcat (or alike) http://tomcat.apache.org/
+
+2. download PROVDATA folder from http://homepages.abdn.ac.uk/a.toniolo/pages/cisp/PROVPLOT.zip
+
+3. unzip
+
+4. Copy provgraphs.war in copy4server under webapps folder of Tomcat
+
+5. Run Tomcat startup.sh/bat
+
+6. Check that the services work: open a browser at http://localhost:8080/provgraphs/  and follow the instructions
+
+-------------------------------------------------------------
+Parameters on web.xml
+
+A. Location of PROVDATA service
+port:8080
+host_name:localhost 
+ 
+ --------------------------------
+Parameters are read in CISPACES/code/config/cis_settings.txt
+
+REQUIRED env variables: 
+--CISPACES
+--CATALINA_HOME
+--------------------------------------------------
+Libraries and dependencies: (the needed one are already copied in provgraphs/WEB-INF 
+-lib includes all the package distributions and licenses)
+
+- JERSEY: RESTful Web Services in Java v2.7  https://jersey.java.net/
+- PROV-API:Java API for managing provenance models using prov-o https://github.com/dcorsar/prov-api
+- GSON: JSon to Java objects: https://code.google.com/p/google-gson/
+- JENA: Java framework for building Semantic Web and Linked Data applications: https://jena.apache.org/ 
+- JODA TIME v2.3: Java date and time API: http://www.joda.org/joda-time/
+- GRAPHSTREAM (gs-core-1.2 and gs-ui-1.2): A Dynamic Graph Library http://graphstream-project.org/
+
+
+Tested with Apache Tomcat 7-8, JAVA SE 7 
+------------------------------------------------
+Development: 
+
+Service available at:
+
+http://localhost:8080/provgraphs/Prov?action=printprov&json=JSON
+
+* JSON is a string with the node/analysis that needs a provenance plot 
+
+NOW SUPPORTS BOTH POST AND GET REQUESTS
+Note for get requests with long PROV strings, the server server.xml should be modified with maxHttpHeaderSize="240000"
+
+ <Connector connectionTimeout="20000" maxHttpHeaderSize="240000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+
+
+---------------------------------------------------
+
+PROVGRAPHS JSON REQUESTS
+
+
+- ON GET PROV NODE
+JSON:
+{
+"request":"getprovnode", 			 
+"nodeID":"d2a0848e-e6e0-41huufb-b711-49dyfghhb96a", 		 
+"obf":true/false obfuscation setting 
+"user": username
+
+}
+ 
+  
+  RETURN png  
+    
+ 
+     
