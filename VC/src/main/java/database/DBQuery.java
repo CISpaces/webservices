@@ -120,7 +120,7 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + annot+" ,"
+                    + " '"+annot+"' ,"
                     + " '"+graphID+"' ,"
                     + " '"+isLocked+"'"
                     + " )";
@@ -132,7 +132,7 @@ public class DBQuery {
                                         + " txt = "  + "'" + txt + "'" + " ,"
                                         + " inp = "  + "'" + input + "'" + " ,"
                                         + " cmt = "  + "'" + commit + "'" + " ,"
-                                        + " annot = " + "" + annot + ""
+                                        + " annot = " + "'" + annot + "'"
                     + " WHERE nodeid = " + "'" + nodeID + "'";
             System.out.println(sql);
         }
@@ -159,7 +159,7 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + annot+" ,"
+                    + " '"+annot+"' ,"
                     + " '"+graphID+"'"
                     + " '"+isLocked+"'"
                     + " '"+revisionID+"'"
@@ -172,8 +172,8 @@ public class DBQuery {
                     + " txt = "  + "'" + txt + "'" + " ,"
                     + " inp = "  + "'" + input + "'" + " ,"
                     + " cmt = "  + "'" + commit + "'" + " ,"
-                    + " annot = " + annot + " ,"
-                    + " islocked = " + "" + isLocked + ""
+                    + " annot = " + "'" + annot + "'" + " ,"
+                    + " islocked = " + "'" + isLocked + "'"
                     + " WHERE nodeid = " + "'" + nodeID + "'";
             System.out.println(sql);
         }
@@ -194,7 +194,7 @@ public class DBQuery {
                     + " '" + fromID + "' ,"
                     + " '" + formEdgeID + "' ,"
                     + " '" + graphID + "' ,"
-                    + " " + isLocked + ""
+                    + " '" + isLocked + "'"
                     + " )";
             dbcn.updateSQL(sql);
         }
@@ -216,8 +216,8 @@ public class DBQuery {
                     + " '" + fromID + "' ,"
                     + " '" + formEdgeID + "' ,"
                     + " '" + graphID + "' ,"
-                    + " " + isLocked + " ,"
-                    +  " '" + revisionID + "'"
+                    + " '" + isLocked + "' ,"
+                    + " '" + revisionID + "'"
                     + " )";
             dbcn.updateSQL(sql);
         }
@@ -479,7 +479,7 @@ public class DBQuery {
                         + " '" + dtg + "' ,"
                         + " '" + commit + "' ,"
                         + " '" + type + "' ,"
-                        + annot + ","
+                        + " '" + annot + "' ,"
                         + " '" + graphID + "' ,"
                         + " '" + isLocked + "'"
                         + " )";
