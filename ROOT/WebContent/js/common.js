@@ -36,7 +36,7 @@ function readCookie(name) {
       return c.substring(nameEQ.length, c.length);
   }
 
-  return null;
+  return '';
 }
 
 function validateFile(input_file){ // validate json format of the file

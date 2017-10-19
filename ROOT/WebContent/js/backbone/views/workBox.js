@@ -176,7 +176,7 @@ app.WorkBoxView = Backbone.View
       return id;
     },
 
-    createNode: function(id, text) {
+    createNode: function(id, tweet_uri, text) {
 
       // generates the type of a new node
       var input = id.toUpperCase();
@@ -207,16 +207,18 @@ app.WorkBoxView = Backbone.View
         (sec < 10 ? "0" + sec : sec);
 
       var nodeID = generateUUID(); // Math.floor(Math.random() * 1000) + 1;
-      var graphID = readCookie('graph_id');
+
+      var source = (tweet_uri)? tweet_uri : readCookie('user_name');
 
       var attr = {
+        source: source,
         id: nodeID,
         text: (text) ? text : input,
         input: input,
         dtg: time,
         type: type,
         nodeID: nodeID,
-        graphID: graphID
+        graphID: readCookie('graph_id')
       };
 
       // creates model of the node in the collection and sends POST request to a back-end service

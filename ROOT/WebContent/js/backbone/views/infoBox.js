@@ -14,8 +14,7 @@ app.InfoBoxView = Backbone.View.extend({
   events: {
     'click .input-group-btn': 'createTopic',
     'click .btn-submit': 'submitTopic',
-    'click .btn-clear': 'clearTopic',
-    'dragend .extract-td': 'createNode'
+    'click .btn-clear': 'clearTopic'
   },
 
   initialize: function() {
@@ -228,12 +227,29 @@ app.InfoBoxView = Backbone.View.extend({
 
         if (result) {
           result.forEach(function(data) {
-            var tr = $("<tr></tr>").appendTo($(".fews-form table tbody"));
+            var tr = $("<tr></tr>", {
+              "class": "extract_tr",
+              "draggable": true
+            }).appendTo($(".fews-form table tbody"))
+            .on("dragend", function(obj){
+              var children = this.childNodes;
+
+              // creates model of the node
+              var attr = app.workBoxView.createNode("info", children[1].innerText, children[0].innerText);
+
+              var restart = true;
+              if (!chart.nodes || chart.nodes.length < 1)
+                restart = false;
+
+              // draws a new node
+              chart.node = addNewNode(attr, obj.pageX, obj.pageY);
+
+              // re-start changed graph
+              chart.simulation = restart_simulation(chart.simulation, restart);
+            });
 
             var td_extract = $("<td></td>", {
-                "text": data.extract,
-                "draggable": true,
-                "class": "extract-td"
+                "text": data.extract
               }).appendTo(tr)
               .click(function() {
                 $("#details-node").hide();
@@ -264,21 +280,5 @@ app.InfoBoxView = Backbone.View.extend({
   clearTopic: function() {
     $(".topic-form").html(" ");
     $(".fews-form table tbody").empty();
-  },
-
-  createNode: function(obj) {
-
-    // creates model of the node
-    var attr = app.workBoxView.createNode("info", obj.currentTarget.innerText);
-
-    var restart = true;
-    if (!chart.nodes || chart.nodes.length < 1)
-      restart = false;
-
-    // draws a new node
-    chart.node = addNewNode(attr, obj.pageX, obj.pageY);
-
-    // re-start changed graph
-    chart.simulation = restart_simulation(chart.simulation, restart);
   }
 });

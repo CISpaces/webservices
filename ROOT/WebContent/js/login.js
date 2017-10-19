@@ -18,6 +18,7 @@ $("#login").on("click", function(event){
          localStorage.setItem("auth_token",auth_token);
          var userID = result.user_id;
         createCookie('user_id',userID,2);
+        createCookie('user_name', uname, 2);
         window.location.assign("index.html");
      },
      error: function(result){
