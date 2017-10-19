@@ -10,6 +10,7 @@
         <module>VC</module>
         <module>FEWS</module>
         <module>ers</module>
+        <module>provgraphs</module>
         <!-- Unused services -->
         <module>info</module>
         <!--<module>PROVSIMP</module>-->
