@@ -120,9 +120,9 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + " "+annot+" ,"
+                    + " '"+annot+"' ,"
                     + " '"+graphID+"' ,"
-                    + " "+isLocked+""
+                    + " '"+isLocked+"'"
                     + " )";
             System.out.println(sql);
         }else{
@@ -159,9 +159,9 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + " "+annot+" ,"
+                    + " '"+annot+"' ,"
                     + " '"+graphID+"'"
-                    + " "+isLocked+""
+                    + " '"+isLocked+"'"
                     + " '"+revisionID+"'"
                     + " )";
             System.out.println(sql);
@@ -479,9 +479,9 @@ public class DBQuery {
                         + " '" + dtg + "' ,"
                         + " '" + commit + "' ,"
                         + " '" + type + "' ,"
-                        + " " + annot + " ,"
+                        + " '" + annot + "' ,"
                         + " '" + graphID + "' ,"
-                        + " " + isLocked + ""
+                        + " '" + isLocked + "'"
                         + " )";
                 dbcn.prepareInsertStatementInTransaction(sql3);
                 System.out.println(sql3);
