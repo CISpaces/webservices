@@ -120,7 +120,7 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + " '"+annot+"' ,"
+                    + annot+" ,"
                     + " '"+graphID+"' ,"
                     + " '"+isLocked+"'"
                     + " )";
@@ -159,7 +159,7 @@ public class DBQuery {
                     + " '"+timestamp+"' ,"
                     + " '"+commit+"' ,"
                     + " '"+type+"' ,"
-                    + " '"+annot+"' ,"
+                    + annot+" ,"
                     + " '"+graphID+"'"
                     + " '"+isLocked+"'"
                     + " '"+revisionID+"'"
@@ -172,7 +172,7 @@ public class DBQuery {
                     + " txt = "  + "'" + txt + "'" + " ,"
                     + " inp = "  + "'" + input + "'" + " ,"
                     + " cmt = "  + "'" + commit + "'" + " ,"
-                    + " annot = " + "" + annot + "" + " ,"
+                    + " annot = " + annot + " ,"
                     + " islocked = " + "" + isLocked + ""
                     + " WHERE nodeid = " + "'" + nodeID + "'";
             System.out.println(sql);
@@ -479,7 +479,7 @@ public class DBQuery {
                         + " '" + dtg + "' ,"
                         + " '" + commit + "' ,"
                         + " '" + type + "' ,"
-                        + " '" + annot + "' ,"
+                        + annot + ","
                         + " '" + graphID + "' ,"
                         + " '" + isLocked + "'"
                         + " )";
