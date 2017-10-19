@@ -40,7 +40,7 @@ app.NodeView = Backbone.View.extend({
   	  $("#draw_" + this.model.get('nodeID') + ' rect title').text(updated_text);
     }
 
-    // this.$el.hide();
+    $("#saveProgress").attr("disabled", false);
 
 	  return this.model;
   }

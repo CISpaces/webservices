@@ -1,12 +1,12 @@
 function getLatestAnalysis(callback){
 	var userID = readCookie('user_id');
 
-	$.ajax({
+	Backbone.ajax({
 		type: 'POST',
 		url: 'VC/rest/getAnalysis',
 		contentType: 'text/plain',
         //Supply the JWT auth token
-        headers: {"Authorization": localStorage.getItem('auth_token')},
+        // headers: {"Authorization": localStorage.getItem('auth_token')},
 		data: userID,
 		success: function(result){
 			callback(result);
