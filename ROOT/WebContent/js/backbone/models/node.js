@@ -6,7 +6,7 @@ var app = app || {};
 
 app.Node = Backbone.Model.extend({
   defaults: {
-    source: 'user',
+    source: '',
     uncert: 'Confirmed',
     eval: 'N/A',
     text: '',
@@ -17,6 +17,6 @@ app.Node = Backbone.Model.extend({
     nodeID: '',
     annot: {},
     graphID: '',
-    islocked: false
+    islocked: 'false'
   }
 });
