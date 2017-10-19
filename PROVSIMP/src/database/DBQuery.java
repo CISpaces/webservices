@@ -62,8 +62,7 @@ public class DBQuery {
 		
 	String sql;
 	sql = "SELECT * FROM CISPACES_INFOPROV" +
-	      " WHERE nodeid = '" + name + "' ";
-	//System.out.println(sql+ " ");
+	      " WHERE nodeid = '" + name + "'";
  
 	String chain=null;
 	 
@@ -80,7 +79,7 @@ public class DBQuery {
 				// System.out.println("***"+chain+"****");
 				clobs.add(chain);
 				sql = "SELECT * FROM CISPACES_INFOPROV" +
-					      " WHERE nodeid = '" + chain + "' ";
+					      " WHERE nodeid = '" + chain + "'";
 				ArrayList<HashMap<String,Object>> rsc=dbcn.execSQL(sql);
 				//System.out.println(sql);
 				if(rsc!=null && rsc.size()>0){
@@ -100,11 +99,11 @@ public class DBQuery {
 	
 
 	public void insertModel(String mod,String name) {
- //System.out.println(name+""+mod);
+ System.out.println(name+""+mod);
 		if(!existNode(name)){
 			String 	sql="INSERT INTO CISPACES_INFOPROV (nodeid) VALUES "
-					+ "( '"+name+"')";
-		//	System.out.println(sql);
+					+ "('"+name+"')";
+			System.out.println(sql);
 			dbcn.updateSQL(sql);
 			
 		if(mod.length()>limit){
@@ -152,7 +151,7 @@ public class DBQuery {
 				  " SET provst = '"+mod+"' "+
 			      " WHERE nodeid = '" + name + "'";
 			dbcn.updateSQL(sql);
-		
+			System.out.println("*******************WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW****************************");
 		}
 		
 		}

@@ -71,7 +71,7 @@ public class DBNQuery extends DBQuery{
 				arg=arg.replaceAll("'","''");
 				hint=hint.replaceAll("'","''");
 				p1=p1.replaceAll("'","''");
-			String query="INSERT INTO CISPACES_PATHS (username, ndid, pathid, title, hint, arg, prem1, prem2,   used) VALUES "
+			String query="INSERT INTO CISPACES_PATHS (username, ndid, pathid, title, hint, arg, prem1, prem2, used) VALUES "
 					+ "( '"+wboxid+"' ,"
 					+ " '"+node+"' ,"
 					+ " '"+id+"' ,"
@@ -82,7 +82,7 @@ public class DBNQuery extends DBQuery{
 					+ " '"+p2+"' ,"
 					+ " "+used+" "
 							+ " )";
-			//System.out.println(query);
+			System.out.println(query);
 			dbcn.updateSQL(query);
 			 
 		 }
@@ -94,7 +94,7 @@ public class DBNQuery extends DBQuery{
 				sql = "SELECT pathid FROM CISPACES_PATHS" +
 					      " WHERE ndid = '"+node+"' AND username = '"+wboxid+"'";
 				// username, affiliation, curshared, wboxid, curindivid
-				 
+				System.out.println(sql);
 				ArrayList<HashMap<String,Object>> rs=dbcn.execSQL(sql);
 
 				if(rs!=null && rs.size()>0){
@@ -122,7 +122,7 @@ public class DBNQuery extends DBQuery{
 				sql = "SELECT pathid, title, hint, arg FROM CISPACES_PATHS" +
 					      " WHERE ndid = '"+node+"' AND used=0 AND username = '"+wboxid+"'";
 				// username, affiliation, curshared, wboxid, curindivid
-				// System.out.println(sql);
+				System.out.println(sql);
 				ArrayList<HashMap<String,Object>> rs=dbcn.execSQL(sql);
 
 				if(rs!=null && rs.size()>0){

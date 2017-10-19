@@ -37,7 +37,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
- 
+
+/**
+ * POST request for saving the provenance of the graph
+ * @param graph JSON String of the graph and action (from old prov doc, the actions are- save, load, addnodes, copynode, getnode, getpath, getpathnode)
+ * @return response for success or fail.
+ * URL: http://localhost:8080/PROVSIMP/rest/ProcProv
+ */
 
 @Path("/ProcProv")
 public class ProvSimpServlet {
