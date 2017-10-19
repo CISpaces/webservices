@@ -1,8 +1,10 @@
 package database;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,19 +31,53 @@ public class PostgreSQLDB {
      * @return Was connection successful?
      */
     private boolean connect() {
-        try {
-            Class.forName("org.postgresql.Driver");
-//            TODO put these in a config file
+
+        Properties prop = new Properties();
+        InputStream input = null;
+
+        try
+        {
+
+            ClassLoader classLoader = getClass().getClassLoader();
+            input = classLoader.getResourceAsStream("postgresql.properties");
+            prop.load(input);
+
+            Class.forName(prop.getProperty("driver"));
+            String url = "jdbc:" + prop.getProperty("engine") +
+                    "://" + prop.getProperty("hostname") +
+                    ":" + prop.getProperty("port") +
+                    "/" + prop.getProperty("database");
             conn = DriverManager.getConnection(
-                    "jdbc:postgresql://rsg-xen-vm04.ecs.soton.ac.uk:5432/factextract",
-                    "factextract",
-                    "passw0rd"
+                    url,
+                    prop.getProperty("user"),
+                    prop.getProperty("password")
             );
+
+            log.info("Read Postgresql config from file");
+
             return true;
+
         } catch (SQLException | ClassNotFoundException exc) {
+
             log.log(Level.SEVERE, "Failed PostgreSQL DB connection", exc);
             exc.printStackTrace();
             return false;
+
+        } catch (java.io.IOException exc) {
+
+            log.log(Level.SEVERE, "Failed to read PostgreSQL configuration from file", exc);
+            exc.printStackTrace();
+            return false;
+
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (java.io.IOException exc) {
+                    log.log(Level.SEVERE, "Failed to close properties file", exc);
+                    exc.printStackTrace();
+                }
+            }
         }
     }
 
@@ -174,7 +210,7 @@ public class PostgreSQLDB {
      * @param resultSet SQL query ResultSet from which to get data
      * @param column Boolean column to get
      * @return Boolean value as an integer
-     * @throws SQLException
+     * @throws SQLException If column is missing
      */
     private static int getIntFromBool3(ResultSet resultSet, String column)
             throws SQLException {

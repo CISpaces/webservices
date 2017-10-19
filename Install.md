@@ -1,13 +1,13 @@
-# Installing the CISPaces web UI and services
+# Installing the CISpaces web UI and services
 
 ## Prerequisites
-The CISPaces web services are Java based and have tested with OpenJDK 8 and Oracle JDK 8
+The CISpaces web services are Java based and have tested with OpenJDK 8 and Oracle JDK 8
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-The build process employs Apache Ant, and has been tested with version 1.9 and 1.10
-http://ant.apache.org/bindownload.cgi
+The build process employs Apache Maven, and has been tested with version 3.3.9
+https://maven.apache.org/download.cgi
 
-The services run under a Java web application server, and have been test with Apache Tomcat 8.0.45
+The services run under a Java web application server, and have been tested with Apache Tomcat 8.0.45 to 8.0.47
 http://tomcat.apache.org/download-80.cgi
 
 ## Installation
@@ -23,16 +23,23 @@ http://tomcat.apache.org/download-80.cgi
 
 - Run the pre-requisites installation script from the cispaces directory
 
-```$ cd cispaces-web-services
-$ ./install-prereqs.sh```
+```
+$ cd cispaces-web-services
+$ ./install-prereqs.sh
+```
 
 - Update the environment
 
 ```$ source ~/.profile```
 
-- Build and deploy the project using ant
+- Add local dependencies to Maven
 
-```$ ant deploy```
+```$ mvn initialize```
+
+
+- Build and deploy the project using Maven
+
+```$ mvn install```
 
 ## Running
 
@@ -40,10 +47,12 @@ $ ./install-prereqs.sh```
 
 - Start the Apache Derby database in a GNU Screen session (allows it to continue running in the background)
 
-```$ screen
+```
+$ screen
 $ cd ${CISPACES}/tools/derby
 $ ${GAIAN}/bin/startNetworkServer
-$ <CTRL+A>,<D>```
+$ <CTRL+A>,<D>
+```
 
 - To re-attach:
 
@@ -53,7 +62,7 @@ $ <CTRL+A>,<D>```
 
 ```$ $CATALINA_HOME/bin/startup.sh```
 
-- To use CISpaces we interface, point your web browser to https://YOUR_IP:8080
+- To use CISpaces we interface, point your web browser to http://YOUR_IP:8080
 - You can login with sample users 'Ella', 'Joe' or 'Miles' with password 'password'
 
 - To stop Tomcat:

@@ -15,7 +15,6 @@
 # Other internal files
 .DS_STORE
 cispaces-web-services-integration.iml
-.profile
 
 # Out folder
 out/*
@@ -23,7 +22,6 @@ out/*
 # CISpaces tools
 cispaces/*
 
-# Python venv
-**/env/
-
-
+# Ignore own files
+Dockerfile
+.dockerignore
