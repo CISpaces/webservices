@@ -15,6 +15,7 @@
 # Other internal files
 .DS_STORE
 cispaces-web-services-integration.iml
+.profile
 
 # Out folder
 out/*
