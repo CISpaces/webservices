@@ -1,0 +1,330 @@
+{
+   "nodes": [
+      {
+         "text":"Pro",
+         "dtg":"2017-07-11 15:32:02",
+         "annot":{
+            "id":"N/A"
+         },
+         "nodeID":"0982eb22-6fea-48de-8742-4cec6c77fa68",
+         "source":"Miles",
+         "type":"RA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"N/A",
+         "text":"j",
+         "input":"CLAIM",
+         "dtg":"2017-07-11 15:31:57",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"4a34a9a8-4191-4feb-ba8f-cbdd30e12e4f",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"N/A",
+         "text":"a",
+         "input":"INFO",
+         "dtg":"2017-07-11 15:31:32",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"774a14b0-d0c9-40a7-9df1-06fa49965283",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "text":"Con",
+         "dtg":"2017-07-11 15:23:07",
+         "annot":{
+            "cq_ans_node_id":null,
+            "as_pro_node_uuid":null,
+            "cq_id":null
+         },
+         "nodeID":"e5b4dd66-2f4d-47ad-baee-d1593be60384",
+         "source":"Miles",
+         "type":"CA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"i",
+         "input":"INFO",
+         "dtg":"2017-07-11 15:23:03",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"44bd7949-55c6-42c4-be47-a47187d49445",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "text":"Con",
+         "dtg":"2017-07-11 15:22:58",
+         "annot":{
+            "cq_ans_node_id":null,
+            "as_pro_node_uuid":null,
+            "cq_id":null
+         },
+         "nodeID":"25ca4be9-4539-466d-bd36-188f9e61efa6",
+         "source":"Miles",
+         "type":"CA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"X",
+         "text":"h",
+         "input":"CLAIM",
+         "dtg":"2017-07-11 15:22:52",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"3f89dda8-b9cb-448e-ac87-bded859fd0d8",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "text":"Pro",
+         "dtg":"2017-07-11 15:21:15",
+         "annot":{
+            "id":"N/A"
+         },
+         "nodeID":"82b7c27b-c80d-4de8-a55d-8f26d1d126dd",
+         "source":"Miles",
+         "type":"RA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "text":"Pro",
+         "dtg":"2017-07-11 15:21:02",
+         "annot":{
+            "id":"N/A"
+         },
+         "nodeID":"f8ea55d4-ac5c-4ec1-9777-cbe6cb66ff32",
+         "source":"Miles",
+         "type":"RA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"g",
+         "input":"INFO",
+         "dtg":"2017-07-11 15:20:56",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"60375a73-7737-45bc-b1dd-354e19842f28",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"f",
+         "input":"CLAIM",
+         "dtg":"2017-07-11 15:20:52",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"33eb911c-238f-4482-90f1-76b4354a384a",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "text":"Con",
+         "dtg":"2017-07-11 15:20:36",
+         "annot":{
+            "cq_ans_node_id":null,
+            "as_pro_node_uuid":null,
+            "cq_id":null
+         },
+         "nodeID":"af083893-2b96-44e5-af79-687e4a2de0b6",
+         "source":"Miles",
+         "type":"CA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "text":"Con",
+         "dtg":"2017-07-11 15:20:03",
+         "annot":{
+            "cq_ans_node_id":null,
+            "as_pro_node_uuid":null,
+            "cq_id":null
+         },
+         "nodeID":"6791d8b9-1d6d-42c7-b52d-76bea50a3afc",
+         "source":"Miles",
+         "type":"CA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "text":"Pro",
+         "dtg":"2017-07-11 15:19:47",
+         "annot":{
+            "id":"N/A"
+         },
+         "nodeID":"518c73df-8eaf-48a6-a906-0c1eb19498f3",
+         "source":"Miles",
+         "type":"RA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"e",
+         "input":"INFO",
+         "dtg":"2017-07-11 15:19:42",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"feff8b95-290b-47b7-9e1f-2277ec14c57a",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"d",
+         "input":"CLAIM",
+         "dtg":"2017-07-11 15:19:26",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"c7d561d4-9a3e-4288-89c5-c3e3143d67fe",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "text":"Pro",
+         "dtg":"2017-07-11 15:18:49",
+         "annot":{
+            "id":"N/A"
+         },
+         "nodeID":"4aa9b806-21ab-44fd-8035-d5bbd100eed4",
+         "source":"Miles",
+         "type":"RA",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false"
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"X",
+         "text":"c",
+         "input":"CLAIM",
+         "dtg":"2017-07-11 15:18:46",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"bd2091ec-4fa0-4a8a-8c23-26c0213ab4ae",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      },
+      {
+         "source":"Miles",
+         "uncert":"Confirmed",
+         "eval":"V",
+         "text":"b",
+         "input":"INFO",
+         "dtg":"2017-07-11 15:18:42",
+         "commit":"N/A",
+         "type":"I",
+         "nodeID":"e2d2a53c-a75e-4595-915a-f5667eb88e42",
+		 "graphID:":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
+		 "islocked":"false",
+         "annot":{
+            "conc":{
+
+            },
+            "prem_assump":{
+
+            }
+         }
+      }
+   ]
+}
