@@ -1,21 +1,20 @@
 package messagebus;
 
+import java.util.ArrayList;
+
 public class ControlMessage {
 
     private String topic;
-    private boolean remove;
+    private String entityType;
+    private ArrayList<String> keywords;
 
-    public ControlMessage(String topic) {
-        this(topic, false);
-    }
-
-    public ControlMessage(String topic, boolean remove) {
+    public ControlMessage(String topic, String entityType, ArrayList<String> keywords) {
         this.topic = topic;
-        this.remove = remove;
+        this.entityType = entityType;
+        this.keywords = keywords;
     }
 
     public String serialize() {
-        return "{\"name\": \"" + topic + "\", " +
-                "\"remove\": " + remove + "}";
+        return "{\"name\": \"" + topic + "\", " + "}";
     }
 }

@@ -46,7 +46,11 @@ if [ "${existing}" != 'true' ]; then
 else
     git -C ${FACT_EXTRACTION_DIR} fetch
 fi
-# Handle git-lfs files
+if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
+echo
+
+echo "# - Download fact-extraction...? (Y/n)"
+if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 git -C ${FACT_EXTRACTION_DIR} checkout
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/*none-any.whl
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/stanford-postagger-full-2016-10-31.zip

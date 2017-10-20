@@ -1,5 +1,7 @@
 package messagebus;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
  * @see ControlMessage
  */
 public class MessageBus {
-    private static final String EXCHANGE_NAME = "factextract";
+    private static final String EXCHANGE_NAME = "cispaces_exchange";
 
     private ConnectionFactory connectionFactory = null;
     private Connection connection = null;
@@ -76,6 +78,13 @@ public class MessageBus {
      * @return Was sending successful?
      */
     public boolean sendMessage(ControlMessage message) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            log.info(mapper.writeValueAsString(message));
+        } catch (JsonProcessingException exc) {
+            /* Do nothing */
+        }
+
         if (!connect()) { return false; }
         try {
             channel.basicPublish(EXCHANGE_NAME, "", null, message.serialize().getBytes());

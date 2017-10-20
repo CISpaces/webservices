@@ -149,12 +149,13 @@ public class FEWSServlet {
      */
     @JWTTokenNeeded
     @POST
-    @Path("/topics/{topicName}")
+    @Path("/topics")
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
-    public String addTopic(@PathParam("topicName") String topicName) {
+    public String addTopic(ControlMessage cMessage) {
         log.info("#### Adding Topic");
 
-        ControlMessage cMessage = new ControlMessage(topicName);
+//        ControlMessage cMessage = new ControlMessage(topicName);
         return messageBus.sendMessage(cMessage) ? "OK" : "NOK";
     }
 }

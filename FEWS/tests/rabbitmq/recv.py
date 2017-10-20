@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from __future__ import print_function
 
 import pika
@@ -6,7 +6,7 @@ import pika
 connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
 channel = connection.channel()
 
-channel.exchange_declare(exchange="factextract", exchange_type="fanout")
+channel.exchange_declare(exchange="cispaces_exchange", exchange_type="fanout")
 
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
