@@ -58,6 +58,7 @@ function validateFile(input_file){ // validate json format of the file
                 }
                 else{
                         console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
+                        alert("Invalid JSON schema. Please check that data follows CISpaces JSON schema.");
                         return("Fail");
                 }
         } else return("Fail");
