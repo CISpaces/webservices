@@ -206,8 +206,7 @@
             "type": "string"
           }
         },
-        "type": "object",
-        "required": ["nodeID"]
+        "type": "object"
       },
       "type": "array",
       "required": ["nodes"]
