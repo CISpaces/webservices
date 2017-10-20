@@ -162,7 +162,8 @@
             ],
             "id": "/properties/nodes/items/properties/nodeID",
             "title": "The nodeid schema.",
-            "type": "string"
+            "type": "string",
+            "required": true
           },
           "source": {
             "default": "user",
@@ -205,9 +206,11 @@
             "type": "string"
           }
         },
-        "type": "object"
+        "type": "object",
+        "required": ["nodeID"]
       },
-      "type": "array"
+      "type": "array",
+      "required": ["nodes"]
     }
   },
   "type": "object"
