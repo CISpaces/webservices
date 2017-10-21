@@ -30,7 +30,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+
+import org.json.JSONObject;
 
 @Path("/NLG")
 public class NLG {
@@ -39,6 +45,17 @@ public class NLG {
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.WILDCARD)
 	public String EE(String input) throws UnsupportedEncodingException{
+		
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target("http://localhost:8080/ers/rest/WriteRules");
+		String response = target.request(MediaType.APPLICATION_JSON)
+		                        .accept(MediaType.TEXT_PLAIN_TYPE)
+		                        .post(Entity.json(input), String.class);
+		
+		JSONObject obj = new JSONObject(response);
+		JSONObject colors = obj.getJSONObject("colors");
+		
+		System.out.println(colors.toString());
 		
 		return (new ExtensionsBulletPoints(input)).getText();
 		

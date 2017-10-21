@@ -129,7 +129,9 @@ public class ExtensionsBulletPoints {
 	private void parseJSONGraph(String json) {
 		JSONObject obj = new JSONObject(json);
 
-		for (Iterator<Object> it = obj.getJSONArray("nodes").iterator(); it
+		JSONObject graph = obj.getJSONObject("graph");
+		
+		for (Iterator<Object> it = graph.getJSONArray("nodes").iterator(); it
 				.hasNext();) {
 			JSONObject t = (JSONObject) it.next();
 			Individual node = null;
@@ -160,6 +162,12 @@ public class ExtensionsBulletPoints {
 						statement);
 				m.add(node, claimText, m.createLiteral((String) t.get("text")));
 
+				/*for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
+						.getJSONObject("prem_assump").names()
+						.iterator(); ranodesIt.hasNext();) {
+					String ranodename = (String) ranodesIt.next();
+					Individual ranode = m.getIndividual(URI + ranodename);
+				
 				if (t.getJSONObject("annot").getJSONObject("prem_assump")
 						.names() != null) {
 					for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
@@ -265,10 +273,10 @@ public class ExtensionsBulletPoints {
 
 							}
 						}
-					}
+					}*/
 
 				}
-				if (t.getJSONObject("annot").getJSONObject("conc")
+				/*if (t.getJSONObject("annot").getJSONObject("conc")
 						.names() != null) {
 					for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
 							.getJSONObject("conc").names().iterator(); ranodesIt
@@ -334,7 +342,7 @@ public class ExtensionsBulletPoints {
 						}
 					}
 				}
-			}
+			}*/
 
 			if (node != null) {
 				m.add(node, creationDate,
@@ -346,13 +354,13 @@ public class ExtensionsBulletPoints {
 			// System.out.println(t);
 		}
 
-		for (Iterator<Object> it = obj.getJSONArray("edges")
+		for (Iterator<Object> it = graph.getJSONArray("edges")
 				.iterator(); it.hasNext();) {
 			JSONObject t = (JSONObject) it.next();
 
-			Individual destnode = m.getIndividual(URI + t.getString("toID"));
+			Individual destnode = m.getIndividual(URI + t.getString("target"));
 			Individual sourcenode = m
-					.getIndividual(URI + t.getString("fromID"));
+					.getIndividual(URI + t.getString("source"));
 
 			if (sourcenode.getOntClass().equals(conflict)) {
 				m.add(sourcenode, hasConflictedElement, destnode);
