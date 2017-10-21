@@ -48,16 +48,11 @@ public class NLG {
 		
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080/ers/rest/WriteRules");
-		String response = target.request(MediaType.APPLICATION_JSON)
+		String evaluation = target.request(MediaType.APPLICATION_JSON)
 		                        .accept(MediaType.TEXT_PLAIN_TYPE)
 		                        .post(Entity.json(input), String.class);
 		
-		JSONObject obj = new JSONObject(response);
-		JSONObject colors = obj.getJSONObject("colors");
-		
-		System.out.println(colors.toString());
-		
-		return (new ExtensionsBulletPoints(input)).getText();
+		return (new ExtensionsBulletPoints(input, evaluation)).getText();
 		
 		//return "Hellow World!";
 	}

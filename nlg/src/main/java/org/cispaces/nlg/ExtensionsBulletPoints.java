@@ -36,6 +36,7 @@ import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.json.JSONObject;
 
 public class ExtensionsBulletPoints {
@@ -69,6 +70,17 @@ public class ExtensionsBulletPoints {
 	private final String URI = "http://cispaces.org/";
 
 	private final OntModel m = ModelFactory.createOntologyModel();
+	
+	//private final OntClass labellings = m.createClass(URI + "Labellings");
+	private final OntClass labelling = m.createClass(URI + "Labelling");
+	//private final ObjectProperty containsLab = m.createObjectProperty(URI + "containsLabelling");
+	
+	private final DatatypeProperty labName = m.createDatatypeProperty(URI + "labelingName");
+	
+	private final ObjectProperty inArgs = m.createObjectProperty(URI + "inArgs");
+	private final ObjectProperty outArgs = m.createObjectProperty(URI + "outArgs");
+	private final ObjectProperty undecArgs = m.createObjectProperty(URI + "undecArgs");
+	
 	private final OntClass inference = m
 			.createClass("http://arg.dundee.ac.uk/aif#Inference");
 	private final OntClass conflict = m
@@ -122,11 +134,11 @@ public class ExtensionsBulletPoints {
 	private final ObjectProperty hasConclusion = m
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasConclusion");
 
-	public ExtensionsBulletPoints(String request) {
-		this.parseJSONGraph(request);
+	public ExtensionsBulletPoints(String request, String eval) {
+		this.parseJSONGraph(request, eval);
 	}
 
-	private void parseJSONGraph(String json) {
+	private void parseJSONGraph(String json, String eval) {
 		JSONObject obj = new JSONObject(json);
 
 		JSONObject graph = obj.getJSONObject("graph");
@@ -377,9 +389,56 @@ public class ExtensionsBulletPoints {
 			}
 
 		}
+		
+		obj = new JSONObject(eval);
+		JSONObject colors = obj.getJSONObject("colors");
+		
+		Iterator<?> exts = colors.keys();
+
+		while( exts.hasNext() ) {
+		    String ext = (String)exts.next();
+
+		    Individual lab = m.createIndividual(labelling);
+		    m.add(lab, labName, m.createLiteral(ext));
+		    
+		    //System.out.println("Ext: " + ext);
+		    if ( colors.get(ext) instanceof JSONObject ) {
+		    	
+		    	for (String key : JSONObject.getNames((JSONObject)colors.get(ext)))
+		    	{
+		    		if (((JSONObject)colors.get(ext)).get(key).toString().equalsIgnoreCase("V")){
+		    			m.add(lab, inArgs, m.getIndividual(URI + key));
+		    		}
+		    		else if (((JSONObject)colors.get(ext)).get(key).toString().equalsIgnoreCase("X")){
+		    			m.add(lab, outArgs, m.getIndividual(URI + key));
+		    		}
+		    		else if (((JSONObject)colors.get(ext)).get(key).toString().equalsIgnoreCase("?")){
+		    			m.add(lab, undecArgs, m.getIndividual(URI + key));
+		    		}
+		    		//System.out.println(key + " -> " + ((JSONObject)colors.get(ext)).get(key));
+		    	}
+		    	
+		    }
+		}
+		
+		
+		
 	}
 
+
 	public String getText() {
+		
+		ExtendedIterator<Individual> labIter = m.listIndividuals(labelling);
+		
+		while (labIter.hasNext()){ 
+			Individual lab = labIter.next();
+			if (lab.getPropertyValue(labName).toString().contains("Skeptical"))
+			{
+				System.out.println("Skeptical extension");
+			}
+		}
+
+		
 		StringWriter out = new StringWriter();
 		m.write(out, "TURTLE");
 		return out.toString();
