@@ -99,8 +99,13 @@ public class ERSServlet {
 						HashMap res=build.prepareCS();
 						output=jsh.convertInputJson(res);
 				}else if(action.equals("nlg")){
+					ERSControl ersWork=new ERSControl(PRINT,ci_path);
+					 LinkedTreeMap mgraphtoeval=(LinkedTreeMap) map.get("graph");
+					String evaluated = ersWork.evaluateJsonString(mgraphtoeval);
+					log.log(Level.INFO,evaluated);
 					String mgraph=map.get("graph").toString();
 					try {
+						log.log(Level.INFO, "nlg service accessed");
 						JSONObject jsonObject = new JSONObject(input);
 						String jsonIn = jsonObject.get("graph").toString();
 						TemplateLanguage templateLanguage = new TemplateLanguage();
