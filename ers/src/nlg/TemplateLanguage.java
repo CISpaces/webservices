@@ -2,14 +2,12 @@ package nlg;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Map.Entry;
-
 
 public class TemplateLanguage<T> {
 
@@ -193,41 +191,32 @@ public class TemplateLanguage<T> {
 
 	public ArrayList<ArrayList<Node>> removeDuplicates(ArrayList<ArrayList<Node>> list){
 		
-		ArrayList<ArrayList<Node>> toreturn = new ArrayList<ArrayList<Node>>();
-		
-		for (int i=0; i<list.size(); i++)
-		{
+		int i=0;
+		while(i<=list.size()-1){
 		
 			ArrayList<Node> list1 = (ArrayList<Node>)   list.get(i);
-			
-			boolean toinsert = true;
-			
-			ArrayList<ArrayList<Node>> toremove = new ArrayList<ArrayList<Node>>();
-			
-			for (int j=0; j< toreturn.size(); j++)
-			{
-				ArrayList<Node> list2 = (ArrayList<Node>)  toreturn.get(j);
+			int j=i+1;
+			while(j<= list.size()-1){
+				ArrayList<Node> list2 = (ArrayList<Node>)  list.get(j);
 				if((list1.containsAll(list2) && list1.size()>list2.size())){
-					 toinsert = false;		
+					 list.remove(list2);	
+					i--;						
 				}	
 				if(list2.containsAll(list1) && list2.size()>list1.size()){
-					toinsert = false;
+					list.remove(list1);	
+					i--;
 				}
 				if(list2.containsAll(list1) && list2.size() == list1.size() && list1!=list2){
-					toinsert = false;
-					toremove.add(list2);
+					list.remove(list1);	
+					list.remove(list2);
+					i--;
 				}
+				j++;
 			}
-			
-			if (toinsert)
-			{
-				toreturn.add(list1);
-			}
-			
-			toreturn.removeAll(toremove);
+			i++;
 			
 		}
-		return toreturn;
+		return list;
 		
 	}
 	
