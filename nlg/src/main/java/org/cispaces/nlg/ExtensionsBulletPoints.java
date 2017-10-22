@@ -29,7 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
@@ -37,24 +38,30 @@ import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Selector;
+import org.apache.jena.rdf.model.SimpleSelector;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
 
 /**
- * Class for generating a sequence of bullet points to 
- * summarise an Extension
+ * Class for generating a sequence of bullet points to summarise an Extension
  * 
  * @author Federico Cerutti <CeruttiF@cardiff.ac.uk>
  *
  */
 public class ExtensionsBulletPoints implements URIs {
 
-	private static Logger log;
-	
-	
+	private final String newline = "\n";
+
 	public ExtensionsBulletPoints(String request, String eval) {
+		NLG.log = Logger.getLogger(getClass().getName());
+
+
 		this.parseJSONGraph(request, eval);
 	}
 
@@ -239,13 +246,13 @@ public class ExtensionsBulletPoints implements URIs {
 						.getNames((JSONObject) colors.get(ext))) {
 					if (((JSONObject) colors.get(ext)).get(key).toString()
 							.equalsIgnoreCase("V")) {
-						m.add(lab, inArgs, m.getIndividual(URI + key));
+						m.add(lab, inStatement, m.getIndividual(URI + key));
 					} else if (((JSONObject) colors.get(ext)).get(key)
 							.toString().equalsIgnoreCase("X")) {
-						m.add(lab, outArgs, m.getIndividual(URI + key));
+						m.add(lab, outStatement, m.getIndividual(URI + key));
 					} else if (((JSONObject) colors.get(ext)).get(key)
 							.toString().equalsIgnoreCase("?")) {
-						m.add(lab, undecArgs, m.getIndividual(URI + key));
+						m.add(lab, undecStatement, m.getIndividual(URI + key));
 					}
 					// System.out.println(key + " -> " +
 					// ((JSONObject)colors.get(ext)).get(key));
@@ -269,15 +276,122 @@ public class ExtensionsBulletPoints implements URIs {
 		return null;
 	}
 
+	private Set<Individual> getCredulousLabellings() {
+		Set<Individual> credulousLabellings = new HashSet<Individual>();
+
+		ExtendedIterator<Individual> labIter = m.listIndividuals(labelling);
+
+		while (labIter.hasNext()) {
+			Individual lab = labIter.next();
+			if (lab.getPropertyValue(labName).toString()
+					.contains("Credulous")) {
+				credulousLabellings.add(lab);
+			}
+		}
+		return credulousLabellings;
+	}
+
+	private Set<Individual> getUndec(Individual lab) {
+		Set<Individual> toRet = new HashSet<Individual>();
+		if (lab != null) {
+			for (StmtIterator undecIter = lab
+					.listProperties(undecStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(
+						undecIter.next().getObject().toString()));
+			}
+		}
+		return toRet;
+	}
+
+	private Set<Individual> getIn(Individual lab) {
+		Set<Individual> toRet = new HashSet<Individual>();
+		if (lab != null) {
+			for (StmtIterator undecIter = lab
+					.listProperties(inStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(
+						undecIter.next().getObject().toString()));
+			}
+		}
+		return toRet;
+	}
+
+	private Set<Individual> getOut(Individual lab) {
+		Set<Individual> toRet = new HashSet<Individual>();
+		if (lab != null) {
+			for (StmtIterator undecIter = lab
+					.listProperties(outStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(
+						undecIter.next().getObject().toString()));
+			}
+		}
+		return toRet;
+	}
+
 	public String getText() {
 
-		if (this.getSkepticalLabelling() == null)
-		{
-			log.log(Level.SEVERE, "Skeptical Labelling Not Found!");
+		StringBuilder out = new StringBuilder();
+		Set<Individual> inIndividuals = new HashSet<Individual>();
+
+		if (this.getSkepticalLabelling() == null) {
+			NLG.log.log(Level.SEVERE, "Skeptical Labelling Not Found!");
 		}
+
+		if (this.getSkepticalLabelling() != null) {
+			inIndividuals = this.getIn(this.getSkepticalLabelling());
+			if (inIndividuals.isEmpty()) {
+				NLG.log.log(Level.INFO,
+						"Skeptical Labelling does not contain in statements");
+			}
+		}
+
+		if (inIndividuals.isEmpty()) {
+			// fallback to use credulous options
+			Set<Individual> credulousLabellings = this.getCredulousLabellings();
+
+			if (credulousLabellings.isEmpty()) {
+				NLG.log.log(Level.SEVERE, "Credulous Labelling Not Found!");
+			} else {
+				for (Iterator<Individual> aCredulousLab = credulousLabellings
+						.iterator(); aCredulousLab.hasNext();) {
+					Set<Individual> aCredulousLabIN = this
+							.getIn(aCredulousLab.next());
+
+					if (inIndividuals == null
+							|| inIndividuals.size() < aCredulousLabIN.size())
+						inIndividuals = aCredulousLabIN;
+				}
+			}
+		}
+
+		if (inIndividuals == null) {
+			out.append(
+					"<p>We are sorry but the evaluation service seemed to have malfunctioned</p>");
+		} else {
+			out.append("<p>We can conclude that:</p>" + newline);
+			out.append("<ul>" + newline);
+
+			for (Iterator<Individual> it = inIndividuals.iterator(); it
+					.hasNext();) {
+				
+				Individual node = it.next();
+				
+				StmtIterator iter = m.listStatements(null, hasConclusion, node);
+				
+				if (!iter.hasNext()){
+					continue;
+				}
+				
+				
+				out.append("<li>"
+						+ node.getPropertyValue(claimText).toString()
+						+ "</li>" + newline);
+			}
+			out.append("</ul>" + newline);
+		}
+
 		
-		StringWriter out = new StringWriter();
-		m.write(out, "TURTLE");
+		//StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
+		
 		return out.toString();
 	}
 

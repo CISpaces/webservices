@@ -24,6 +24,8 @@ package org.cispaces.nlg;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -52,11 +54,15 @@ import org.json.JSONObject;
 public class NLG {
 
 	public static final String ERSService = "http://localhost:8080/ers/rest/WriteRules";
+	public static Logger log = null;
 	
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.WILDCARD)
 	public String EE(String input) throws UnsupportedEncodingException{
+		
+		log = Logger.getLogger(getClass().getName());
+		log.log(Level.INFO, "NLG Accessed");
 		
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(ERSService);
