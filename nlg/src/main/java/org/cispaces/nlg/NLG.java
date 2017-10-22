@@ -38,23 +38,33 @@ import javax.ws.rs.core.MediaType;
 
 import org.json.JSONObject;
 
+/**
+ * Servlet to receive as input the same request to ERS
+ * but it produces the NLG out of it
+ * 
+ * **WARNING** the URL for the ERSService is hardcoded in it!
+ * **TODO** Fix this by passing the URL as input as well
+ * 
+ * @author Federico Cerutti <CeruttiF@cardiff.ac.uk>
+ *
+ */
 @Path("/NLG")
 public class NLG {
 
+	public static final String ERSService = "http://localhost:8080/ers/rest/WriteRules";
+	
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.WILDCARD)
 	public String EE(String input) throws UnsupportedEncodingException{
 		
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080/ers/rest/WriteRules");
+		WebTarget target = client.target(ERSService);
 		String evaluation = target.request(MediaType.APPLICATION_JSON)
 		                        .accept(MediaType.TEXT_PLAIN_TYPE)
 		                        .post(Entity.json(input), String.class);
 		
 		return (new ExtensionsBulletPoints(input, evaluation)).getText();
-		
-		//return "Hellow World!";
 	}
 	
 }
