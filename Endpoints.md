@@ -203,11 +203,20 @@ Source file: ``` FEWS/src/main/java/fewsservlet/FEWSServlet.java ```
   ]
   ```
   
-- fewsservlet/topics/{topicName}
-  
-  ```POST``` Add a new Topic to Fact-Extraction's index.
+- fewsservlet/vocab
 
-  @param topicName Topic name to add to index
+  Manage the vocabulary used by the fact-extraction engine to parse Tweets.
+  Vocabulary is a list of VocabularyTopics (similar to Topics, see docstrings).
+  A VocabularyTopic has: 
+    - name - by convention lowercase with underscores
+    - schema - the semantic type of the topic (e.g. "building"), default is "topic"
+    - keywords - list of keywords, synonyms to search for in Tweets
+        (e.g. topic "wall_street" may have "wall st" as a keyword)
+
+  ```GET``` the current full vocabulary of the fact-extraction engine (state is managed by FEWS)
+ 
+  ```POST``` add a topic for fact-extraction to index.  Accepts a single vocab topic in JSON form.
+  This sends a message to fact-extraction to recompute the index and add new topics to the database.
   
 
 ## PROVSIMP Web Service

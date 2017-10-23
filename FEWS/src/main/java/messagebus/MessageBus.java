@@ -1,6 +1,5 @@
 package messagebus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -11,8 +10,6 @@ import java.util.logging.Logger;
 
 /**
  * This class manages sending of control messages down a RabbitMQ bus.
- *
- * @see ControlMessage
  */
 public class MessageBus {
     private static final String EXCHANGE_NAME = "cispaces_exchange";
@@ -72,22 +69,19 @@ public class MessageBus {
     }
 
     /**
-     * Send a ControlMessage down the RabbitMQ bus.
+     * Send an Object down the RabbitMQ bus.
      *
-     * @param message Message to send
+     * @param object Object to send
      * @return Was sending successful?
      */
-    public boolean sendMessage(ControlMessage message) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            log.info(mapper.writeValueAsString(message));
-        } catch (JsonProcessingException exc) {
-            /* Do nothing */
-        }
-
+    public boolean send(Object object) {
         if (!connect()) { return false; }
         try {
-            channel.basicPublish(EXCHANGE_NAME, "", null, message.serialize().getBytes());
+            ObjectMapper mapper = new ObjectMapper();
+            String objectJson = mapper.writeValueAsString(object);
+            log.info(objectJson);
+
+            channel.basicPublish(EXCHANGE_NAME, "", null, objectJson.getBytes());
             finalise();
             return true;
         } catch (java.io.IOException exc) {

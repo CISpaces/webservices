@@ -1,7 +1,7 @@
 package database;
 
 import javax.json.bind.annotation.JsonbPropertyOrder;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * This class represents a plain topic with associated keywords.
@@ -61,5 +61,23 @@ public class VocabularyTopic {
 
     public void addKeyword(String keyword) {
         this.keywords.add(keyword);
+    }
+
+    public static Map<String, Map<String, List<String>>> asControlMessage(List<VocabularyTopic> vocabularyTopicList) {
+        // Set up data structure that fact-extraction requires
+        Map<String, Map<String, List<String>>> message = new LinkedHashMap<>();
+        message.put("lexicon", new LinkedHashMap<>());
+        message.put("phrase mapping", new LinkedHashMap<>());
+
+        // Populate it
+        for (VocabularyTopic topic : vocabularyTopicList) {
+            message.get("lexicon").put(topic.topic, Collections.singletonList(topic.schema));
+
+            for (String keyword : topic.getKeywords()) {
+                message.get("phrase mapping").put(keyword, Collections.singletonList(topic.topic));
+            }
+        }
+
+        return message;
     }
 }

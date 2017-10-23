@@ -153,7 +153,8 @@ public class FEWSServlet {
         log.info("#### Adding Topic: " + vocabularyTopic.getTopic());
         postgreSQLDB.addVocab(vocabularyTopic);
 
-        // TODO send RabbitMQ message
+        // Send down RabbitMQ bus
+        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
 
         return Response.status(Response.Status.CREATED).entity(vocabularyTopic.getTopic()).build();
     }
