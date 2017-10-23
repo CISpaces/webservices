@@ -43,6 +43,24 @@ img.avatar {
 }
 
 /**
+	styles for common
+*/
+
+.panel.panel-default {
+  margin: 15px 0 5px;
+}
+
+/**
+	styles for vocabularyBox
+*/
+
+#vocabulary_box .topic-form {
+  overflow-y: auto;
+  height: 85%;
+  width: 100%;
+}
+
+/**
 	styles for infoBox
 */
 
@@ -60,7 +78,7 @@ hr {
   padding-bottom: 5px;
 }
 
-.topic-form, .fews-form {
+#info_box .topic-form, .fews-form {
   overflow-y: auto;
   height: 45%;
   width: 100%;

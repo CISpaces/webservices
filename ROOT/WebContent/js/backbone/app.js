@@ -5,6 +5,7 @@ app.infoBoxView;
 app.workBoxView;
 //app.reqBoxView;
 app.evalBoxView;
+app.vocabularyBoxView;
 //app.prefBoxView;
 //app.moiraBoxView;
 //app.chatBoxView;
@@ -18,6 +19,7 @@ $(function(){
 	app.toolBoxView = new app.ToolBoxView();
 	app.infoBoxView = new app.InfoBoxView();
 	app.evalBoxView = new app.EvalBoxView();
+	app.vocabularyBoxView = new app.VocabularyBoxView();
 	//app.prefBoxView = new app.PrefBoxView();
 	//app.moiraBoxView = new app.MoiraBoxView();
 	//app.chatBoxView = new app.ChatBoxView();

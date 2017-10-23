@@ -1,33 +1,28 @@
-//js/views/infoBox.js
-
 var app = app || {};
 
 /**
- * InfoBox
- * ---------------------------------
- * the UI for 'infoBox'
+ * VocabularyBox
+ * -----------------------------------------
+ * the UI for 'vocabularyBox'
  */
 
-app.InfoBoxView = Backbone.View.extend({
-  el: '#info_box',
+app.VocabularyBoxView = Backbone.View.extend({
+  el: '#vocabulary_box',
 
   events: {
-    'click .input-group-btn': 'createTopic',
-    'click .btn-submit': 'submitTopic',
-    'click .btn-clear': 'clearTopic'
+
   },
 
-  initialize: function() {
-    this.$el.attr("style", "height: " + (chart.svg.height - 60) * 0.66 + "px");
+  initialize: function(){
+    this.$el.attr("style", "height: " + (chart.svg.height - 60)/2 + "px");
 
-    /*
     // Brings a list of topics from FEWS services
     app.Topics.fetch({
       // headers: {'Authorization': localStorage.getItem('auth_token')},
       success: function(data) {
         if (data) {
           data.forEach(function(d) {
-            app.infoBoxView.addTopic(d.attributes);
+            app.vocabularyBoxView.addTopic(d.attributes);
           });
         }
       },
@@ -36,40 +31,16 @@ app.InfoBoxView = Backbone.View.extend({
         console.error(response);
       }
     });
-    */
+
     // Brings tweets related to listed topics periodically(30s)
     // var timer = setInterval( "app.infoBoxView.submitTopic()", 30000 );
   },
 
-  render: function() {},
-
-  createTopic: function(obj) {
-    var topic = $("#info_box .input-group input").val();
-
-    if (!topic || typeof(topic) == "undefined" || topic == "") {
-      alert("Please, enter a topic");
-      return;
-    }
-
-    if ($('[name="negated-' + topic + '"]').length > 0) {
-      alert("This topic is already listed");
-      return;
-    }
-
-    var param = {
-      'name': topic,
-      'negated': -1,
-      'genuine': -1
-    };
-
-    this.addTopic(param);
-
-    $("#info_box .input-group input").val("");
-  },
+  render: function(){},
 
   addTopic: function(topic) {
 
-    var p = $("<p></p>").appendTo($("#info_box .topic-form"));
+    var p = $("<p></p>").appendTo($("#vocabulary_box .topic-form"));
 
     var div = $("<div></div>", {
       "class": "form-group"
@@ -199,90 +170,5 @@ app.InfoBoxView = Backbone.View.extend({
     ).after($("<span></span>", {
       "text": "unknown"
     }));
-  },
-
-  submitTopic: function() {
-    var topic_list = [];
-
-    var p = $(".topic-form p");
-    for (var i = 0; i < p.length; i++) {
-      var topic = p[i].children[0].innerText;
-
-      var obj = {
-        "name": topic,
-        "negated": $('[name="negated-' + topic + '"]:checked').val(),
-        "genuine": $('[name="genuine-' + topic + '"]:checked').val()
-      };
-
-      topic_list.push(obj);
-    }
-
-    Backbone.ajax({
-      type: "POST",
-      url: "/fewsservlet/tweets",
-      data: JSON.stringify(topic_list),
-      dataType: 'json',
-      contentType: "application/json",
-      success: function(result) {
-        $(".fews-form table tbody").empty();
-
-        if (result) {
-          result.forEach(function(data) {
-            var tr = $("<tr></tr>", {
-              "class": "extract_tr",
-              "draggable": true
-            }).appendTo($(".fews-form table tbody"))
-            .on("dragstart", function(obj){
-              obj.originalEvent.dataTransfer.setData('text/plain', null);
-            })
-            .on("dragend", function(obj){
-              var children = this.childNodes;
-
-              // creates model of the node
-              var attr = app.workBoxView.createNode("info", children[1].innerText, children[0].innerText);
-
-              var restart = true;
-              if (!chart.nodes || chart.nodes.length < 1)
-                restart = false;
-
-              // draws a new node
-              chart.node = addNewNode(attr, obj.pageX, obj.pageY);
-
-              // re-start changed graph
-              chart.simulation = restart_simulation(chart.simulation, restart);
-            });
-
-            var td_extract = $("<td></td>", {
-                "text": data.extract
-              }).appendTo(tr)
-              .click(function() {
-                $("#details-node").hide();
-                $("#details-tweet").show();
-
-                var p = $("#details-tweet p");
-                p[0].innerText = data.extract;
-                p[1].innerText = data.text;
-                p[2].innerText = data.uri;
-                p[3].innerText = new Date(data.created.substring(0, data.created.length - 6));
-              });
-
-            var td_uri = $("<td></td>", {
-                "text": data.uri
-              }).appendTo(tr)
-              .dblclick(function() {
-                var tweet_popup = window.open(data.uri, parseText(data.extract), "height: 100px,width: 150px");
-              });
-          });
-        }
-      },
-      error: function(xhr, textStatus, errorThrown) {
-        alert("AJAX failed: " + errorThrown);
-      }
-    });
-  },
-
-  clearTopic: function() {
-    $(".topic-form").html(" ");
-    $(".fews-form table tbody").empty();
   }
 });
