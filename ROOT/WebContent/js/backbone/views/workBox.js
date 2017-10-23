@@ -256,15 +256,6 @@ app.WorkBoxView = Backbone.View
         type: 'POST'
       });
 
-      var param = {
-      "action": "eval",
-      "nodes": { attr
-      }
-
-      app.NodesProv.create(param, {
-        type: 'POST'
-      });
-
       return attr;
     },
 
