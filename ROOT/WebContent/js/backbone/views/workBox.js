@@ -66,7 +66,6 @@ app.WorkBoxView = Backbone.View
         Backbone.ajax({
           type: "POST",
           contentType: "application/json",
-          // dataType : "application/json",
           url: "/PROVSIMP/rest/ProcProv",
           data: JSON.stringify(param),
           success: function(data) {
@@ -81,7 +80,7 @@ app.WorkBoxView = Backbone.View
             console.log(error_msg.substring(0, error_msg.length - 2));
           }
         });
-        
+
       });
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
@@ -253,15 +252,6 @@ app.WorkBoxView = Backbone.View
 
       // creates model of the node in the collection and sends POST request to a back-end service
       app.Nodes.create(attr, {
-        type: 'POST'
-      });
-
-      var param = {
-      "action": "eval",
-      "nodes": { attr
-      }
-
-      app.NodesProv.create(param, {
         type: 'POST'
       });
 
