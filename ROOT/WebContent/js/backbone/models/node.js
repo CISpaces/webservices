@@ -17,6 +17,6 @@ app.Node = Backbone.Model.extend({
     nodeID: '',
     annot: {},
     graphID: '',
-    islocked: 'false'
+    islocked: false
   }
 });
