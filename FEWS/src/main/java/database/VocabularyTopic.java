@@ -67,14 +67,14 @@ public class VocabularyTopic {
         // Set up data structure that fact-extraction requires
         Map<String, Map<String, List<String>>> message = new LinkedHashMap<>();
         message.put("lexicon", new LinkedHashMap<>());
-        message.put("phrase mapping", new LinkedHashMap<>());
+        message.put("phrase_mapping", new LinkedHashMap<>());
 
         // Populate it
         for (VocabularyTopic topic : vocabularyTopicList) {
             message.get("lexicon").put(topic.topic, Collections.singletonList(topic.schema));
 
             for (String keyword : topic.getKeywords()) {
-                message.get("phrase mapping").put(keyword, Collections.singletonList(topic.topic));
+                message.get("phrase_mapping").put(keyword, Collections.singletonList(topic.topic));
             }
         }
 

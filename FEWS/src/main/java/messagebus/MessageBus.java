@@ -1,6 +1,7 @@
 package messagebus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -22,7 +23,7 @@ public class MessageBus {
     /**
      * Construct a new MessageBus pointing to a RabbitMQ server on localhost.
      */
-    public MessageBus() { this("localhost"); }
+    public MessageBus() { this("vm-cispaces.localdomain"); }
 
     /**
      * Construct a new MessageBus pointing to a RabbitMQ server on a remote host.
@@ -81,7 +82,10 @@ public class MessageBus {
             String objectJson = mapper.writeValueAsString(object);
             log.info(objectJson);
 
-            channel.basicPublish(EXCHANGE_NAME, "", null, objectJson.getBytes());
+            AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
+            propsBuilder.contentType("application/json");
+
+            channel.basicPublish(EXCHANGE_NAME, "", propsBuilder.build(), objectJson.getBytes());
             finalise();
             return true;
         } catch (java.io.IOException exc) {
