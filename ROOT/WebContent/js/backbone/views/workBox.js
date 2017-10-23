@@ -55,6 +55,32 @@ app.WorkBoxView = Backbone.View
 
       this.listenTo(app.Nodes, "update", function() {
         $("#saveProgress").attr("disabled", false);
+
+        // Calls PROVSIMP webservice to save the node provenance after evrytime it is added.
+
+        var param = {
+          "action": "save",
+          "nodes": app.Nodes.toJSON()
+        }
+
+        Backbone.ajax({
+          type: "POST",
+          contentType: "application/json",
+          url: "/PROVSIMP/rest/ProcProv",
+          data: JSON.stringify(param),
+          success: function(data) {
+          console.log(data);
+
+          },
+          error: function(e) {
+              var responseText = e.responseText;
+            var error_msg = responseText.split('h1>')[1];
+
+            // when evalutation is failed, the reason will be shown
+            console.log(error_msg.substring(0, error_msg.length - 2));
+          }
+        });
+
       });
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
@@ -198,7 +224,10 @@ app.WorkBoxView = Backbone.View
       var date = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
-      var sec = now.getSeconds();
+      var sec = Math.round(now.getSeconds());
+      if(!Number.isInteger(sec)){
+        sec=parseInt(sec);
+      }
 
       var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
         (date < 10 ? "0" + date : date) + " " +
