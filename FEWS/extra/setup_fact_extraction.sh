@@ -118,11 +118,6 @@ sed -i "s#db_user=postgres#db_user=intelanalysis#g" ${FACT_EXTRACTION_DIR}/confi
 sed -i "s#db_pass=postgres#db_pass=passw0rd#g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
-echo "# - Modify Ant script...(Y/n)"
-if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-sed -i "s#python.exe#python#g" ${FACT_EXTRACTION_DIR}/build.xml
-if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
-
 echo "# - Modify Python source...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 sed -i "s#connection.socket#connection#g" ${FACT_EXTRACTION_DIR}/src/fact_extraction_app/RabbitMQHandler.py
