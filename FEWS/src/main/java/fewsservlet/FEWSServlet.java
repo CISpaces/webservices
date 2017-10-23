@@ -1,16 +1,17 @@
 package fewsservlet;
 
-import database.Topic;
 import database.PostgreSQLDB;
+import database.Topic;
 import database.Tweet;
+import database.VocabularyTopic;
 import filters.JWTTokenNeeded;
-import messagebus.ControlMessage;
 import messagebus.MessageBus;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
@@ -142,20 +143,28 @@ public class FEWSServlet {
     /**
      * Add a new Topic to Fact-Extraction's index.
      *
-     * POST Request at FEWSROOT/topics/{topicName} where 'topicName' is the new topic to add to Fact-Extraction's index
-     *
-     * @param topicName Topic to add to index
-     * @return "OK" if message was sent, else "NOK"
+     * POST Request at FEWSROOT/topics/ with JSON representation of List of Topics
      */
     @JWTTokenNeeded
     @POST
-    @Path("/topics")
+    @Path("/vocab")
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces(MediaType.TEXT_PLAIN)
-    public String addTopic(ControlMessage cMessage) {
-        log.info("#### Adding Topic");
+    public Response addVocab(VocabularyTopic vocabularyTopic, @Context HttpServletResponse response) {
+        log.info("#### Adding Topic: " + vocabularyTopic.getTopic());
+        postgreSQLDB.addVocab(vocabularyTopic);
 
-//        ControlMessage cMessage = new ControlMessage(topicName);
-        return messageBus.sendMessage(cMessage) ? "OK" : "NOK";
+        // TODO send RabbitMQ message
+
+        return Response.status(Response.Status.CREATED).entity(vocabularyTopic.getTopic()).build();
+    }
+
+    @JWTTokenNeeded
+    @GET
+    @Path("/vocab")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<VocabularyTopic> getVocab() {
+        log.info("#### Getting vocabulary");
+
+        return postgreSQLDB.listVocab();
     }
 }

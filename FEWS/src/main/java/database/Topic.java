@@ -3,9 +3,11 @@ package database;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 
 /**
- * This class represents a Topic as stored in the Fact-Extraction PostgreSQL database.
+ * This class represents a Topic as stored in the fact-extraction PostgreSQL database.
+ * These are the output of fact-extraction, VocabularyTopics are the input.
  *
  * @see PostgreSQLDB
+ * @see VocabularyTopic
  */
 @JsonbPropertyOrder({"name", "negated", "genuine"})
 public class Topic {
@@ -80,7 +82,7 @@ public class Topic {
      * Permitted values are {-1, 0, 1}.
      * The value -1 represents NULL/Unknown.
      *
-     * @param negated
+     * @param negated Is Topic negated
      */
     public void setNegated(int negated) {
         if (negated < -1 || negated > 1) { negated = -1; }
@@ -92,7 +94,7 @@ public class Topic {
      * Permitted values are {-1, 0, 1}.
      * The value -1 represents NULL/Unknown.
      *
-     * @param genuine
+     * @param genuine Is Topic genuine
      */
     public void setGenuine(int genuine) {
         if (genuine < -1 || genuine > 1) { genuine = -1; }

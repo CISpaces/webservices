@@ -2,9 +2,7 @@ package database;
 
 import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,7 +51,7 @@ public class PostgreSQLDB {
                     prop.getProperty("password")
             );
 
-            log.info("Read Postgresql config from file");
+            log.info("#### Read Postgresql config from file");
 
             return true;
 
@@ -254,7 +252,8 @@ public class PostgreSQLDB {
 
             String queryString =
                     "SELECT * " +
-                    "FROM factextract.phase1_ext_db_topic;";
+                    "FROM factextract.phase1_ext_db_topic " +
+                    "ORDER BY topic_key;";
 
             statement = conn.createStatement();
             resultSet = statement.executeQuery(queryString);
@@ -276,5 +275,101 @@ public class PostgreSQLDB {
         }
 
         return topicList;
+    }
+
+    /**
+     * Get the list of all known VocabularyTopics.
+     *
+     * @return List of all VocabularyTopics present in database
+     *
+     * @see VocabularyTopic
+     * @see Topic
+     */
+    public List<VocabularyTopic> listVocab() {
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        Map<String, VocabularyTopic> keywordMap = new LinkedHashMap<>();
+
+        try {
+            if (!connect()) { return null; }
+
+            String queryString =
+                    "SELECT topic.topic, topic.schema " +
+                    "FROM factextract.vocab_topic as topic " +
+                    "ORDER BY topic.topic_id";
+
+            statement = conn.createStatement();
+            resultSet = statement.executeQuery(queryString);
+
+            while (resultSet.next()) {
+                String topicName = resultSet.getString("topic");
+                String entityType = resultSet.getString("schema");
+
+                keywordMap.put(topicName, new VocabularyTopic(topicName, entityType));
+            }
+
+            queryString =
+                    "SELECT topic.topic, keyword.keyword " +
+                    "FROM factextract.vocab_topic as topic " +
+                    "JOIN factextract.vocab_keyword as keyword " +
+                    "ON (topic.topic_id = keyword.topic_id);";
+
+            resultSet = statement.executeQuery(queryString);
+
+            while (resultSet.next()) {
+                String topicName = resultSet.getString("topic");
+                String keyword = resultSet.getString("keyword");
+
+                keywordMap.get(topicName).addKeyword(keyword);
+            }
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB query", exc);
+            exc.printStackTrace();
+            return null;
+        } finally {
+            finalise(resultSet, statement, conn);
+        }
+
+        return new ArrayList<>(keywordMap.values());
+    }
+
+    public void addVocab(VocabularyTopic topic) {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) return;
+
+            String queryString =
+                    "INSERT INTO factextract.vocab_topic (topic, schema) " +
+                    "VALUES (?, ?) " +
+                    "ON CONFLICT DO NOTHING;";
+
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, topic.getTopic());
+            statement.setString(2, topic.getSchema());
+            statement.execute();
+
+            queryString =
+                    "INSERT INTO factextract.vocab_keyword (topic_id, keyword) " +
+                    "VALUES ((SELECT topic_id FROM factextract.vocab_topic WHERE topic = ?), ?) " +
+                    "ON CONFLICT DO NOTHING ;";
+
+            statement = conn.prepareStatement(queryString);
+            for (String keyword : topic.getKeywords()) {
+                statement.setString(1, topic.getTopic());
+                statement.setString(2, keyword);
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB query", exc);
+            exc.printStackTrace();
+        } finally {
+            finalise(null, statement, conn);
+        }
     }
 }
