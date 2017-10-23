@@ -91,11 +91,9 @@ public class ProvServiceHelper {
  
 
 private static URI getBaseURI() {
-	return UriBuilder.fromUri("http://"+host+":"+port+"/provsimp/rest/").build();
-	 
-  }
+	return UriBuilder.fromUri("http://"+host+":"+port+"/PROVSIMP/rest/").build();
 
- 
+  }
 
  
 }
