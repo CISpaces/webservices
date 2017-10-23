@@ -85,7 +85,7 @@ function readFile(input_files){
 	            }
 
 	            // set up simulations for force-directed graphs
-	            var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+	            var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
 	            push_node_style_data(ret_simulation);
 
 	            // the simulation used when drawing a force-directed graph

@@ -5,21 +5,21 @@
 /*
 	object for chart
 */
-var chart = null;
+var chart = {};
 
 /*
 	push new chart data
 */
 function push_chart_data(area_id, ret){
 
-  var obj = {
+  var svg = {
     id: area_id,
-    svg: ret.svg,
-    svg_width: ret.svg_width,
-    svg_height: ret.svg_height
+    el: ret.svg,
+    width: ret.svg_width,
+    height: ret.svg_height
   }
 
-  chart = obj;
+  chart.svg = svg;
 }
 
 var link_from = null;	// flag used when making a new edge

@@ -18,7 +18,7 @@ app.InfoBoxView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.$el.attr("style", "height: " + (chart.svg_height - 60) + "px");
+    this.$el.attr("style", "height: " + (chart.svg.height - 60) + "px");
 
     // Brings a list of topics from FEWS services
     app.Topics.fetch({

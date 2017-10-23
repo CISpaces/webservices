@@ -89,11 +89,11 @@ app.ToolBoxView = Backbone.View.extend({
         push_chart_data(area_id, ret_chart);
 
         // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-        var zoom = set_zoom(chart.svg);
+        var zoom = set_zoom(chart.svg.el);
         chart.zoom = zoom;
 
         // set up simulations for force-directed graphs
-        var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+        var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
         push_node_style_data(ret_simulation);
 
         // the simulation used when drawing a force-directed graph
@@ -271,7 +271,7 @@ app.ToolBoxView = Backbone.View.extend({
 
     var length = (chart.nodes) ? chart.nodes.length : 15;
 
-    var ret_simulation = set_simulation(length, chart.svg_width, chart.svg_height);
+    var ret_simulation = set_simulation(length, chart.svg.width, chart.svg.height);
     push_node_style_data(ret_simulation);
 
     chart.simulation = restart_simulation(ret_simulation.simulation, false);
