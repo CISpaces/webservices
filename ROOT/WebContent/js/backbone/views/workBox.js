@@ -198,7 +198,11 @@ app.WorkBoxView = Backbone.View
       var date = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
+
       var sec = now.getSeconds();
+      if(!Number.isInteger(sec)){
+        sec = parseInt(sec);
+      }
 
       var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
         (date < 10 ? "0" + date : date) + " " +

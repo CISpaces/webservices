@@ -77,6 +77,7 @@ hr {
 
 .float_right {
   float: right;
+  width: 20%;
 }
 
 .fews-form table {
@@ -89,7 +90,7 @@ hr {
   white-space: nowrap;
 }
 
-#details-tweet div p {
+#div-details div p {
   word-wrap: break-word;
 }
 

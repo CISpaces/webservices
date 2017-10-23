@@ -231,6 +231,9 @@ app.InfoBoxView = Backbone.View.extend({
               "class": "extract_tr",
               "draggable": true
             }).appendTo($(".fews-form table tbody"))
+            .on("dragstart", function(obj){
+              obj.originalEvent.dataTransfer.setData('text/plain', null);
+            })
             .on("dragend", function(obj){
               var children = this.childNodes;
 
