@@ -39,7 +39,7 @@ app.InfoBoxView = Backbone.View.extend({
     // Brings tweets related to listed topics periodically(30s)
     // var timer = setInterval( "app.infoBoxView.submitTopic()", 30000 );
 
-    this.$el.find("input").on("keydown", function(event) {
+    this.$("input").on("keydown", function(event) {
       if (event.which == 13 || event.keyCode == 13) {
         app.infoBoxView.createTopic();
       }
@@ -211,12 +211,12 @@ app.InfoBoxView = Backbone.View.extend({
   submitTopic: function() {
     var topic_list = [];
 
-    var p = $(".topic-form p");
+    var p = this.$(".topic-form p");
     for (var i = 0; i < p.length; i++) {
-      var topic = p[i].children[0].innerText;
+      var topic = p[i].childNodes[0].childNodes[0].getAttribute("name");
 
       var obj = {
-        "name": topic,
+        "name": p[i].childNodes[0].childNodes[0].innerText,
         "negated": $('[name="negated-' + topic + '"]:checked').val(),
         "genuine": $('[name="genuine-' + topic + '"]:checked').val()
       };
