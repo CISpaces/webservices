@@ -139,6 +139,15 @@ public class FEWSServlet {
         return topicList;
     }
 
+    @JWTTokenNeeded
+    @GET
+    @Path("/vocab")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<VocabularyTopic> getVocab() {
+        log.info("#### Getting vocabulary");
+
+        return postgreSQLDB.listVocab();
+    }
 
     /**
      * Add a new Topic to Fact-Extraction's index.
@@ -150,22 +159,38 @@ public class FEWSServlet {
     @Path("/vocab")
     @Consumes({MediaType.APPLICATION_JSON})
     public Response addVocab(VocabularyTopic vocabularyTopic, @Context HttpServletResponse response) {
-        log.info("#### Adding Topic: " + vocabularyTopic.getTopic());
+        log.info("#### Adding VocabularyTopic: " + vocabularyTopic.getTopic());
         postgreSQLDB.addVocab(vocabularyTopic);
 
         // Send down RabbitMQ bus
         messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
 
         return Response.status(Response.Status.CREATED).entity(vocabularyTopic.getTopic()).build();
+        // TODO send conflict response if exists
     }
 
-    @JWTTokenNeeded
-    @GET
-    @Path("/vocab")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<VocabularyTopic> getVocab() {
-        log.info("#### Getting vocabulary");
+//    @JWTTokenNeeded
+    @DELETE
+    @Path("/vocab/{vocabTopicName}")
+    public Response deleteVocabTopic(@PathParam("vocabTopicName") String vocabTopicName) {
+        log.info("#### Deleting VocabularyTopic: " + vocabTopicName);
+        postgreSQLDB.deleteVocabTopic(vocabTopicName);
 
-        return postgreSQLDB.listVocab();
+        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
+
+        return Response.status(Response.Status.OK).build();
     }
+
+    @DELETE
+    @Path("/vocab/{vocabTopicName}/{vocabKeyword}")
+    public Response deleteVocabTopic(@PathParam("vocabTopicName") String vocabTopicName,
+                                     @PathParam("vocabKeyword") String vocabKeyword) {
+        log.info("#### Deleting VocabularyTopic keyword: " + vocabTopicName + " - " + vocabKeyword);
+        postgreSQLDB.deleteVocabKeyword(vocabTopicName, vocabKeyword);
+
+        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
+
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

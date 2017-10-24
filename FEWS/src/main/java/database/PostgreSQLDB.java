@@ -335,6 +335,12 @@ public class PostgreSQLDB {
         return new ArrayList<>(keywordMap.values());
     }
 
+    public class AlreadyExistsException extends Exception {
+        public AlreadyExistsException(String message) {
+            super(message);
+        }
+    }
+
     public void addVocab(VocabularyTopic topic) {
         PreparedStatement statement = null;
 
@@ -367,6 +373,50 @@ public class PostgreSQLDB {
 
         } catch (SQLException exc) {
             log.log(Level.SEVERE, "Failed PostgreSQL DB query", exc);
+            exc.printStackTrace();
+        } finally {
+            finalise(null, statement, conn);
+        }
+    }
+
+    public void deleteVocabTopic(String vocabTopicName) {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) return;
+
+            // Then delete topic - database is setup to cascade
+            String queryString = "DELETE FROM factextract.vocab_topic WHERE topic = ?;";
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopicName);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB delete", exc);
+            exc.printStackTrace();
+        } finally {
+            finalise(null, statement, conn);
+        }
+    }
+
+    public void deleteVocabKeyword(String vocabTopicName, String vocabKeyword) {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) return;
+
+            // Delete keyword
+            String queryString =
+                    "DELETE FROM factextract.vocab_keyword " +
+                    "WHERE topic_id IN (SELECT topic_id FROM factextract.vocab_topic WHERE topic = ?)" +
+                    "AND keyword = ?;";
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopicName);
+            statement.setString(2, vocabKeyword);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB delete", exc);
             exc.printStackTrace();
         } finally {
             finalise(null, statement, conn);
