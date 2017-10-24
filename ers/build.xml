@@ -17,7 +17,7 @@ J.S.Robinson@soton.ac.uk
     </target>
 
     <target name="compile" depends="init">
-        <javac srcdir="src/" destdir="WebContent/WEB-INF/classes" nowarn="on" debug="on" target="1.8" source="1.8">
+        <javac srcdir="src/" destdir="WebContent/WEB-INF/classes" nowarn="on" debug="on" target="1.8" source="1.8" encoding="utf-8">
             <classpath>                                                
                 <fileset dir="lib/">
                     <include name ="**/*.jar"/>

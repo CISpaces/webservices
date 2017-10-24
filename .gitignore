@@ -19,5 +19,6 @@ out/*
 
 # CISpaces tools
 cispaces/*
+tools/*
 
 
