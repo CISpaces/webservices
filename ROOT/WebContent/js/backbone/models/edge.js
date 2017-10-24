@@ -12,6 +12,6 @@ app.Edge = Backbone.Model.extend({
     edgeID: '',
     className: 'edge',
     graphID: '',
-    islocked: false
+    islocked: 'false'
   }
 });
