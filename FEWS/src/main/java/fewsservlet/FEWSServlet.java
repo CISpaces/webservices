@@ -12,8 +12,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -39,8 +41,8 @@ public class FEWSServlet {
     @GET
     @Path("/hello")
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello World!";
+    public Response hello() {
+        return Response.status(418).entity("Hello World!").build();
     }
 
     /**
@@ -143,10 +145,33 @@ public class FEWSServlet {
     @GET
     @Path("/vocab")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<VocabularyTopic> getVocab() {
+    public Response getVocab() {
         log.info("#### Getting vocabulary");
 
-        return postgreSQLDB.listVocab();
+        List<VocabularyTopic> vocabularyTopicList =  postgreSQLDB.getVocab();
+        return Response.status(Response.Status.OK).entity(vocabularyTopicList).build();
+    }
+
+    @JWTTokenNeeded
+    @GET
+    @Path("/vocab/{vocabTopic}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVocab(@PathParam("vocabTopic") String vocabTopic) {
+        log.info("#### Getting vocabulary");
+
+        try {
+            VocabularyTopic vocabularyTopic = postgreSQLDB.getVocab(vocabTopic).get(0);
+            return Response.status(Response.Status.OK).entity(vocabularyTopic).build();
+
+        } catch (IndexOutOfBoundsException exc) {
+            return Response.status(Response.Status.NOT_FOUND).entity(vocabTopic).build();
+        }
+    }
+
+    private void refreshFactExtraction() {
+        List<VocabularyTopic> fullVocab = postgreSQLDB.getVocab();
+        Map<String, Map<String, List<String>>> controlMessage = VocabularyTopic.asControlMessage(fullVocab);
+        messageBus.send(controlMessage);
     }
 
     /**
@@ -156,41 +181,84 @@ public class FEWSServlet {
      */
     @JWTTokenNeeded
     @POST
-    @Path("/vocab")
-    @Consumes({MediaType.APPLICATION_JSON})
-    public Response addVocab(VocabularyTopic vocabularyTopic, @Context HttpServletResponse response) {
-        log.info("#### Adding VocabularyTopic: " + vocabularyTopic.getTopic());
-        postgreSQLDB.addVocab(vocabularyTopic);
+    @Path("/vocab/{vocabTopic}/schema/{vocabSchema}")
+    public Response createVocabTopic(@PathParam("vocabTopic") String vocabTopic,
+                                     @PathParam("vocabSchema") String vocabSchema) {
+        log.info("#### Creating VocabularyTopic: " + vocabTopic);
 
-        // Send down RabbitMQ bus
-        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
+        try {
+            if (postgreSQLDB.existsVocabTopic(vocabTopic)) {
+                return Response.status(Response.Status.CONFLICT).entity(vocabTopic).build();
+            }
 
-        return Response.status(Response.Status.CREATED).entity(vocabularyTopic.getTopic()).build();
-        // TODO send conflict response if exists
+            postgreSQLDB.createVocabTopic(vocabTopic, vocabSchema);
+            return Response.status(Response.Status.CREATED).entity(vocabTopic).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
     }
 
-//    @JWTTokenNeeded
-    @DELETE
-    @Path("/vocab/{vocabTopicName}")
-    public Response deleteVocabTopic(@PathParam("vocabTopicName") String vocabTopicName) {
-        log.info("#### Deleting VocabularyTopic: " + vocabTopicName);
-        postgreSQLDB.deleteVocabTopic(vocabTopicName);
+    // add keywords
+    @JWTTokenNeeded
+    @POST
+    @Path("/vocab/{vocabTopic}/keywords/{vocabKeyword}")
+    public Response createVocabKeyword(@PathParam("vocabTopic") String vocabTopic,
+                                       @PathParam("vocabKeyword") String vocabKeyword){
+        String keywordSlug = vocabTopic + "/keywords/" + vocabKeyword;
+        log.info("#### Creating VocabularyTopic keyword: " + keywordSlug);
 
-        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
+        try {
+            if (!postgreSQLDB.existsVocabTopic(vocabTopic)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(vocabTopic).build();
+            }
+            if (postgreSQLDB.existsVocabKeyword(vocabTopic, vocabKeyword)) {
+                return Response.status(Response.Status.CONFLICT).entity(keywordSlug).build();
+            }
 
-        return Response.status(Response.Status.OK).build();
+            postgreSQLDB.createVocabKeyword(vocabTopic, vocabKeyword);
+            refreshFactExtraction();
+            return Response.status(Response.Status.CREATED).entity(keywordSlug).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
     }
 
+    @JWTTokenNeeded
     @DELETE
-    @Path("/vocab/{vocabTopicName}/{vocabKeyword}")
-    public Response deleteVocabTopic(@PathParam("vocabTopicName") String vocabTopicName,
-                                     @PathParam("vocabKeyword") String vocabKeyword) {
-        log.info("#### Deleting VocabularyTopic keyword: " + vocabTopicName + " - " + vocabKeyword);
-        postgreSQLDB.deleteVocabKeyword(vocabTopicName, vocabKeyword);
+    @Path("/vocab/{vocabTopic}")
+    public Response deleteVocabTopic(@PathParam("vocabTopic") String vocabTopic) {
+        log.info("#### Deleting VocabularyTopic: " + vocabTopic);
 
-        messageBus.send(VocabularyTopic.asControlMessage(getVocab()));
+        try {
+            postgreSQLDB.deleteVocabTopic(vocabTopic);
+            refreshFactExtraction();
+            return Response.status(Response.Status.NO_CONTENT).build();
 
-        return Response.status(Response.Status.OK).build();
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+    }
+
+    @JWTTokenNeeded
+    @DELETE
+    @Path("/vocab/{vocabTopic}/keywords/{vocabKeyword}")
+    public Response deleteVocabKeyword(@PathParam("vocabTopic") String vocabTopic,
+                                       @PathParam("vocabKeyword") String vocabKeyword) {
+        String keywordSlug = vocabTopic + "/keywords/" + vocabKeyword;
+        log.info("#### Deleting VocabularyTopic keyword: " + keywordSlug);
+
+        try {
+            postgreSQLDB.deleteVocabKeyword(vocabTopic, vocabKeyword);
+            refreshFactExtraction();
+            return Response.status(Response.Status.NO_CONTENT).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
     }
 
 }
