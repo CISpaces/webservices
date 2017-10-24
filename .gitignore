@@ -1,5 +1,6 @@
 # IntelliJ Project files
 **/.idea
+**/*.iml
 
 # Nebeans project files
 **/nbproject
@@ -9,10 +10,12 @@
 **/*.war
 **/WebContent/WEB-INF/classes
 **/WebContent/WEB-INF/lib
+**/target
 
 # Other internal files
 .DS_STORE
 cispaces-web-services-integration.iml
+.profile
 
 # Out folder
 out/*
@@ -20,5 +23,8 @@ out/*
 # CISpaces tools
 cispaces/*
 tools/*
+
+# Python venv
+**/env/
 
 

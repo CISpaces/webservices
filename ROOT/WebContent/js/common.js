@@ -39,27 +39,29 @@ function readCookie(name) {
   return '';
 }
 
-function validateFile(input_file) { // validate json format of the file
+function validateFile(input_file){ // validate json format of the file
 
-  var jv = new JSONValidation(); // It uses JSONValidate library
+        var jv = new JSONValidation(); // It uses JSONValidate library
 
-  // Get CIspaces schema
-  var schemaFile = '/CISpaces.schema.json';
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", schemaFile, false);
-  xmlhttp.send();
-  if (xmlhttp.status == 200) {
-    schema = JSON.parse(xmlhttp.responseText);
-    //validate the file
-    result = jv.validate(input_file, schema);
-    //console.log(result);
-    if (result.ok) {
-      return ("success");
-    } else {
-      return ("[Invalid JSON format] JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
-      // return("Fail");
-    }
-  } else return ("Fail");
+        // Get CIspaces schema
+        var schemaFile = '/CISpaces.schema.json';
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", schemaFile, false);
+        xmlhttp.send();
+        if (xmlhttp.status==200) {
+                schema = JSON.parse(xmlhttp.responseText);
+                //validate the file
+                result = jv.validate(input_file, schema);
+                //console.log(result);
+                if(result.ok){
+                        return("success");
+                }
+                else{
+                        console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
+                        alert("Invalid JSON schema. Please check that data follows CISpaces JSON schema.");
+                        return("Fail");
+                }
+        } else return("Fail");
 }
 
 function readFile(input_files) {

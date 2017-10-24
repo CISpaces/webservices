@@ -5,6 +5,7 @@
   "properties": {
     "edges": {
       "id": "/properties/edges",
+      "required": ["items"],
       "items": {
         "id": "/properties/edges/items",
         "properties": {
@@ -46,7 +47,7 @@
             ],
             "id": "/properties/edges/items/properties/islocked",
             "title": "The islocked schema.",
-            "type": "boolean"
+            "type": "string"
           },
           "source": {
             "default": "138a1779-ddbc-4150-e3de-6eb3b7f6666a",
@@ -162,7 +163,8 @@
             ],
             "id": "/properties/nodes/items/properties/nodeID",
             "title": "The nodeid schema.",
-            "type": "string"
+            "type": "string",
+            "required": true
           },
           "source": {
             "default": "user",
@@ -207,7 +209,8 @@
         },
         "type": "object"
       },
-      "type": "array"
+      "type": "array",
+      "required": ["nodes", "edges"]
     }
   },
   "type": "object"

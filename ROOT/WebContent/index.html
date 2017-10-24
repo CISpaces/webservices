@@ -209,7 +209,7 @@
 								<div class="form-group topic-form">
 								</div>
 								<hr>
-								<button class="btn btn-default btn-xs btn-submit">Test</button>
+								<button class="btn btn-default btn-xs btn-submit">Search</button>
 								<div class="table-responsive fews-form">
 									<table class="table">
 										<thead>
@@ -345,6 +345,8 @@
 			<li><a class="btn btn-link" tabindex="-1" id="link-from">Link From</a></li>
 			<li><a class="btn btn-link disabled" tabindex="-1" id="link-to">Link To</a></li>
 			<li class="divider"></li>
+			<li><a class="btn btn-link" tabindex="-1" id="provgraph">Prov Graph</a></li>
+			<li class="divider"></li>
 			<li><a class="btn btn-link" tabindex="-1">Close</a></li>
 		</ul>
 
@@ -447,6 +449,21 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button type="button" class="btn btn-default" onclick="app.toolBoxView.importAnalysis()">Import</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="prov_graph" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title"><em>Provenance Graph</em></h4>
+					</div>
+					<div class="modal-body">
+						<img id="img_prov_graph" src="">
 					</div>
 				</div>
 			</div>

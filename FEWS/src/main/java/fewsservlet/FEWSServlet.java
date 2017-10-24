@@ -3,6 +3,7 @@ package fewsservlet;
 import database.Topic;
 import database.PostgreSQLDB;
 import database.Tweet;
+import filters.JWTTokenNeeded;
 import messagebus.ControlMessage;
 import messagebus.MessageBus;
 
@@ -12,7 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -80,12 +80,14 @@ public class FEWSServlet {
      * @see Topic
      * @see Tweet
      */
-    // TODO multiple topics
+    @JWTTokenNeeded
     @POST
     @Path("/tweets")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public List<Tweet> tweetsByTopic(List<Topic> topicList, @Context HttpServletResponse response) {
+        log.info("#### Getting Tweets");
+
         ListIterator<Topic> topicListIterator = topicList.listIterator();
         while (topicListIterator.hasNext()) {
             response.setHeader("topic-" + topicListIterator.nextIndex(),
@@ -120,10 +122,13 @@ public class FEWSServlet {
      * @return A list of all known Topics
      * @see Topic
      */
+    @JWTTokenNeeded
     @GET
     @Path("/topics")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Topic> listTopics(@Context HttpServletResponse response) {
+        log.info("#### Getting Topics");
+
         List<Topic> topicList = postgreSQLDB.listTopics();
         ListIterator<Topic> topicListIterator = topicList.listIterator();
         while (topicListIterator.hasNext()) {
@@ -142,10 +147,13 @@ public class FEWSServlet {
      * @param topicName Topic to add to index
      * @return "OK" if message was sent, else "NOK"
      */
+    @JWTTokenNeeded
     @POST
     @Path("/topics/{topicName}")
     @Produces(MediaType.TEXT_PLAIN)
     public String addTopic(@PathParam("topicName") String topicName) {
+        log.info("#### Adding Topic");
+
         ControlMessage cMessage = new ControlMessage(topicName);
         return messageBus.sendMessage(cMessage) ? "OK" : "NOK";
     }
