@@ -10,7 +10,8 @@ app.VocabularyBoxView = Backbone.View.extend({
   el: '#vocabulary_box',
 
   events: {
-    'click .input-group-btn': 'createTopic'
+    'click .input-group-btn': 'createTopic',
+    'click .btn-clear': 'clearTopic'
   },
 
   initialize: function() {
@@ -42,7 +43,7 @@ app.VocabularyBoxView = Backbone.View.extend({
   render: function() {},
 
   createTopic: function() {
-    var topic = $("#vocabulary_box .input-group input").val();
+    var topic = this.$(".input-group input").val();
 
     if (!topic || typeof(topic) == "undefined" || topic == "") {
       alert("Please, enter a topic");
@@ -56,12 +57,12 @@ app.VocabularyBoxView = Backbone.View.extend({
 
     this.addTopic(param);
 
-    $("#vocabulary_box .input-group input").val("");
+    this.$(".input-group input").val("");
   },
 
   addTopic: function(topic) {
 
-    var p = $("<p></p>").appendTo($("#vocabulary_box .topic-form"));
+    var p = $("<p></p>").appendTo(this.$(".topic-form"));
 
     var div_vocab = $("<div></div>", {
       "class": "form-group"
@@ -92,5 +93,9 @@ app.VocabularyBoxView = Backbone.View.extend({
     var span = $("<span></span>", {
       "text": topic.keyword ? topic.keyword : "Here is for keywords"
     }).appendTo($("<label></label>").appendTo(div_keywords));
+  },
+
+  clearTopic: function() {
+    this.$(".topic-form").html(" ");
   }
 });

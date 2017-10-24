@@ -49,7 +49,7 @@ app.InfoBoxView = Backbone.View.extend({
   render: function() {},
 
   createTopic: function() {
-    var topic = $("#info_box .input-group input").val();
+    var topic = this.$(".input-group input").val();
 
     if (!topic || typeof(topic) == "undefined" || topic == "") {
       alert("Please, enter a topic");
@@ -64,7 +64,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     this.addTopic(param);
 
-    $("#info_box .input-group input").val("");
+    this.$(".input-group input").val("");
   },
 
   addTopic: function(topic) {
@@ -75,7 +75,7 @@ app.InfoBoxView = Backbone.View.extend({
       radio_btn_name = radio_btn_name + "_1";
     }
 
-    var p = $("<p></p>").appendTo($("#info_box .topic-form"));
+    var p = $("<p></p>").appendTo(this.$(".topic-form"));
 
     var div = $("<div></div>", {
       "class": "form-group"
@@ -289,7 +289,7 @@ app.InfoBoxView = Backbone.View.extend({
   },
 
   clearTopic: function() {
-    $(".topic-form").html(" ");
-    $(".fews-form table tbody").empty();
+    this.$(".topic-form").html(" ");
+    this.$(".fews-form table tbody").empty();
   }
 });
