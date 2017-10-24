@@ -10,11 +10,11 @@ app.VocabularyBoxView = Backbone.View.extend({
   el: '#vocabulary_box',
 
   events: {
-
+    'click .input-group-btn': 'createTopic'
   },
 
-  initialize: function(){
-    this.$el.attr("style", "height: " + (chart.svg.height - 60)/2 + "px");
+  initialize: function() {
+    this.$el.attr("style", "height: " + (chart.svg.height - 60) / 2 + "px");
 
     // Brings a list of topics from FEWS services
     app.Topics.fetch({
@@ -32,31 +32,45 @@ app.VocabularyBoxView = Backbone.View.extend({
       }
     });
 
-    // Brings tweets related to listed topics periodically(30s)
-    // var timer = setInterval( "app.infoBoxView.submitTopic()", 30000 );
+    this.$el.find("input").on("keydown", function(event) {
+      if (event.which == 13 || event.keyCode == 13) {
+        app.vocabularyBoxView.createTopic();
+      }
+    });
   },
 
-  render: function(){},
+  render: function() {},
+
+  createTopic: function() {
+    var topic = $("#vocabulary_box .input-group input").val();
+
+    if (!topic || typeof(topic) == "undefined" || topic == "") {
+      alert("Please, enter a topic");
+      return;
+    }
+
+    var param = {
+      'name': topic,
+      'keyword': '-1'
+    };
+
+    this.addTopic(param);
+
+    $("#vocabulary_box .input-group input").val("");
+  },
 
   addTopic: function(topic) {
 
     var p = $("<p></p>").appendTo($("#vocabulary_box .topic-form"));
 
-    var div = $("<div></div>", {
+    var div_vocab = $("<div></div>", {
       "class": "form-group"
     }).appendTo(p);
 
-    var alert_class = "alert-success";
-    if (topic.negated == 0) {
-      alert_class = "alert-danger";
-    } else if (topic.negated == -1) {
-      alert_class = "alert-warning";
-    }
-
     var div_alert = $("<div></div>", {
-      "class": "alert " + alert_class + " alert-infobox float_left",
+      "class": "alert alert-info alert-infobox float_left",
       "text": topic.name
-    }).appendTo(div);
+    }).appendTo(div_vocab);
 
     var button = $("<i></i>", {
       "class": "fa fa-minus"
@@ -65,110 +79,18 @@ app.VocabularyBoxView = Backbone.View.extend({
       "class": "btn btn-default"
     }).click(function() {
       p.remove();
-    }).appendTo(div));
+    }).appendTo(div_vocab));
 
-    var div_negated = $("<div></div>", {
+    var div_keywords = $("<div></div>", {
       "class": "form-group"
     }).appendTo(p);
 
-    var negated_true = $("<input/>", {
-      "type": "radio",
-      "name": "negated-" + topic.name,
-      "value": 1,
-      "checked": (topic.negated == 1)
-    }).click(function(obj) {
-      div_alert.addClass("alert-success");
-      div_alert.removeClass("alert-danger");
-      div_alert.removeClass("alert-warning");
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_negated)
-      .before($("<label></label>", {
-        "text": "negated"
-      }))
-    ).after($("<span></span>", {
-      "text": "true"
-    }));
+    var label = $("<label></label>", {
+      "text": "Keywords"
+    }).appendTo(div_keywords);
 
-    var negated_false = $("<input/>", {
-      "type": "radio",
-      "name": "negated-" + topic.name,
-      "value": 0,
-      "checked": (topic.negated == 0)
-    }).click(function() {
-      div_alert.removeClass("alert-success");
-      div_alert.addClass("alert-danger");
-      div_alert.removeClass("alert-warning");
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_negated)
-    ).after($("<span></span>", {
-      "text": "false"
-    }));
-
-    var negated_unknown = $("<input/>", {
-      "type": "radio",
-      "name": "negated-" + topic.name,
-      "value": -1,
-      "checked": (topic.negated == -1)
-    }).click(function() {
-      div_alert.removeClass("alert-success");
-      div_alert.removeClass("alert-danger");
-      div_alert.addClass("alert-warning");
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_negated)
-    ).after($("<span></span>", {
-      "text": "unknown"
-    }));
-
-    var div_genuine = $("<div></div>", {
-      "class": "form-group"
-    }).appendTo(p);
-
-    var genuine_true = $("<input/>", {
-      "type": "radio",
-      "name": "genuine-" + topic.name,
-      "value": 1,
-      "checked": (topic.genuine == 1)
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_genuine)
-      .before($("<label></label>", {
-        "text": "genuine"
-      }))
-    ).after($("<span></span>", {
-      "text": "true"
-    }));
-
-    var genuine_false = $("<input/>", {
-      "type": "radio",
-      "name": "genuine-" + topic.name,
-      "value": 0,
-      "checked": (topic.genuine == 0)
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_genuine)
-    ).after($("<span></span>", {
-      "text": "false"
-    }));
-
-    var genuine_unknown = $("<input/>", {
-      "type": "radio",
-      "name": "genuine-" + topic.name,
-      "value": -1,
-      "checked": (topic.genuine == -1)
-    }).appendTo(
-      $("<label></label>", {
-        "class": "radio-inline"
-      }).appendTo(div_genuine)
-    ).after($("<span></span>", {
-      "text": "unknown"
-    }));
+    var span = $("<span></span>", {
+      "text": topic.keyword ? topic.keyword : "Here is for keywords"
+    }).appendTo($("<label></label>").appendTo(div_keywords));
   }
 });

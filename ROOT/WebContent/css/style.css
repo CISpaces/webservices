@@ -60,6 +60,10 @@ img.avatar {
   width: 100%;
 }
 
+.form-group label span {
+  font-weight: 400;
+}
+
 /**
 	styles for infoBox
 */
