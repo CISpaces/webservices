@@ -136,6 +136,8 @@ public interface URIs {
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasPremise");
 	public final ObjectProperty hasConclusion = m
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasConclusion");
+	
+	public final ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
 
 	
 }

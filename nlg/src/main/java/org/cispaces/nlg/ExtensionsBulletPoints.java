@@ -37,12 +37,22 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Selector;
 import org.apache.jena.rdf.model.SimpleSelector;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +68,8 @@ public class ExtensionsBulletPoints implements URIs {
 
 	private final String newline = "\n";
 
+	private InfModel inf = null;
+	
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
 
@@ -260,6 +272,17 @@ public class ExtensionsBulletPoints implements URIs {
 
 			}
 		}
+		
+		String rules = "[rule1: (?ra "+ hasPremise.toString() +" ?p) (?ra " + hasConclusion.toString() + " ?c) -> (?c "+ basedOn.toString() +" ?c)]";
+		Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+		reasoner.setDerivationLogging(true);
+		inf = ModelFactory.createInfModel(reasoner, m);
+		
+		// debug
+		/*StringWriter outInf = new StringWriter(); inf.write(outInf, "TURTLE");
+		NLG.log.log(Level.INFO, "***Inferred model begins:");
+		NLG.log.log(Level.INFO, outInf.toString());
+		NLG.log.log(Level.INFO, "***Inferred model ends.");*/
 
 	}
 
@@ -326,6 +349,68 @@ public class ExtensionsBulletPoints implements URIs {
 		}
 		return toRet;
 	}
+	
+	private ResultSet selectSparqlQuery(String szQuery, Model m){
+		Query query = QueryFactory.create(szQuery) ;
+		return QueryExecutionFactory.create(query, m).execSelect();
+	}
+	
+	private Set<Individual> rootBasedOn(Set <Individual> individuals){
+		Set<Individual> roots = new HashSet<Individual>();
+		
+		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();){
+			Individual iInd = it.next();
+			ResultSet r = this.selectSparqlQuery("SELECT * {?c <"+ basedOn.toString() +"> <" + iInd.toString() +">}", inf);
+			if (!r.hasNext()){
+				roots.add(iInd);
+			}
+		}
+		
+		//debug
+		NLG.log.log(Level.INFO, "***Roots list begins:");
+		for (Iterator<Individual> r = roots.iterator(); r.hasNext();){
+			NLG.log.log(Level.INFO, r.next().toString());
+		}
+		NLG.log.log(Level.INFO, "***Roots list ends.");
+		
+		return roots;
+	}
+	
+	private String individualsToString(Set<Individual> inIndividuals){
+		StringBuilder out = new StringBuilder();
+		Set<String> outputted = new HashSet<String>();
+		
+		Set<Individual> roots = this.rootBasedOn(inIndividuals);
+		
+		for (Iterator<Individual> it = roots.iterator(); it
+				.hasNext();) {
+			
+			Individual node = it.next();
+			
+			
+			out.append("<li>"
+					+ node.getPropertyValue(claimText).toString());
+			
+			//outputted.add(node.getPropertyValue(claimText).toString());
+			
+			/*if (!reasons.isEmpty()){
+				out.append(", because: ");
+				for (Iterator<String> itReasons = reasons.iterator(); itReasons.hasNext();){
+					String reasonString = itReasons.next();
+					out.append(reasonString);
+					outputted.add(reasonString);
+					
+					if (itReasons.hasNext()){
+						out.append("; ");
+					}
+				}
+			}*/
+			
+			
+			out.append("</li>" + newline);
+		}
+		return out.toString();
+	}
 
 	public String getText() {
 
@@ -367,25 +452,9 @@ public class ExtensionsBulletPoints implements URIs {
 			out.append(
 					"<p>We are sorry but the evaluation service seemed to have malfunctioned</p>");
 		} else {
-			out.append("<p>We can conclude that:</p>" + newline);
+			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
-
-			for (Iterator<Individual> it = inIndividuals.iterator(); it
-					.hasNext();) {
-				
-				Individual node = it.next();
-				
-				StmtIterator iter = m.listStatements(null, hasConclusion, node);
-				
-				if (!iter.hasNext()){
-					continue;
-				}
-				
-				
-				out.append("<li>"
-						+ node.getPropertyValue(claimText).toString()
-						+ "</li>" + newline);
-			}
+			out.append(this.individualsToString(inIndividuals));
 			out.append("</ul>" + newline);
 		}
 
