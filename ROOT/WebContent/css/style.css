@@ -1,14 +1,14 @@
 @CHARSET "UTF-8";
-
 /**
 	styles for login.html
 */
+
 .input_text, .input_passwd {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 .btn_login {
@@ -19,7 +19,7 @@
   border: none;
   cursor: pointer;
   width: 20%;
-	float: right;
+  float: right;
 }
 
 .btn_login:hover {
@@ -36,30 +36,53 @@ img.avatar {
 }
 
 .container {
-	padding: 10px;
-	width: 60%;
-	margin: auto;
-	display: block;
+  padding: 10px;
+  width: 60%;
+  margin: auto;
+  display: block;
+}
+
+/**
+	styles for common
+*/
+
+.panel.panel-default {
+  margin: 15px 0 5px;
+}
+
+/**
+	styles for vocabularyBox
+*/
+
+#vocabulary_box .topic-form {
+  overflow-y: auto;
+  height: 85%;
+  width: 100%;
+}
+
+.form-group label span {
+  font-weight: 400;
 }
 
 /**
 	styles for infoBox
 */
+
 hr {
-	height: 1px;
-	background-color: #aaa;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	width: 90%;
+  height: 1px;
+  background-color: #aaa;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 90%;
 }
 
 .alert-infobox {
-	margin-bottom: 10px;
-	padding-top: 5px;
-	padding-bottom: 5px;
+  margin-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
-.topic-form, .fews-form{
+#info_box .topic-form, .fews-form {
   overflow-y: auto;
   height: 45%;
   width: 100%;
@@ -76,6 +99,7 @@ hr {
 
 .float_right {
   float: right;
+  width: 20%;
 }
 
 .fews-form table {
@@ -88,109 +112,119 @@ hr {
   white-space: nowrap;
 }
 
-#details-tweet div p {
+#div-details div p {
   word-wrap: break-word;
 }
 
 /**
 	styles for nodes
 */
+
 .btn-claim {
-  border-color: #8c66ff;
+  border-color: #a85ae8;
   background-color: #b366ff;
-  color: #ffffff;
+  color: #fff;
+}
+
+.btn-claim:hover {
+  color: #fff;
+  border-color: 924dcc;
+  background-color: #a25ee5;
 }
 
 .info-node {
-	fill: #5bc0de;
+  fill: #5bc0de;
 }
 
 .claim-node {
-	fill: #b366ff;
+  fill: #b366ff;
 }
 
 .pref-node {
-	fill: #f0ad4e;
+  fill: #f0ad4e;
 }
 
 .con-node {
-	fill: #d9534f;
+  fill: #d9534f;
 }
 
 .pro-node {
-	fill: #5cb85c;
+  fill: #5cb85c;
 }
 
 .node-highlight {
-	stroke-width: 3px;
-	stroke: rgb(0, 0, 0);
+  stroke-width: 3px;
+  stroke: rgb(0, 0, 0);
 }
 
 .node-eval {
-	stroke-width: 3px;
+  stroke-width: 3px;
 }
 
 /**
 	styles for edges
 */
+
 .edge {
-	stroke-width: 1.5px;
+  stroke-width: 1.5px;
 }
 
 .pref-edge {
-	stroke: #d58512;
+  stroke: #d58512;
 }
 
 .con-edge {
-	stroke: #204d74;
-	stroke-dasharray: 5, 5;
+  stroke: #204d74;
+  stroke-dasharray: 5, 5;
 }
 
 .pro-edge {
-	stroke: #398439;
-	stroke-dasharray: 8, 2;
+  stroke: #398439;
+  stroke-dasharray: 8, 2;
 }
 
 .pref-arrow-head {
-	stroke: #d58512;
-	fill-opacity: 0;
+  stroke: #d58512;
+  fill-opacity: 0;
 }
 
 .con-arrow-head {
-	stroke: #204d74;
-	fill-opacity: 0;
+  stroke: #204d74;
+  fill-opacity: 0;
 }
 
 .pro-arrow-head {
-	stroke: #398439;
-	fill-opacity: 0;
+  stroke: #398439;
+  fill-opacity: 0;
 }
 
 /**
 	styles for evalBox
 */
+
 .evalbox-text {
-	color: #555;
-    margin: 5px;
-    font-weight: normal;
+  color: #555;
+  margin: 5px;
+  font-weight: normal;
 }
+
 .evalbox-square {
-	width: 13px;
-    height: 13px;
-    display: inline-block;
+  width: 13px;
+  height: 13px;
+  display: inline-block;
 }
 
 .success {
-	fill: #31a354;
-	stroke: #31a354;
+  fill: #31a354;
+  stroke: #31a354;
 }
 
 .fail {
-	fill: #f03b20;
-	stroke: #f03b20;
+  fill: #f03b20;
+  stroke: #f03b20;
 }
 
 .question {
-	fill: #feb24c;
-	stroke: #feb24c;
+  fill: #feb24c;
+  stroke: #feb24c;
 }

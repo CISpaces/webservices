@@ -40,6 +40,7 @@ public class TimeHelper {
 		   return ft.print(dNow);
 	  //2012-03-02T10:30:00
 	}
+
 	public String before(int days){
 			MutableDateTime now = new MutableDateTime(DateTimeZone.UTC);
 			DateTime daysAgo = now.toDateTime();
@@ -53,19 +54,19 @@ public class TimeHelper {
 	
 	public String parseCIS(String text){
 	    DateTime dt = XML_DATE_TIME_FORMAT.parseDateTime(text);
-	    DateTimeFormatter ft =  DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
+	    DateTimeFormatter ft =  DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 		return ft.print(dt);
 	   
 	}
 	
 	public String nowCIS(){
 		MutableDateTime dNow = new MutableDateTime(DateTimeZone.UTC);
-		 DateTimeFormatter ft =  DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
+		 DateTimeFormatter ft =  DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 		   return ft.print(dNow);
 		}
 	
 	public String getDateCIS(String text){
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 		DateTime dt = formatter.parseDateTime(text); 
 		DateTimeFormatter ft =  DateTimeFormat.forPattern("dd-MM-yyyy hh:mm:ss");
 		return ft.print(dt); 
@@ -79,8 +80,4 @@ public class TimeHelper {
 	
 //yyyyMMddHHmm
 	//"createTime":"201503011826","lastTime":"2015-03-01 18:07:35.735" "timestamp":"2015-03-03 12:44:40.4440"
-	
-	
-	
-	
 }

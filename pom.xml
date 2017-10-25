@@ -10,8 +10,11 @@
         <module>VC</module>
         <module>FEWS</module>
         <module>ers</module>
+        <module>provgraphs</module>
+        <module>PROVSIMP</module>
+        <!-- Not a web service -->
+        <module>setProvenance</module>
         <!-- Unused services -->
         <module>info</module>
-        <!--<module>PROVSIMP</module>-->
     </modules>
 </project>

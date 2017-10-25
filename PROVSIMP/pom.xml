@@ -53,6 +53,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <id>prov-irp-jena</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <file>lib/prov-irp_jena3.3.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>com.prov</groupId>
+                            <artifactId>prov-jena</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -91,40 +114,39 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.1</version>
         </dependency>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>jena</artifactId>
-            <version>2.6.4</version>
-        </dependency>
-        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.9.9</version>
         </dependency>
-        <dependency>
-            <groupId>com.prov</groupId>
-            <artifactId>prov</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.3.0</version>
+            <version>3.4.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-rdfconnection</artifactId>
-            <version>3.3.0</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <!-- Bundled library - this is different from the prov library used by the other services -->
+        <dependency>
+            <groupId>com.prov</groupId>
+            <artifactId>prov-jena</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     <properties>
