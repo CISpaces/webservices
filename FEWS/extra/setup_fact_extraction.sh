@@ -51,7 +51,7 @@ echo
 
 echo "# - Download fact-extraction...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-git -C ${FACT_EXTRACTION_DIR} checkout 94bb7d48a7907fe34ad9c0ab82a885e8ea1da5e2
+git -C ${FACT_EXTRACTION_DIR} checkout 4b9f61174e7bb480a821330abf5b3d0c6b73c6e3
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/*none-any.whl
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/stanford-postagger-full-2016-10-31.zip
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/stanford-parser-full-2016-10-31.zip
