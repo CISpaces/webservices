@@ -1,11 +1,15 @@
 package messagebus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,28 +17,50 @@ import java.util.logging.Logger;
  * This class manages sending of control messages down a RabbitMQ bus.
  */
 public class MessageBus {
-    private static final String EXCHANGE_NAME = "cispaces_exchange";
+    private final String HOSTNAME;
+    private final String EXCHANGE;
 
-    private ConnectionFactory connectionFactory = null;
+    private static final ObjectWriter objectWriter = new ObjectMapper().writer();
+    private static final AMQP.BasicProperties amqpProperties =
+            new AMQP.BasicProperties.Builder().contentType("application/json").build();
+
+    private final ConnectionFactory connectionFactory = new ConnectionFactory();
     private Connection connection = null;
     private Channel channel = null;
     private static Logger log;
 
     /**
-     * Construct a new MessageBus pointing to a RabbitMQ server on localhost.
+     * Construct a new MessageBus pointing to a RabbitMQ server defined in 'rabbitmq.properties'.
      */
-    public MessageBus() { this("vm-cispaces.localdomain"); }
-
-    /**
-     * Construct a new MessageBus pointing to a RabbitMQ server on a remote host.
-     *
-     * @param queueHost Hostname of RabbitMQ server
-     */
-    public MessageBus(String queueHost) {
+    public MessageBus() {
         log = Logger.getLogger(getClass().getName());
 
-        connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(queueHost);
+        final Properties prop = new Properties();
+        InputStream input = null;
+
+        try {
+            final ClassLoader classLoader = getClass().getClassLoader();
+            input = classLoader.getResourceAsStream("rabbitmq.properties");
+            prop.load(input);
+
+        } catch (IOException exc) {
+            log.log(Level.SEVERE, "Failed to read properties file", exc);
+            exc.printStackTrace();
+
+        } finally {
+            HOSTNAME = prop.getProperty("hostname", null);
+            EXCHANGE = prop.getProperty("exchange", null);
+            if (HOSTNAME != null) connectionFactory.setHost(HOSTNAME);
+
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (java.io.IOException exc) {
+                    log.log(Level.SEVERE, "Failed to close properties file", exc);
+                    exc.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -45,11 +71,13 @@ public class MessageBus {
      * @return Was the connection successful?
      */
     private boolean connect() {
+        if (HOSTNAME == null || EXCHANGE == null) return false;
         try {
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+            channel.exchangeDeclare(EXCHANGE, "fanout");
             return true;
+
         } catch (java.io.IOException | java.util.concurrent.TimeoutException exc) {
             log.log(Level.SEVERE, "Failed RabbitMQ message bus connection", exc);
             exc.printStackTrace();
@@ -70,29 +98,25 @@ public class MessageBus {
     }
 
     /**
-     * Send an Object down the RabbitMQ bus.
+     * Send an Object down the RabbitMQ bus as JSON.
      *
      * @param object Object to send
      * @return Was sending successful?
      */
     public boolean send(Object object) {
         if (!connect()) { return false; }
+
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            String objectJson = mapper.writeValueAsString(object);
-            log.info(objectJson);
-
-            AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
-            propsBuilder.contentType("application/json");
-
-            channel.basicPublish(EXCHANGE_NAME, "", propsBuilder.build(), objectJson.getBytes());
-            finalise();
+            channel.basicPublish(EXCHANGE, "", amqpProperties, objectWriter.writeValueAsBytes(object));
             return true;
+
         } catch (java.io.IOException exc) {
             log.log(Level.SEVERE, "Failed to send RabbitMQ message", exc);
             exc.printStackTrace();
-            finalise();
             return false;
+
+        } finally {
+            finalise();
         }
     }
 }
