@@ -42,16 +42,16 @@ if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo "# - Download fact-extraction...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 if [ "${existing}" != 'true' ]; then
-    git clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/fact-extraction.git ${FACT_EXTRACTION_DIR}
+    git lfs clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/fact-extraction.git ${FACT_EXTRACTION_DIR} -X third-party/*
 else
-    git -C ${FACT_EXTRACTION_DIR} fetch
+    git lfs -C ${FACT_EXTRACTION_DIR} fetch -X third-party/*
 fi
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
 echo "# - Download fact-extraction...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-git -C ${FACT_EXTRACTION_DIR} checkout
+git -C ${FACT_EXTRACTION_DIR} checkout 94bb7d48a7907fe34ad9c0ab82a885e8ea1da5e2
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/*none-any.whl
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/stanford-postagger-full-2016-10-31.zip
 git -C ${FACT_EXTRACTION_DIR} lfs pull -I third-party/stanford-parser-full-2016-10-31.zip
@@ -68,6 +68,10 @@ echo "CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;" | sudo -u postgres psql -d 
 echo "CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;" | sudo -u postgres psql -d ${SQL_DB_NAME}
 echo "CREATE EXTENSION IF NOT EXISTS hstore;" | sudo -u postgres psql -d ${SQL_DB_NAME}
 echo "CREATE SCHEMA IF NOT EXISTS ${SQL_SCHEMA_NAME};" | sudo -u postgres psql -d ${SQL_DB_NAME}
+sudo -u postgres psql -d ${SQL_DB_NAME} < FEWS/extra/create_vocab_tables.sql
+echo "GRANT ALL ON SCHEMA ${SQL_SCHEMA_NAME} TO ${SQL_USER};" | sudo -u postgres psql -d ${SQL_DB_NAME}
+echo "GRANT ALL ON ALL TABLES IN SCHEMA ${SQL_SCHEMA_NAME} TO ${SQL_USER};" | sudo -u postgres psql -d ${SQL_DB_NAME}
+echo "GRANT ALL ON ALL SEQUENCES IN SCHEMA ${SQL_SCHEMA_NAME} TO ${SQL_USER};" | sudo -u postgres psql -d ${SQL_DB_NAME}
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Setting database permissions...(Y/n)" 
@@ -82,9 +86,10 @@ sudo sed -i.bak "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc
 echo "host    ${SQL_DB_NAME}     ${SQL_USER}             all                     password" | sudo tee --append /etc/postgresql/9.5/main/pg_hba.conf
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
-echo "# - Restarting PostgreSQL service...(Y/n)" 
+echo "# - Restarting services...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 sudo systemctl restart postgresql
+sudo systemctl restart rabbitmq-server
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Setting up virtualenv...(Y/n)"
@@ -111,11 +116,15 @@ if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo "# - Configure fact-extraction...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 CONFIG_FILE=${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
-if [ "${existing}" != 'true' ]; then sed -i "s#/projects-git/intel-analysis-dstl/fact-extraction#${FACT_EXTRACTION_DIR}#g" ${CONFIG_FILE}; fi
-if [ "${existing}" != 'true' ]; then sed -i "s#/stanford-postagger-full#${FACT_EXTRACTION_DIR}/third-party/stanford-postagger-full-2016-10-31#g" ${CONFIG_FILE}; fi
-if [ "${existing}" != 'true' ]; then sed -i "s#/stanford-parser-full#${FACT_EXTRACTION_DIR}/third-party/stanford-parser-full-2016-10-31#g" ${CONFIG_FILE}; fi
-sed -i "s#db_user=postgres#db_user=intelanalysis#g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
-sed -i "s#db_pass=postgres#db_pass=passw0rd#g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+if [ "${existing}" != 'true' ]; then sed -i "s:/projects-git/intel-analysis-dstl/fact-extraction:${FACT_EXTRACTION_DIR}:g" ${CONFIG_FILE}; fi
+if [ "${existing}" != 'true' ]; then sed -i "s:/stanford-postagger-full:${FACT_EXTRACTION_DIR}/third-party/stanford-postagger-full-2016-10-31:g" ${CONFIG_FILE}; fi
+if [ "${existing}" != 'true' ]; then sed -i "s:/stanford-parser-full:${FACT_EXTRACTION_DIR}/third-party/stanford-parser-full-2016-10-31:g" ${CONFIG_FILE}; fi
+sed -i "s:db_user=postgres:db_user=intelanalysis:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+sed -i "s:db_pass=postgres:db_pass=passw0rd:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+sed -i "s:max_sent_limit=.*:max_sent_limit=-1:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+sed -i "s:unit_test_publish_vocab=.*:unit_test_publish_vocab=False:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+sed -i "s:^input_folder=.*:input_folder=${FACT_EXTRACTION_DIR}/corpus/input_folder_dynamic:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
+sed -i "s:^input_file=.*:input_file=:g" ${FACT_EXTRACTION_DIR}/config/fact_extraction_app/fact_extraction_app.ini
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Modify Python source...(Y/n)"
