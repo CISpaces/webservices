@@ -77,7 +77,8 @@ if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Restarting services...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-sudo systemctl restart postgresql rabbitmq-server
+sudo systemctl restart postgresql rabbitmq-server \
+    && sudo systemctl enable postgresql rabbitmq-server
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Download fact-extraction dependencies...? (Y/n)"
