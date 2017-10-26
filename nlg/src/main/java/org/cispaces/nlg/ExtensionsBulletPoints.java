@@ -69,10 +69,11 @@ public class ExtensionsBulletPoints implements URIs {
 	private final String newline = "\n";
 
 	private InfModel inf = null;
-	
+
+	private boolean debug = true;
+
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
-
 
 		this.parseJSONGraph(request, eval);
 	}
@@ -272,17 +273,21 @@ public class ExtensionsBulletPoints implements URIs {
 
 			}
 		}
-		
-		String rules = "[rule1: (?ra "+ hasPremise.toString() +" ?p) (?ra " + hasConclusion.toString() + " ?c) -> (?c "+ basedOn.toString() +" ?c)]";
+
+		String rules = "[rule1: (?ra " + hasPremise.toString() + " ?p) (?ra "
+				+ hasConclusion.toString() + " ?c) -> (?c " + basedOn.toString()
+				+ " ?p)]";
 		Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
 		reasoner.setDerivationLogging(true);
 		inf = ModelFactory.createInfModel(reasoner, m);
-		
-		// debug
-		/*StringWriter outInf = new StringWriter(); inf.write(outInf, "TURTLE");
-		NLG.log.log(Level.INFO, "***Inferred model begins:");
-		NLG.log.log(Level.INFO, outInf.toString());
-		NLG.log.log(Level.INFO, "***Inferred model ends.");*/
+
+		if (debug) {
+			StringWriter outInf = new StringWriter();
+			inf.write(outInf, "TURTLE");
+			NLG.log.log(Level.INFO, "***Inferred model begins:");
+			NLG.log.log(Level.INFO, outInf.toString());
+			NLG.log.log(Level.INFO, "***Inferred model ends.");
+		}
 
 	}
 
@@ -349,64 +354,72 @@ public class ExtensionsBulletPoints implements URIs {
 		}
 		return toRet;
 	}
-	
-	private ResultSet selectSparqlQuery(String szQuery, Model m){
-		Query query = QueryFactory.create(szQuery) ;
+
+	private ResultSet selectSparqlQuery(String szQuery, Model m) {
+		Query query = QueryFactory.create(szQuery);
 		return QueryExecutionFactory.create(query, m).execSelect();
 	}
-	
-	private Set<Individual> rootBasedOn(Set <Individual> individuals){
+
+	private Set<Individual> rootBasedOn(Set<Individual> individuals) {
 		Set<Individual> roots = new HashSet<Individual>();
-		
-		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();){
+
+		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
-			ResultSet r = this.selectSparqlQuery("SELECT * {?c <"+ basedOn.toString() +"> <" + iInd.toString() +">}", inf);
-			if (!r.hasNext()){
+			ResultSet r = this.selectSparqlQuery("SELECT * {?c <"
+					+ basedOn.toString() + "> <" + iInd.toString() + ">}", inf);
+			if (!r.hasNext()) {
 				roots.add(iInd);
 			}
 		}
-		
-		//debug
-		NLG.log.log(Level.INFO, "***Roots list begins:");
-		for (Iterator<Individual> r = roots.iterator(); r.hasNext();){
-			NLG.log.log(Level.INFO, r.next().toString());
+
+		if (debug) {
+			NLG.log.log(Level.INFO, "***Roots list begins:");
+			for (Iterator<Individual> r = roots.iterator(); r.hasNext();) {
+				NLG.log.log(Level.INFO,
+						r.next().getPropertyValue(claimText).toString());
+			}
+			NLG.log.log(Level.INFO, "***Roots list ends.");
 		}
-		NLG.log.log(Level.INFO, "***Roots list ends.");
-		
+
 		return roots;
 	}
 	
-	private String individualsToString(Set<Individual> inIndividuals){
+	private Set<Individual> getBasedOn(Individual c){
+		Set<Individual> premises = new HashSet<Individual>();
+		
+		ResultSet r = this.selectSparqlQuery("SELECT * {<" + c.toString() + ">"
+				+ basedOn.toString() + "> ?p }", inf);
+		while (r.hasNext()){
+			premises.add((Individual)r.next().get("p"));
+		}
+		return premises;
+	}
+
+	private String individualsToString(Set<Individual> inIndividuals) {
 		StringBuilder out = new StringBuilder();
 		Set<String> outputted = new HashSet<String>();
-		
+
 		Set<Individual> roots = this.rootBasedOn(inIndividuals);
-		
-		for (Iterator<Individual> it = roots.iterator(); it
-				.hasNext();) {
-			
+
+		for (Iterator<Individual> it = roots.iterator(); it.hasNext();) {
+
 			Individual node = it.next();
+
+			out.append("<li>" + node.getPropertyValue(claimText).toString());
 			
 			
-			out.append("<li>"
-					+ node.getPropertyValue(claimText).toString());
-			
-			//outputted.add(node.getPropertyValue(claimText).toString());
-			
-			/*if (!reasons.isEmpty()){
-				out.append(", because: ");
-				for (Iterator<String> itReasons = reasons.iterator(); itReasons.hasNext();){
-					String reasonString = itReasons.next();
-					out.append(reasonString);
-					outputted.add(reasonString);
-					
-					if (itReasons.hasNext()){
-						out.append("; ");
-					}
-				}
-			}*/
-			
-			
+
+			// outputted.add(node.getPropertyValue(claimText).toString());
+
+			/*
+			 * if (!reasons.isEmpty()){ out.append(", because: "); for
+			 * (Iterator<String> itReasons = reasons.iterator();
+			 * itReasons.hasNext();){ String reasonString = itReasons.next();
+			 * out.append(reasonString); outputted.add(reasonString);
+			 * 
+			 * if (itReasons.hasNext()){ out.append("; "); } } }
+			 */
+
 			out.append("</li>" + newline);
 		}
 		return out.toString();
@@ -458,9 +471,8 @@ public class ExtensionsBulletPoints implements URIs {
 			out.append("</ul>" + newline);
 		}
 
-		
-		//StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
-		
+		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
+
 		return out.toString();
 	}
 
