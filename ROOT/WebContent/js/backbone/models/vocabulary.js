@@ -6,8 +6,8 @@ var app = app || {};
 
 app.Vocabulary = Backbone.Model.extend({
   defaults: {
-    topic_name: '',
-    topic_type: '',
-    keywords: {}
+    topic: '',
+    schema: '',
+    keywords: []
   }
 });

@@ -6,7 +6,7 @@ var app = app || {};
 
 var VocabularyList = Backbone.Collection.extend({
   model: app.Vocabulary,
-  url: '/vocab'
+  url: '/fewsservlet/vocab'
 });
 
 app.Vocabularies = new VocabularyList();

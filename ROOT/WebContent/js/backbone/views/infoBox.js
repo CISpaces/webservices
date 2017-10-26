@@ -14,7 +14,13 @@ app.InfoBoxView = Backbone.View.extend({
   events: {
     'click .input-group-btn': 'createTopic',
     'click .btn-submit': 'submitTopic',
+    'click .btn-refresh': 'refreshTopics',
     'click .btn-clear': 'clearTopic'
+  },
+
+  refreshTopics: function() {
+    this.clearTopic();
+    this.initialize();
   },
 
   initialize: function() {

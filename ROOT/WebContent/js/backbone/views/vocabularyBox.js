@@ -10,16 +10,14 @@ app.VocabularyBoxView = Backbone.View.extend({
   el: '#vocabulary_box',
 
   events: {
-    'click .input-group-btn': 'createTopic',
-    'click .btn-clear': 'clearTopic'
+    'click .input-group-btn': 'createTopic'
   },
 
   initialize: function() {
     this.$el.attr("style", "height: " + (chart.svg.height - 60) / 2 + "px");
 
-    // Brings a list of topics from FEWS services
-    app.Topics.fetch({
-      // headers: {'Authorization': localStorage.getItem('auth_token')},
+    // Brings a list of vocab from FEWS service
+    app.Vocabularies.fetch({
       success: function(data) {
         if (data) {
           data.forEach(function(d) {
@@ -28,7 +26,8 @@ app.VocabularyBoxView = Backbone.View.extend({
         }
       },
       error: function(response) {
-        console.error("Could not get Topics");
+        alert("Your JWT is probably out of date, please relog");
+        console.error("Could not get vocabulary");
         console.error(response);
       }
     });
@@ -50,14 +49,48 @@ app.VocabularyBoxView = Backbone.View.extend({
       return;
     }
 
+    // TODO get schema and keywords from user
     var param = {
-      'name': topic,
-      'keyword': '-1'
+        'topic': topic,
+        'schema': topic,
+        'keywords': [topic]
     };
 
-    this.addTopic(param);
+    if (app.Vocabularies.where({"topic": topic}).length) {
+        // Topic already exists so flash an error
+        this.$(".input-group input").addClass("alert-danger");
+        this.$(".input-group input").val("Topic already exists in vocabulary");
+        setTimeout(function(){
+            this.$(".input-group input").val("");
+            this.$(".input-group input").removeClass("alert-danger");
+        }, 1500);
 
-    this.$(".input-group input").val("");
+    } else {
+
+        var self = this; // This is a hack
+
+        Backbone.ajax({
+            type: "POST",
+            url: "/fewsservlet/vocab/" + param.topic + "/schema/" + param.schema,
+            success: function(result) {
+                Backbone.ajax({
+                    type: "POST",
+                    url: "/fewsservlet/vocab/" + param.topic + "/keywords/" + param.keywords[0],
+                    success: function(result) {
+                        self.addTopic(param);
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        alert("AJAX failed: " + errorThrown);
+                    }
+                });
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                alert("AJAX failed: " + errorThrown);
+            }
+        });
+
+        this.$(".input-group input").val("");
+    }
   },
 
   addTopic: function(topic) {
@@ -70,7 +103,7 @@ app.VocabularyBoxView = Backbone.View.extend({
 
     var div_alert = $("<div></div>", {
       "class": "alert alert-info alert-infobox float_left",
-      "text": topic.name
+      "text": topic.topic
     }).appendTo(div_vocab);
 
     var button = $("<i></i>", {
@@ -79,7 +112,16 @@ app.VocabularyBoxView = Backbone.View.extend({
       "type": "button",
       "class": "btn btn-default"
     }).click(function() {
-      p.remove();
+      Backbone.ajax({
+          type: "DELETE",
+          url: "/fewsservlet/vocab/" + topic.topic,
+          success: function(result) {
+              p.remove();
+          },
+          error: function(xhr, textStatus, errorThrown) {
+              alert("AJAX failed: " + errorThrown);
+          }
+      });
     }).appendTo(div_vocab));
 
     var div_keywords = $("<div></div>", {
@@ -91,7 +133,7 @@ app.VocabularyBoxView = Backbone.View.extend({
     }).appendTo(div_keywords);
 
     var span = $("<span></span>", {
-      "text": topic.keyword ? topic.keyword : "Here is for keywords"
+      "text": topic.keywords ? topic.keywords : "Here is for keywords"
     }).appendTo($("<label></label>").appendTo(div_keywords));
   },
 
