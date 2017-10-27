@@ -46,6 +46,7 @@ import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Selector;
 import org.apache.jena.rdf.model.SimpleSelector;
 import org.apache.jena.rdf.model.Statement;
@@ -76,6 +77,8 @@ public class ExtensionsBulletPoints implements URIs {
 		NLG.log = Logger.getLogger(getClass().getName());
 
 		this.parseJSONGraph(request, eval);
+		
+		
 	}
 
 	private void parseJSONGraph(String json, String eval) {
@@ -91,25 +94,23 @@ public class ExtensionsBulletPoints implements URIs {
 				node = m.createIndividual(URI + (String) t.get("nodeID"),
 						inference);
 
-				if (((String) ((JSONObject) t.get("annot")).get("id"))
-						.equalsIgnoreCase("LEO")) {
-					m.add(node, fulfils, leo);
-				} else if (((String) ((JSONObject) t.get("annot")).get("id"))
-						.equalsIgnoreCase("LPK")) {
-					m.add(node, fulfils, lpk);
-				} else if (((String) ((JSONObject) t.get("annot")).get("id"))
-						.equalsIgnoreCase("LAN")) {
-					m.add(node, fulfils, lan);
-				} else if (((String) ((JSONObject) t.get("annot")).get("id"))
-						.equalsIgnoreCase("LCE")) {
-					m.add(node, fulfils, lce);
-				}
+				/*
+				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
+				 * .equalsIgnoreCase("LEO")) { m.add(node, fulfils, leo); } else
+				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
+				 * .equalsIgnoreCase("LPK")) { m.add(node, fulfils, lpk); } else
+				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
+				 * .equalsIgnoreCase("LAN")) { m.add(node, fulfils, lan); } else
+				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
+				 * .equalsIgnoreCase("LCE")) { m.add(node, fulfils, lce); }
+				 */
 
 			} else if (((String) t.get("type")).equalsIgnoreCase("CA")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"),
 						conflict);
 				// todo link with critical questions
-			} else if (((String) t.get("type")).equalsIgnoreCase("I")) {
+			} else if (((String) t.get("type")).equalsIgnoreCase("I")
+					|| ((String) t.get("type")).equalsIgnoreCase("CLAIM")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"),
 						statement);
 				m.add(node, claimText, m.createLiteral((String) t.get("text")));
@@ -365,9 +366,9 @@ public class ExtensionsBulletPoints implements URIs {
 
 		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
-			ResultSet r = this.selectSparqlQuery("SELECT * {?c <"
-					+ basedOn.toString() + "> <" + iInd.toString() + ">}", inf);
-			if (!r.hasNext()) {
+			Set<Individual> intersection = new HashSet<Individual>(individuals);
+			intersection.retainAll(this.getConclusions(iInd));
+			if (intersection.isEmpty()) {
 				roots.add(iInd);
 			}
 		}
@@ -383,21 +384,32 @@ public class ExtensionsBulletPoints implements URIs {
 
 		return roots;
 	}
-	
-	private Set<Individual> getBasedOn(Individual c){
-		Set<Individual> premises = new HashSet<Individual>();
-		
-		ResultSet r = this.selectSparqlQuery("SELECT * {<" + c.toString() + ">"
-				+ basedOn.toString() + "> ?p }", inf);
-		while (r.hasNext()){
-			premises.add((Individual)r.next().get("p"));
+
+	private Set<Resource> getConclusions(Resource p) {
+		Set<Resource> conclusions = new HashSet<Resource>();
+
+		ResultSet r = this.selectSparqlQuery("SELECT ?c {?c <"
+				+ basedOn.toString() + "> <" + p.toString() + ">}", inf);
+
+		while (r.hasNext()) {
+			conclusions.add((Resource) r.nextSolution().get("c"));
+		}
+		return conclusions;
+	}
+
+	private Set<Resource> getPremises(Resource c) {
+		Set<Resource> premises = new HashSet<Resource>();
+
+		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString()
+				+ "> <" + basedOn.toString() + "> ?p }", inf);
+		while (r.hasNext()) {
+			premises.add((Resource) r.nextSolution().get("p"));
 		}
 		return premises;
 	}
 
 	private String individualsToString(Set<Individual> inIndividuals) {
 		StringBuilder out = new StringBuilder();
-		Set<String> outputted = new HashSet<String>();
 
 		Set<Individual> roots = this.rootBasedOn(inIndividuals);
 
@@ -406,10 +418,22 @@ public class ExtensionsBulletPoints implements URIs {
 			Individual node = it.next();
 
 			out.append("<li>" + node.getPropertyValue(claimText).toString());
-			
-			
 
-			// outputted.add(node.getPropertyValue(claimText).toString());
+			Set<Resource> premises = this.getPremises(node);
+
+			boolean firstPremise = true;
+
+			for (Iterator<Resource> itp = premises.iterator(); itp.hasNext();) {
+				Individual prem = m.getIndividual(itp.next().toString());
+				if (firstPremise) {
+					out.append(" because ");
+					firstPremise = false;
+				} else {
+					out.append(", and ");
+				}
+
+				out.append(prem.getPropertyValue(claimText).toString());
+			}
 
 			/*
 			 * if (!reasons.isEmpty()){ out.append(", because: "); for
@@ -470,7 +494,25 @@ public class ExtensionsBulletPoints implements URIs {
 			out.append(this.individualsToString(inIndividuals));
 			out.append("</ul>" + newline);
 		}
-
+		
+		
+		//credulous hypotheses
+		Set<Individual> credulousLabellings = this.getCredulousLabellings();
+		if (!credulousLabellings.isEmpty()){
+			out.append("<p>Moreover, we also have the following " + credulousLabellings.size() + " hypotheses.</p>" + newline);
+			
+			int counter = 1;
+			for (Iterator<Individual> cred = credulousLabellings.iterator(); cred.hasNext();){
+				
+				Set<Individual> credulousNoSkeptical = this.getIn(cred.next());
+				credulousNoSkeptical.removeAll(this.getIn(this.getSkepticalLabelling()));
+				
+				out.append("<p>Hypothesis number " + counter++ + "</p>" + newline);
+				out.append("<ul>" + newline);
+				out.append(this.individualsToString(credulousNoSkeptical));
+				out.append("</ul>" + newline);
+			}
+		}	
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
 		return out.toString();
