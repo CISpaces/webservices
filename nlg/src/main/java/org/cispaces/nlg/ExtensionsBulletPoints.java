@@ -506,7 +506,7 @@ public class ExtensionsBulletPoints extends URIs{
 		}
 		
 		/**
-		 * We assume that the infoStatement have been already outputted
+		 * We assume that the infoStatement have been outputted at some point in the text
 		 */
 		this.recursiveNavigationIndividuals(out, toExpand, new HashSet<Individual>(), this.getInfoStatements());
 		
@@ -516,17 +516,6 @@ public class ExtensionsBulletPoints extends URIs{
 	public String getText() {
 
 		StringBuilder out = new StringBuilder();
-		
-		Set<Individual> infos = this.getInfoStatements();
-		
-		if (!infos.isEmpty()){
-			out.append("<p>We received the following pieces of information</p>" + newline);
-			out.append("<ul>"+newline);
-			for (Iterator<Individual> info = infos.iterator(); info.hasNext(); ){
-				out.append("<li>" + info.next().getPropertyValue(claimText).toString() + "</li>" + newline);
-			}
-			out.append("</ul>"+newline);
-		}
 		
 		Set<Individual> inIndividuals = new HashSet<Individual>();
 
@@ -591,6 +580,18 @@ public class ExtensionsBulletPoints extends URIs{
 		}	
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
+		
+		Set<Individual> infos = this.getInfoStatements();
+		
+		if (!infos.isEmpty()){
+			out.append("<p>Here the pieces of information we received</p>" + newline);
+			out.append("<ul>"+newline);
+			for (Iterator<Individual> info = infos.iterator(); info.hasNext(); ){
+				out.append("<li>" + info.next().getPropertyValue(claimText).toString() + "</li>" + newline);
+			}
+			out.append("</ul>"+newline);
+		}
+		
 		return out.toString();
 	}
 
