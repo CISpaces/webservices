@@ -69,22 +69,22 @@ import org.semarglproject.vocab.RDF;
  * @author Federico Cerutti <CeruttiF@cardiff.ac.uk>
  *
  */
-public class ExtensionsBulletPoints extends URIs{
-	
+public class ExtensionsBulletPoints extends URIs {
+
 	private final String newline = "\n";
-	
+
 	private final String sBecause = " <u>because</u> ";
-	private final String sAnd = ", <u>and</u> "; 
+	private final String sAnd = ", <u>and</u> ";
 
 	private InfModel inf = null;
-	
-	private boolean debug = false;
+
+	private boolean debug = true;
 
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
 
 		this.parseJSONGraph(request, eval);
-		
+
 	}
 
 	private void parseJSONGraph(String json, String eval) {
@@ -116,75 +116,90 @@ public class ExtensionsBulletPoints extends URIs{
 						conflict);
 				// todo link with critical questions
 			} else if (((String) t.get("type")).equalsIgnoreCase("I")) {
-				node = m.createIndividual(URI + (String) t.get("nodeID"),
-						infoStatement);
-				m.add(node, claimText, m.createLiteral((String) t.get("text")));
-			
-			} else if (((String) t.get("type")).equalsIgnoreCase("CLAIM")) {
-				node = m.createIndividual(URI + (String) t.get("nodeID"),
-						claimStatement);
-				m.add(node, claimText, m.createLiteral((String) t.get("text")));
 
-				/*
-				 * for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
-				 * .getJSONObject("prem_assump").names() .iterator();
-				 * ranodesIt.hasNext();) { String ranodename = (String)
-				 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
-				 * ranodename);
-				 * 
-				 * if (t.getJSONObject("annot").getJSONObject("prem_assump")
-				 * .names() != null) { for (Iterator<Object> ranodesIt =
-				 * t.getJSONObject("annot")
-				 * .getJSONObject("prem_assump").names() .iterator();
-				 * ranodesIt.hasNext();) { String ranodename = (String)
-				 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
-				 * ranodename);
-				 * 
-				 * // LCE if (t.getJSONObject("annot")
-				 * .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename).getString("id")
-				 * .equalsIgnoreCase("LCE")) { for (int i = 0; i <
-				 * t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").length();
-				 * i++) { // assuming tha PCE1 means causal desc if
-				 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-				 * .equalsIgnoreCase("PCE1")) { m.add(ranode, hasCausalPremise,
-				 * node); m.add(node, fulfils, causalDesc); // probably //
-				 * useless, // we // can // write // a RL // rule // for // this
-				 * } // assuming tha PCE2 means causal desc else if
-				 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-				 * .equalsIgnoreCase("PCE2")) { m.add(ranode,
-				 * hasOccurrenceAPremise, node); m.add(node, fulfils,
-				 * occurrenceADesc); // probably // useless, // we // can //
-				 * write // a // RL // rule // for // this }
-				 * 
-				 * } } // LEO else if (t.getJSONObject("annot")
-				 * .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename).getString("id")
-				 * .equalsIgnoreCase("LEO")) { for (int i = 0; i <
-				 * t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").length();
-				 * i++) { // assuming tha PEO1 means field expertise if
-				 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-				 * .equalsIgnoreCase("PEO1")) { m.add(ranode,
-				 * hasFieldExpertisePremise, node); m.add(node, fulfils,
-				 * fieldExpertiseDesc); // probably // useless, // we // can //
-				 * write // a // RL // rule // for // this } // assuming tha
-				 * PEO2 means knowledge assertion else if
-				 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-				 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-				 * .equalsIgnoreCase("PEO2")) { m.add(ranode,
-				 * hasKnowledgeAssertionPremise, node); m.add(node, fulfils,
-				 * knowledgeAssertionDesc); // probably // useless, // we // can
-				 * // write // a RL // rule // for // this }
-				 * 
-				 * } } }
-				 */
+				if (t.keySet().contains("input")) {
+					if (((String) t.get("input")).equalsIgnoreCase("INFO")) {
 
+						node = m.createIndividual(
+								URI + (String) t.get("nodeID"), infoStatement);
+						m.add(node, claimText,
+								m.createLiteral((String) t.get("text")));
+					} else if (((String) t.get("input"))
+							.equalsIgnoreCase("CLAIM")) {
+						node = m.createIndividual(
+								URI + (String) t.get("nodeID"), claimStatement);
+						m.add(node, claimText,
+								m.createLiteral((String) t.get("text")));
+					} else {
+						node = m.createIndividual(
+								URI + (String) t.get("nodeID"), statement);
+						m.add(node, claimText,
+								m.createLiteral((String) t.get("text")));
+					}
+				} else {
+					node = m.createIndividual(URI + (String) t.get("nodeID"),
+							statement);
+					m.add(node, claimText,
+							m.createLiteral((String) t.get("text")));
+				}
 			}
+
+			/*
+			 * for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump").names() .iterator();
+			 * ranodesIt.hasNext();) { String ranodename = (String)
+			 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
+			 * ranodename);
+			 * 
+			 * if (t.getJSONObject("annot").getJSONObject("prem_assump")
+			 * .names() != null) { for (Iterator<Object> ranodesIt =
+			 * t.getJSONObject("annot") .getJSONObject("prem_assump").names()
+			 * .iterator(); ranodesIt.hasNext();) { String ranodename = (String)
+			 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
+			 * ranodename);
+			 * 
+			 * // LCE if (t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename).getString("id")
+			 * .equalsIgnoreCase("LCE")) { for (int i = 0; i <
+			 * t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) {
+			 * // assuming tha PCE1 means causal desc if
+			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
+			 * .equalsIgnoreCase("PCE1")) { m.add(ranode, hasCausalPremise,
+			 * node); m.add(node, fulfils, causalDesc); // probably // useless,
+			 * // we // can // write // a RL // rule // for // this } //
+			 * assuming tha PCE2 means causal desc else if
+			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
+			 * .equalsIgnoreCase("PCE2")) { m.add(ranode, hasOccurrenceAPremise,
+			 * node); m.add(node, fulfils, occurrenceADesc); // probably //
+			 * useless, // we // can // write // a // RL // rule // for // this
+			 * }
+			 * 
+			 * } } // LEO else if (t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename).getString("id")
+			 * .equalsIgnoreCase("LEO")) { for (int i = 0; i <
+			 * t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) {
+			 * // assuming tha PEO1 means field expertise if
+			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
+			 * .equalsIgnoreCase("PEO1")) { m.add(ranode,
+			 * hasFieldExpertisePremise, node); m.add(node, fulfils,
+			 * fieldExpertiseDesc); // probably // useless, // we // can //
+			 * write // a // RL // rule // for // this } // assuming tha PEO2
+			 * means knowledge assertion else if (t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump") .getJSONObject(ranodename)
+			 * .getJSONArray("prem").getString(i) .equalsIgnoreCase("PEO2")) {
+			 * m.add(ranode, hasKnowledgeAssertionPremise, node); m.add(node,
+			 * fulfils, knowledgeAssertionDesc); // probably // useless, // we
+			 * // can // write // a RL // rule // for // this }
+			 * 
+			 * } } }
+			 */
+
 			/*
 			 * if (t.getJSONObject("annot").getJSONObject("conc") .names() !=
 			 * null) { for (Iterator<Object> ranodesIt =
@@ -331,6 +346,9 @@ public class ExtensionsBulletPoints extends URIs{
 	}
 
 	private Set<Individual> getUndec(Individual lab) {
+		if (lab == null) {
+			return null;
+		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
 			for (StmtIterator undecIter = lab
@@ -343,6 +361,9 @@ public class ExtensionsBulletPoints extends URIs{
 	}
 
 	private Set<Individual> getIn(Individual lab) {
+		if (lab == null) {
+			return null;
+		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
 			for (StmtIterator undecIter = lab
@@ -355,6 +376,9 @@ public class ExtensionsBulletPoints extends URIs{
 	}
 
 	private Set<Individual> getOut(Individual lab) {
+		if (lab == null) {
+			return null;
+		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
 			for (StmtIterator undecIter = lab
@@ -402,7 +426,8 @@ public class ExtensionsBulletPoints extends URIs{
 				+ basedOn.toString() + "> <" + p.toString() + ">}", inf);
 
 		while (r.hasNext()) {
-			conclusions.add(m.getIndividual(r.nextSolution().getResource("c").toString()));
+			conclusions.add(m.getIndividual(
+					r.nextSolution().getResource("c").toString()));
 		}
 		return conclusions;
 	}
@@ -413,50 +438,65 @@ public class ExtensionsBulletPoints extends URIs{
 		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString()
 				+ "> <" + basedOn.toString() + "> ?p }", inf);
 		while (r.hasNext()) {
-			premises.add(m.getIndividual(r.nextSolution().getResource("p").toString()));
+			premises.add(m.getIndividual(
+					r.nextSolution().getResource("p").toString()));
 		}
 		return premises;
 	}
-	
-	private Set<Individual> getInfoStatements(){
+
+	private Set<Individual> getInfoStatements() {
 		Set<Individual> infos = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i <" + RDF.TYPE + "> <"+ infoStatement.toString() + "> }", inf);
+		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i <" + RDF.TYPE
+				+ "> <" + infoStatement.toString() + "> }", inf);
 		while (r.hasNext()) {
-			infos.add(m.getIndividual(r.nextSolution().getResource("i").toString()));
+			infos.add(m.getIndividual(
+					r.nextSolution().getResource("i").toString()));
 		}
 		return infos;
 	}
-	
+
 	/**
 	 * 
-	 * @param out			String to construct
-	 * @param toExpand		Stack with the elements to expand: this should be filled in with the roots at the first call
-	 * @param expanded		Elements expanded
-	 * @param outputted		Elements added to the String
+	 * @param out
+	 *            String to construct
+	 * @param toExpand
+	 *            Stack with the elements to expand: this should be filled in
+	 *            with the roots at the first call
+	 * @param expanded
+	 *            Elements expanded
+	 * @param outputted
+	 *            Elements added to the String
 	 */
-	private void recursiveNavigationIndividuals(StringBuilder out, Stack<Individual> toExpand, Set<Individual> expanded, Set<Individual> outputted){
-		if (toExpand.isEmpty()){
+	private void recursiveNavigationIndividuals(StringBuilder out,
+			Stack<Individual> toExpand, Set<Individual> expanded,
+			Set<Individual> outputted) {
+		if (toExpand.isEmpty()) {
 			return;
 		}
-		
+
 		Individual conclusion = toExpand.pop();
-		
+
 		/**
-		 * We do not expand further if we already expanded, or if this is a piece of information with no premises
-		 * and we already mentioned such a piece of information.
+		 * We do not expand further if we already expanded, or if this is a
+		 * piece of information with no premises and we already mentioned such a
+		 * piece of information.
 		 * 
-		 * Please note that this might look logically inaccurate
-		 * because we might have outputted a rule a -> b, but without adding the information a, modus ponens would not 
-		 * happen.
+		 * Please note that this might look logically inaccurate because we
+		 * might have outputted a rule a -> b, but without adding the
+		 * information a, modus ponens would not happen.
 		 * 
-		 * However, my claim is that individuals would see that as a pedantic exercise.
+		 * However, my claim is that individuals would see that as a pedantic
+		 * exercise.
 		 */
-		if (expanded.contains(conclusion) || ( this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion)) ){
-			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
-		}
-		else{
-			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
+		if (expanded.contains(conclusion)
+				|| (this.getPremises(conclusion).isEmpty()
+						&& outputted.contains(conclusion))) {
+			this.recursiveNavigationIndividuals(out, toExpand, expanded,
+					outputted);
+		} else {
+			out.append(
+					"<li>" + conclusion.getPropertyValue(claimText).toString());
 			outputted.add(conclusion);
 
 			Set<Individual> premises = this.getPremises(conclusion);
@@ -464,7 +504,8 @@ public class ExtensionsBulletPoints extends URIs{
 
 			boolean firstPremise = true;
 
-			for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
+			for (Iterator<Individual> itp = premises.iterator(); itp
+					.hasNext();) {
 				Individual prem = itp.next();
 				if (firstPremise) {
 					out.append(this.sBecause);
@@ -473,57 +514,65 @@ public class ExtensionsBulletPoints extends URIs{
 					out.append(this.sAnd);
 				}
 
-				if (prem.getOntClass().equals(infoStatement)){
+				if (prem.getOntClass().equals(infoStatement)) {
 					out.append("[info received] ");
 				}
-				
+
 				out.append(prem.getPropertyValue(claimText).toString());
-				
-				
+
 				outputted.add(prem);
 				orderedPremises.push(prem);
-				
+
 			}
 			out.append("</li>" + newline);
-			
-			while (!orderedPremises.empty()){
+
+			while (!orderedPremises.empty()) {
 				toExpand.push(orderedPremises.pop());
 			}
-			
-			if (debug){
+
+			if (debug) {
 				NLG.log.log(Level.INFO, "Within the recursive exploration");
 				NLG.log.log(Level.INFO, out.toString());
-				NLG.log.log(Level.INFO, "End of this call to the recursive exploration");
+				NLG.log.log(Level.INFO,
+						"End of this call to the recursive exploration");
 			}
-			
-			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
+
+			this.recursiveNavigationIndividuals(out, toExpand, expanded,
+					outputted);
 		}
 	}
 
-	private String individualsToString(Set<Individual> inIndividuals) {
+	private String individualsToString(Set<Individual> inIndividuals,
+			Set<Individual> expanded, Set<Individual> outputted) {
+
+		if (expanded == null) {
+			expanded = new HashSet<Individual>();
+		}
 		StringBuilder out = new StringBuilder();
 
 		Set<Individual> roots = this.rootBasedOn(inIndividuals);
-		
+
 		Stack<Individual> toExpand = new Stack<Individual>();
-		
-		for (Iterator<Individual> r = roots.iterator(); r.hasNext();){
+
+		for (Iterator<Individual> r = roots.iterator(); r.hasNext();) {
 			toExpand.push(r.next());
 		}
-		
-		/**
-		 * We assume that the infoStatement have been outputted at some point in the text
-		 */
-		this.recursiveNavigationIndividuals(out, toExpand, new HashSet<Individual>(), this.getInfoStatements());
-		
+
+		this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
+
 		return out.toString();
 	}
 
 	public String getText() {
 
 		StringBuilder out = new StringBuilder();
-		
+
 		Set<Individual> inIndividuals = new HashSet<Individual>();
+
+		/**
+		 * We will output info statements at the end
+		 */
+		Set<Individual> outputted = this.getInfoStatements();
 
 		if (this.getSkepticalLabelling() == null) {
 			NLG.log.log(Level.SEVERE, "Skeptical Labelling Not Found!");
@@ -537,67 +586,103 @@ public class ExtensionsBulletPoints extends URIs{
 			}
 		}
 
-		if (inIndividuals.isEmpty()) {
-			// fallback to use credulous options
-			Set<Individual> credulousLabellings = this.getCredulousLabellings();
+		/*
+		 * if (inIndividuals.isEmpty()) { // fallback to use credulous options
+		 * Set<Individual> credulousLabellings = this.getCredulousLabellings();
+		 * 
+		 * if (credulousLabellings.isEmpty()) { NLG.log.log(Level.SEVERE,
+		 * "Credulous Labelling Not Found!"); } else { for (Iterator<Individual>
+		 * aCredulousLab = credulousLabellings .iterator();
+		 * aCredulousLab.hasNext();) { Set<Individual> aCredulousLabIN = this
+		 * .getIn(aCredulousLab.next());
+		 * 
+		 * if (inIndividuals == null || inIndividuals.size() <
+		 * aCredulousLabIN.size()) inIndividuals = aCredulousLabIN; } } }
+		 */
 
-			if (credulousLabellings.isEmpty()) {
-				NLG.log.log(Level.SEVERE, "Credulous Labelling Not Found!");
-			} else {
-				for (Iterator<Individual> aCredulousLab = credulousLabellings
-						.iterator(); aCredulousLab.hasNext();) {
-					Set<Individual> aCredulousLabIN = this
-							.getIn(aCredulousLab.next());
-
-					if (inIndividuals == null
-							|| inIndividuals.size() < aCredulousLabIN.size())
-						inIndividuals = aCredulousLabIN;
-				}
-			}
-		}
-
-		if (inIndividuals == null) {
-			out.append(
-					"<p>We are sorry but the evaluation service seemed to have malfunctioned</p>");
-		} else {
+		if (inIndividuals != null) {
 			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
-			out.append(this.individualsToString(inIndividuals));
+			out.append(
+					this.individualsToString(inIndividuals, null, outputted));
 			out.append("</ul>" + newline);
 		}
-		
-		
-		//credulous hypotheses
+
+		/**
+		 * We avoid to re-output the skeptical
+		 */
+		outputted.addAll(inIndividuals);
+
+		if (debug) {
+			NLG.log.log(Level.INFO, "Outputted including skeptical");
+			for (Iterator<Individual> debugI = outputted.iterator(); debugI
+					.hasNext();) {
+				NLG.log.log(Level.INFO,
+						debugI.next().getPropertyValue(claimText).toString());
+			}
+			NLG.log.log(Level.INFO, "END outputted including skeptical");
+		}
+
+		// credulous hypotheses
 		Set<Individual> credulousLabellings = this.getCredulousLabellings();
-		if (!credulousLabellings.isEmpty()){
-			out.append("<p>Moreover, we also have the following " + credulousLabellings.size() + " hypotheses.</p>" + newline);
-			
+		if (!credulousLabellings.isEmpty()) {
+			out.append("<p>Moreover, we also have the following "
+					+ credulousLabellings.size() + " hypotheses.</p>"
+					+ newline);
+
 			int counter = 1;
-			for (Iterator<Individual> cred = credulousLabellings.iterator(); cred.hasNext();){
-				
+			for (Iterator<Individual> cred = credulousLabellings
+					.iterator(); cred.hasNext();) {
+
 				Set<Individual> credulousNoSkeptical = this.getIn(cred.next());
-				credulousNoSkeptical.removeAll(this.getIn(this.getSkepticalLabelling()));
-				
-				out.append("<p>Hypothesis number " + counter++ + "</p>" + newline);
+
+				if (debug) {
+					NLG.log.log(Level.INFO, "Credulous including skeptical");
+					for (Iterator<Individual> debugI = credulousNoSkeptical
+							.iterator(); debugI.hasNext();) {
+						NLG.log.log(Level.INFO, debugI.next().toString());
+					}
+					NLG.log.log(Level.INFO,
+							"END Credulous including skeptical");
+				}
+
+				credulousNoSkeptical
+						.removeAll(this.getIn(this.getSkepticalLabelling()));
+
+				if (debug) {
+					NLG.log.log(Level.INFO, "Credulous WITHOUT skeptical");
+					for (Iterator<Individual> debugI = credulousNoSkeptical
+							.iterator(); debugI.hasNext();) {
+						NLG.log.log(Level.INFO, debugI.next().toString());
+					}
+					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
+				}
+
+				out.append(
+						"<p>Hypothesis number " + counter++ + "</p>" + newline);
 				out.append("<ul>" + newline);
-				out.append(this.individualsToString(credulousNoSkeptical));
+				out.append(this.individualsToString(credulousNoSkeptical,
+						this.getIn(this.getSkepticalLabelling()), outputted));
 				out.append("</ul>" + newline);
 			}
-		}	
+		}
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
-		
 		Set<Individual> infos = this.getInfoStatements();
-		
-		if (!infos.isEmpty()){
-			out.append("<p>Here the pieces of information we received</p>" + newline);
-			out.append("<ul>"+newline);
-			for (Iterator<Individual> info = infos.iterator(); info.hasNext(); ){
-				out.append("<li>" + info.next().getPropertyValue(claimText).toString() + "</li>" + newline);
+
+		if (!infos.isEmpty()) {
+			out.append("<p>Here the pieces of information we received</p>"
+					+ newline);
+			out.append("<ul>" + newline);
+			for (Iterator<Individual> info = infos.iterator(); info
+					.hasNext();) {
+				out.append("<li>"
+						+ info.next().getPropertyValue(claimText).toString()
+						+ "</li>" + newline);
 			}
-			out.append("</ul>"+newline);
+			out.append("</ul>" + newline);
 		}
-		
+
 		return out.toString();
 	}
 
