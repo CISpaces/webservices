@@ -27,9 +27,11 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.HashSet;
 
 import org.apache.jena.ontology.DatatypeProperty;
@@ -68,10 +70,13 @@ import org.json.JSONObject;
 public class ExtensionsBulletPoints extends URIs{
 	
 	private final String newline = "\n";
+	
+	private final String sBecause = " <u>because</u> ";
+	private final String sAnd = ", <u>and</u> "; 
 
 	private InfModel inf = null;
 	
-	private boolean debug = true;
+	private boolean debug = false;
 
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
@@ -406,45 +411,86 @@ public class ExtensionsBulletPoints extends URIs{
 		}
 		return premises;
 	}
+	
+	/**
+	 * 
+	 * @param out			String to construct
+	 * @param toExpand		Stack with the elements to expand: this should be filled in with the roots at the first call
+	 * @param expanded		Elements expanded
+	 * @param outputted		Elements added to the String
+	 */
+	private void recursiveNavigationIndividuals(StringBuilder out, Stack<Individual> toExpand, Set<Individual> expanded, Set<Individual> outputted){
+		if (toExpand.isEmpty()){
+			return;
+		}
+		
+		Individual conclusion = toExpand.pop();
+		
+		/**
+		 * We do not expand further if we already expanded, or if this is a piece of information with no premises
+		 * and we already mentioned such a piece of information. 
+		 * 
+		 * Please note that this might look logically inaccurate
+		 * because we might have outputted a rule a -> b, but without adding the information a, modus ponens would not 
+		 * happen.
+		 * 
+		 * However, my claim is that individuals would see that as a pedantic exercise.
+		 */
+		if (expanded.contains(conclusion) || ( this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion)) ){
+			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
+		}
+		else{
+			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
+			outputted.add(conclusion);
 
-	private String individualsToString(Set<Individual> inIndividuals) {
-		StringBuilder out = new StringBuilder();
-
-		Set<Individual> roots = this.rootBasedOn(inIndividuals);
-
-		for (Iterator<Individual> it = roots.iterator(); it.hasNext();) {
-
-			Individual node = it.next();
-
-			out.append("<li>" + node.getPropertyValue(claimText).toString());
-
-			Set<Resource> premises = this.getPremises(node);
+			Set<Resource> premises = this.getPremises(conclusion);
+			Stack<Individual> orderedPremises = new Stack<Individual>();
 
 			boolean firstPremise = true;
 
 			for (Iterator<Resource> itp = premises.iterator(); itp.hasNext();) {
 				Individual prem = m.getIndividual(itp.next().toString());
 				if (firstPremise) {
-					out.append(" because ");
+					out.append(this.sBecause);
 					firstPremise = false;
 				} else {
-					out.append(", and ");
+					out.append(this.sAnd);
 				}
 
 				out.append(prem.getPropertyValue(claimText).toString());
+				outputted.add(prem);
+				orderedPremises.push(prem);
+				
 			}
-
-			/*
-			 * if (!reasons.isEmpty()){ out.append(", because: "); for
-			 * (Iterator<String> itReasons = reasons.iterator();
-			 * itReasons.hasNext();){ String reasonString = itReasons.next();
-			 * out.append(reasonString); outputted.add(reasonString);
-			 * 
-			 * if (itReasons.hasNext()){ out.append("; "); } } }
-			 */
-
 			out.append("</li>" + newline);
+			
+			while (!orderedPremises.empty()){
+				toExpand.push(orderedPremises.pop());
+			}
+			
+			if (debug){
+				NLG.log.log(Level.INFO, "Within the recursive exploration");
+				NLG.log.log(Level.INFO, out.toString());
+				NLG.log.log(Level.INFO, "End of this call to the recursive exploration");
+			}
+			
+			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 		}
+	}
+
+	private String individualsToString(Set<Individual> inIndividuals) {
+		StringBuilder out = new StringBuilder();
+
+		Set<Individual> roots = this.rootBasedOn(inIndividuals);
+		
+		Stack<Individual> toExpand = new Stack<Individual>();
+		
+		for (Iterator<Individual> r = roots.iterator(); r.hasNext();){
+			toExpand.push(r.next());
+		}
+		
+		this.recursiveNavigationIndividuals(out, toExpand, new HashSet<Individual>(), new HashSet<Individual>());
+		
 		return out.toString();
 	}
 
