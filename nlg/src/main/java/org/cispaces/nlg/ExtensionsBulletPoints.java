@@ -65,19 +65,18 @@ import org.json.JSONObject;
  * @author Federico Cerutti <CeruttiF@cardiff.ac.uk>
  *
  */
-public class ExtensionsBulletPoints implements URIs {
-
+public class ExtensionsBulletPoints extends URIs{
+	
 	private final String newline = "\n";
 
 	private InfModel inf = null;
-
+	
 	private boolean debug = true;
 
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
 
 		this.parseJSONGraph(request, eval);
-		
 		
 	}
 

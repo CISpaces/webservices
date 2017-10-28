@@ -37,16 +37,16 @@ import org.apache.jena.rdf.model.ModelFactory;
  * @author Federico Cerutti <CeruttiF@cardiff.ac.uk>
  *
  */
-public interface URIs {
+public abstract class URIs {
 
-	public static final String pmArg = "http://www.arg.dundee.ac.uk/aif";
-	public static final SimpleDateFormat cispaceDate = new SimpleDateFormat(
+	protected String pmArg = "http://www.arg.dundee.ac.uk/aif";
+	protected SimpleDateFormat cispaceDate = new SimpleDateFormat(
 			"yyy/MM/dd HH:mm:ss", Locale.ENGLISH);
 
-	public static final SimpleDateFormat xmlDate = new SimpleDateFormat(
+	protected SimpleDateFormat xmlDate = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss");
 
-	/**public static final Map<String, String[]> schemesMap;
+	/**protected Map<String, String[]> schemesMap;
 	static {
 		Map<String, String[]> map = new HashMap<String, String[]>();
 		map.put("LPV", new String[]{pmArg + "#Provenance_Inference",
@@ -65,79 +65,79 @@ public interface URIs {
 		schemesMap = Collections.unmodifiableMap(map);
 	}*/
 
-	public final String URI = "http://cispaces.org/";
+	protected String URI = "http://cispaces.org/";
 
-	public final OntModel m = ModelFactory.createOntologyModel();
+	protected OntModel m = ModelFactory.createOntologyModel();
 
-	// public final OntClass labellings = m.createClass(URI + "Labellings");
-	public final OntClass labelling = m.createClass(URI + "Labelling");
-	// public final ObjectProperty containsLab = m.createObjectProperty(URI +
+	// protected OntClass labellings = m.createClass(URI + "Labellings");
+	protected OntClass labelling = m.createClass(URI + "Labelling");
+	// protected ObjectProperty containsLab = m.createObjectProperty(URI +
 	// "containsLabelling");
 
-	public final DatatypeProperty labName = m
+	protected DatatypeProperty labName = m
 			.createDatatypeProperty(URI + "labelingName");
 
-	public final ObjectProperty inStatement = m
+	protected ObjectProperty inStatement = m
 			.createObjectProperty(URI + "inStatement");
-	public final ObjectProperty outStatement = m
+	protected ObjectProperty outStatement = m
 			.createObjectProperty(URI + "outStatement");
-	public final ObjectProperty undecStatement = m
+	protected ObjectProperty undecStatement = m
 			.createObjectProperty(URI + "undecStatement");
 
-	public final OntClass inference = m
+	protected OntClass inference = m
 			.createClass("http://arg.dundee.ac.uk/aif#Inference");
-	public final OntClass conflict = m
+	protected OntClass conflict = m
 			.createClass("http://arg.dundee.ac.uk/aif#Conflict");
-	public final ObjectProperty hasConflictingElement = m.createObjectProperty(
+	protected ObjectProperty hasConflictingElement = m.createObjectProperty(
 			"http://arg.dundee.ac.uk/aif#hasConflictingElement");
-	public final ObjectProperty hasConflictedElement = m.createObjectProperty(
+	protected ObjectProperty hasConflictedElement = m.createObjectProperty(
 			"http://arg.dundee.ac.uk/aif#hasConflictedElement");
 
-	public final OntClass statement = m
+	protected OntClass statement = m
 			.createClass("http://arg.dundee.ac.uk/aif#Statement");
-	public final DatatypeProperty text = m
+	protected DatatypeProperty text = m
 			.createDatatypeProperty(URI + "text");
-	public final DatatypeProperty creationDate = m
+	protected DatatypeProperty creationDate = m
 			.createDatatypeProperty("http://arg.dundee.ac.uk/aif#creationDate");
-	public final DatatypeProperty createdBy = m
+	protected DatatypeProperty createdBy = m
 			.createDatatypeProperty("http://arg.dundee.ac.uk/aif#createdBy");
-	public final DatatypeProperty claimText = m
+	protected DatatypeProperty claimText = m
 			.createDatatypeProperty("http://arg.dundee.ac.uk/aif#claimText");
 
-	public final ObjectProperty fulfils = m
+	protected ObjectProperty fulfils = m
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#fulfils");
 
-	public final String lpk = "http://arg.dundee.ac.uk/aif#PositionToKnow_Inference";
+	protected String lpk = "http://arg.dundee.ac.uk/aif#PositionToKnow_Inference";
 
-	public final String leo = "http://arg.dundee.ac.uk/aif#ExpertOpinion_Inference";
-	public final String knowledgePositionDesc = "http://arg.dundee.ac.uk/aif#KnowledgePosition_Desc";
-	public final ObjectProperty hasFieldExpertisePremise = m
+	protected String leo = "http://arg.dundee.ac.uk/aif#ExpertOpinion_Inference";
+	protected String knowledgePositionDesc = "http://arg.dundee.ac.uk/aif#KnowledgePosition_Desc";
+	protected ObjectProperty hasFieldExpertisePremise = m
 			.createObjectProperty(
 					"http://arg.dundee.ac.uk/aif#hasFieldExpertise_Premise");
-	public final String fieldExpertiseDesc = "http://arg.dundee.ac.uk/aif#FieldExpertise_Desc";
-	public final ObjectProperty hasKnowledgeAssertionPremise = m
+	protected String fieldExpertiseDesc = "http://arg.dundee.ac.uk/aif#FieldExpertise_Desc";
+	protected ObjectProperty hasKnowledgeAssertionPremise = m
 			.createObjectProperty(
 					"http://arg.dundee.ac.uk/aif#hasKnowledgeAssertion_Premise");
-	public final String knowledgeAssertionDesc = "http://arg.dundee.ac.uk/aif#KnowledgeAssertion_Desc";
+	protected String knowledgeAssertionDesc = "http://arg.dundee.ac.uk/aif#KnowledgeAssertion_Desc";
 
-	public final String lan = "http://arg.dundee.ac.uk/aif#Analogy_Inference";
+	protected String lan = "http://arg.dundee.ac.uk/aif#Analogy_Inference";
 	// String lcs = "http://arg.dundee.ac.uk/aif#ExpertOpinion_Inference";
 
-	public final String lce = "http://arg.dundee.ac.uk/aif#CauseToEffect_Inference";
-	public final String causalDesc = "http://arg.dundee.ac.uk/aif#Causal_Desc";
-	public final String occurrenceADesc = "http://arg.dundee.ac.uk/aif#OccurrenceA_Desc";
-	public final String occurrenceBDesc = "http://arg.dundee.ac.uk/aif#OccurrenceB_Desc";
-	public final ObjectProperty hasCausalPremise = m.createObjectProperty(
+	protected String lce = "http://arg.dundee.ac.uk/aif#CauseToEffect_Inference";
+	protected String causalDesc = "http://arg.dundee.ac.uk/aif#Causal_Desc";
+	protected String occurrenceADesc = "http://arg.dundee.ac.uk/aif#OccurrenceA_Desc";
+	protected String occurrenceBDesc = "http://arg.dundee.ac.uk/aif#OccurrenceB_Desc";
+	protected ObjectProperty hasCausalPremise = m.createObjectProperty(
 			"http://arg.dundee.ac.uk/aif#hasCausal_Premise");
-	public final ObjectProperty hasOccurrenceAPremise = m.createObjectProperty(
+	protected ObjectProperty hasOccurrenceAPremise = m.createObjectProperty(
 			"http://arg.dundee.ac.uk/aif#hasOccurrenceA_Premise");
 
-	public final ObjectProperty hasPremise = m
+	protected ObjectProperty hasPremise = m
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasPremise");
-	public final ObjectProperty hasConclusion = m
+	protected ObjectProperty hasConclusion = m
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasConclusion");
 	
-	public final ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
+	protected ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
 
 	
 }
