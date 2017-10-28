@@ -473,7 +473,13 @@ public class ExtensionsBulletPoints extends URIs{
 					out.append(this.sAnd);
 				}
 
+				if (prem.getOntClass().equals(infoStatement)){
+					out.append("[info received] ");
+				}
+				
 				out.append(prem.getPropertyValue(claimText).toString());
+				
+				
 				outputted.add(prem);
 				orderedPremises.push(prem);
 				
