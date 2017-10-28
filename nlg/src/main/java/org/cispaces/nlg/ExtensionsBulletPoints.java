@@ -78,7 +78,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 	private InfModel inf = null;
 
-	private boolean debug = true;
+	private boolean debug = false;
 
 	public ExtensionsBulletPoints(String request, String eval) {
 		NLG.log = Logger.getLogger(getClass().getName());
