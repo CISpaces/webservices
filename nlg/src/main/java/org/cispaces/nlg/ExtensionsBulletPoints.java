@@ -421,7 +421,7 @@ public class ExtensionsBulletPoints extends URIs{
 	private Set<Individual> getInfoStatements(){
 		Set<Individual> infos = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i " + RDF.TYPE + " <"+ infoStatement.toString() + "> }", inf);
+		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i <" + RDF.TYPE + "> <"+ infoStatement.toString() + "> }", inf);
 		while (r.hasNext()) {
 			infos.add(m.getIndividual(r.nextSolution().getResource("i").toString()));
 		}
@@ -444,7 +444,7 @@ public class ExtensionsBulletPoints extends URIs{
 		
 		/**
 		 * We do not expand further if we already expanded, or if this is a piece of information with no premises
-		 * and we already mentioned such a piece of information. 
+		 * and we already mentioned such a piece of information.
 		 * 
 		 * Please note that this might look logically inaccurate
 		 * because we might have outputted a rule a -> b, but without adding the information a, modus ponens would not 
@@ -505,7 +505,10 @@ public class ExtensionsBulletPoints extends URIs{
 			toExpand.push(r.next());
 		}
 		
-		this.recursiveNavigationIndividuals(out, toExpand, new HashSet<Individual>(), new HashSet<Individual>());
+		/**
+		 * We assume that the infoStatement have been already outputted
+		 */
+		this.recursiveNavigationIndividuals(out, toExpand, new HashSet<Individual>(), this.getInfoStatements());
 		
 		return out.toString();
 	}
@@ -517,8 +520,12 @@ public class ExtensionsBulletPoints extends URIs{
 		Set<Individual> infos = this.getInfoStatements();
 		
 		if (!infos.isEmpty()){
-			out.append("<p>We received the following pieces of information</p>");
-			//for (Iterator<Resource> )
+			out.append("<p>We received the following pieces of information</p>" + newline);
+			out.append("<ul>"+newline);
+			for (Iterator<Individual> info = infos.iterator(); info.hasNext(); ){
+				out.append("<li>" + info.next().getPropertyValue(claimText).toString() + "</li>" + newline);
+			}
+			out.append("</ul>"+newline);
 		}
 		
 		Set<Individual> inIndividuals = new HashSet<Individual>();

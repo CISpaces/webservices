@@ -30,6 +30,7 @@ import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Interface with final URIs and properties used when transforming
@@ -95,6 +96,11 @@ public abstract class URIs {
 
 	protected OntClass statement = m
 			.createClass("http://arg.dundee.ac.uk/aif#Statement");
+	
+	protected OntClass infoStatement = m.createClass(URI + "InfoStatement");
+	protected OntClass claimStatement = m.createClass(URI + "claimStatement");
+	
+	
 	protected DatatypeProperty text = m
 			.createDatatypeProperty(URI + "text");
 	protected DatatypeProperty creationDate = m
@@ -139,5 +145,9 @@ public abstract class URIs {
 	
 	protected ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
 
+	public URIs(){
+		m.add(infoStatement, RDFS.subClassOf, statement);
+		m.add(claimStatement, RDFS.subClassOf, statement);
+	}
 	
 }
