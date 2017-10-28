@@ -39,6 +39,7 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntResource;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -60,6 +61,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
+import org.semarglproject.vocab.RDF;
 
 /**
  * Class for generating a sequence of bullet points to summarise an Extension
@@ -113,10 +115,14 @@ public class ExtensionsBulletPoints extends URIs{
 				node = m.createIndividual(URI + (String) t.get("nodeID"),
 						conflict);
 				// todo link with critical questions
-			} else if (((String) t.get("type")).equalsIgnoreCase("I")
-					|| ((String) t.get("type")).equalsIgnoreCase("CLAIM")) {
+			} else if (((String) t.get("type")).equalsIgnoreCase("I")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"),
-						statement);
+						infoStatement);
+				m.add(node, claimText, m.createLiteral((String) t.get("text")));
+			
+			} else if (((String) t.get("type")).equalsIgnoreCase("CLAIM")) {
+				node = m.createIndividual(URI + (String) t.get("nodeID"),
+						claimStatement);
 				m.add(node, claimText, m.createLiteral((String) t.get("text")));
 
 				/*
@@ -389,27 +395,37 @@ public class ExtensionsBulletPoints extends URIs{
 		return roots;
 	}
 
-	private Set<Resource> getConclusions(Resource p) {
-		Set<Resource> conclusions = new HashSet<Resource>();
+	private Set<Individual> getConclusions(Individual p) {
+		Set<Individual> conclusions = new HashSet<Individual>();
 
 		ResultSet r = this.selectSparqlQuery("SELECT ?c {?c <"
 				+ basedOn.toString() + "> <" + p.toString() + ">}", inf);
 
 		while (r.hasNext()) {
-			conclusions.add((Resource) r.nextSolution().get("c"));
+			conclusions.add(m.getIndividual(r.nextSolution().getResource("c").toString()));
 		}
 		return conclusions;
 	}
 
-	private Set<Resource> getPremises(Resource c) {
-		Set<Resource> premises = new HashSet<Resource>();
+	private Set<Individual> getPremises(Individual c) {
+		Set<Individual> premises = new HashSet<Individual>();
 
 		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString()
 				+ "> <" + basedOn.toString() + "> ?p }", inf);
 		while (r.hasNext()) {
-			premises.add((Resource) r.nextSolution().get("p"));
+			premises.add(m.getIndividual(r.nextSolution().getResource("p").toString()));
 		}
 		return premises;
+	}
+	
+	private Set<Individual> getInfoStatements(){
+		Set<Individual> infos = new HashSet<Individual>();
+
+		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i " + RDF.TYPE + " <"+ infoStatement.toString() + "> }", inf);
+		while (r.hasNext()) {
+			infos.add(m.getIndividual(r.nextSolution().getResource("i").toString()));
+		}
+		return infos;
 	}
 	
 	/**
@@ -443,13 +459,13 @@ public class ExtensionsBulletPoints extends URIs{
 			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
 			outputted.add(conclusion);
 
-			Set<Resource> premises = this.getPremises(conclusion);
+			Set<Individual> premises = this.getPremises(conclusion);
 			Stack<Individual> orderedPremises = new Stack<Individual>();
 
 			boolean firstPremise = true;
 
-			for (Iterator<Resource> itp = premises.iterator(); itp.hasNext();) {
-				Individual prem = m.getIndividual(itp.next().toString());
+			for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
+				Individual prem = itp.next();
 				if (firstPremise) {
 					out.append(this.sBecause);
 					firstPremise = false;
@@ -497,6 +513,14 @@ public class ExtensionsBulletPoints extends URIs{
 	public String getText() {
 
 		StringBuilder out = new StringBuilder();
+		
+		Set<Individual> infos = this.getInfoStatements();
+		
+		if (!infos.isEmpty()){
+			out.append("<p>We received the following pieces of information</p>");
+			//for (Iterator<Resource> )
+		}
+		
 		Set<Individual> inIndividuals = new HashSet<Individual>();
 
 		if (this.getSkepticalLabelling() == null) {
