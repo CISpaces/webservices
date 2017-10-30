@@ -98,7 +98,7 @@ public abstract class URIs {
 			.createClass("http://arg.dundee.ac.uk/aif#Statement");
 	
 	protected OntClass infoStatement = m.createClass(URI + "InfoStatement");
-	protected OntClass claimStatement = m.createClass(URI + "claimStatement");
+	protected OntClass claimStatement = m.createClass(URI + "ClaimStatement");
 	
 	
 	protected DatatypeProperty text = m
