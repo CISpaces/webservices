@@ -80,14 +80,14 @@ public class ExtensionsBulletPoints extends URIs {
 
 	private boolean debug = false;
 
-	public ExtensionsBulletPoints(String request, String eval) {
+	public ExtensionsBulletPoints(String request) {
 		NLG.log = Logger.getLogger(getClass().getName());
 
-		this.parseJSONGraph(request, eval);
+		this.parseJSONGraph(request);
 
 	}
 
-	private void parseJSONGraph(String json, String eval) {
+	private void parseJSONGraph(String json) {
 		JSONObject obj = new JSONObject(json);
 
 		JSONObject graph = obj.getJSONObject("graph");
@@ -267,8 +267,8 @@ public class ExtensionsBulletPoints extends URIs {
 
 		}
 
-		obj = new JSONObject(eval);
-		JSONObject colors = obj.getJSONObject("colors");
+		
+		JSONObject colors = obj.getJSONObject("eval").getJSONObject("colors");
 
 		Iterator<?> exts = colors.keys();
 
@@ -683,7 +683,10 @@ public class ExtensionsBulletPoints extends URIs {
 			out.append("</ul>" + newline);
 		}
 
-		return out.toString();
+		JSONObject ret = new JSONObject();
+		ret.put("fail", false);
+		ret.put("text", out.toString());
+		return ret.toString();
 	}
 
 }

@@ -53,7 +53,7 @@ import org.json.JSONObject;
 @Path("/NLG")
 public class NLG {
 
-	public static final String ERSService = "http://localhost:8080/ers/rest/WriteRules";
+	//public static final String ERSService = "http://localhost:8080/ers/rest/WriteRules";
 	public static Logger log = null;
 	
 	@POST
@@ -64,13 +64,13 @@ public class NLG {
 		log = Logger.getLogger(getClass().getName());
 		log.log(Level.INFO, "NLG Accessed");
 		
-		Client client = ClientBuilder.newClient();
+		/*Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(ERSService);
 		String evaluation = target.request(MediaType.APPLICATION_JSON)
 		                        .accept(MediaType.TEXT_PLAIN_TYPE)
-		                        .post(Entity.json(input), String.class);
+		                        .post(Entity.json(input), String.class);*/
 		
-		return (new ExtensionsBulletPoints(input, evaluation)).getText();
+		return (new ExtensionsBulletPoints(input)).getText();
 	}
 	
 }
