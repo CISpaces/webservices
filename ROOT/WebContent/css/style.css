@@ -43,6 +43,28 @@ img.avatar {
 }
 
 /**
+	styles for common
+*/
+
+.panel.panel-default {
+  margin: 15px 0 5px;
+}
+
+/**
+	styles for vocabularyBox
+*/
+
+#vocabulary_box .topic-form {
+  overflow-y: auto;
+  height: 85%;
+  width: 100%;
+}
+
+.form-group label span {
+  font-weight: 400;
+}
+
+/**
 	styles for infoBox
 */
 
@@ -60,7 +82,7 @@ hr {
   padding-bottom: 5px;
 }
 
-.topic-form, .fews-form {
+#info_box .topic-form, .fews-form {
   overflow-y: auto;
   height: 45%;
   width: 100%;
@@ -77,6 +99,7 @@ hr {
 
 .float_right {
   float: right;
+  width: 20%;
 }
 
 .fews-form table {
@@ -89,7 +112,7 @@ hr {
   white-space: nowrap;
 }
 
-#details-tweet div p {
+#div-details div p {
   word-wrap: break-word;
 }
 

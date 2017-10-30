@@ -18,7 +18,7 @@ app.InfoBoxView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.$el.attr("style", "height: " + (chart.svg_height - 60) + "px");
+    this.$el.attr("style", "height: " + (chart.svg.height - 60) * 0.66 + "px");
 
     // Brings a list of topics from FEWS services
     app.Topics.fetch({
@@ -38,20 +38,21 @@ app.InfoBoxView = Backbone.View.extend({
 
     // Brings tweets related to listed topics periodically(30s)
     // var timer = setInterval( "app.infoBoxView.submitTopic()", 30000 );
+
+    this.$("input").on("keydown", function(event) {
+      if (event.which == 13 || event.keyCode == 13) {
+        app.infoBoxView.createTopic();
+      }
+    });
   },
 
   render: function() {},
 
-  createTopic: function(obj) {
-    var topic = $("#info_box .input-group input").val();
+  createTopic: function() {
+    var topic = this.$(".input-group input").val();
 
     if (!topic || typeof(topic) == "undefined" || topic == "") {
       alert("Please, enter a topic");
-      return;
-    }
-
-    if ($('[name="negated-' + topic + '"]').length > 0) {
-      alert("This topic is already listed");
       return;
     }
 
@@ -63,12 +64,18 @@ app.InfoBoxView = Backbone.View.extend({
 
     this.addTopic(param);
 
-    $("#info_box .input-group input").val("");
+    this.$(".input-group input").val("");
   },
 
   addTopic: function(topic) {
 
-    var p = $("<p></p>").appendTo($("#info_box .topic-form"));
+    // If the same topic exists in the list, the name of radio button should be changed
+    var radio_btn_name = topic.name;
+    while ($('[name="negated-' + radio_btn_name + '"]').length > 0) {
+      radio_btn_name = radio_btn_name + "_1";
+    }
+
+    var p = $("<p></p>").appendTo(this.$(".topic-form"));
 
     var div = $("<div></div>", {
       "class": "form-group"
@@ -83,6 +90,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var div_alert = $("<div></div>", {
       "class": "alert " + alert_class + " alert-infobox float_left",
+      "name": radio_btn_name,
       "text": topic.name
     }).appendTo(div);
 
@@ -101,7 +109,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var negated_true = $("<input/>", {
       "type": "radio",
-      "name": "negated-" + topic.name,
+      "name": "negated-" + radio_btn_name,
       "value": 1,
       "checked": (topic.negated == 1)
     }).click(function(obj) {
@@ -121,7 +129,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var negated_false = $("<input/>", {
       "type": "radio",
-      "name": "negated-" + topic.name,
+      "name": "negated-" + radio_btn_name,
       "value": 0,
       "checked": (topic.negated == 0)
     }).click(function() {
@@ -138,7 +146,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var negated_unknown = $("<input/>", {
       "type": "radio",
-      "name": "negated-" + topic.name,
+      "name": "negated-" + radio_btn_name,
       "value": -1,
       "checked": (topic.negated == -1)
     }).click(function() {
@@ -159,7 +167,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var genuine_true = $("<input/>", {
       "type": "radio",
-      "name": "genuine-" + topic.name,
+      "name": "genuine-" + radio_btn_name,
       "value": 1,
       "checked": (topic.genuine == 1)
     }).appendTo(
@@ -175,7 +183,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var genuine_false = $("<input/>", {
       "type": "radio",
-      "name": "genuine-" + topic.name,
+      "name": "genuine-" + radio_btn_name,
       "value": 0,
       "checked": (topic.genuine == 0)
     }).appendTo(
@@ -188,7 +196,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     var genuine_unknown = $("<input/>", {
       "type": "radio",
-      "name": "genuine-" + topic.name,
+      "name": "genuine-" + radio_btn_name,
       "value": -1,
       "checked": (topic.genuine == -1)
     }).appendTo(
@@ -203,12 +211,12 @@ app.InfoBoxView = Backbone.View.extend({
   submitTopic: function() {
     var topic_list = [];
 
-    var p = $(".topic-form p");
+    var p = this.$(".topic-form p");
     for (var i = 0; i < p.length; i++) {
-      var topic = p[i].children[0].innerText;
+      var topic = p[i].childNodes[0].childNodes[0].getAttribute("name");
 
       var obj = {
-        "name": topic,
+        "name": p[i].childNodes[0].childNodes[0].innerText,
         "negated": $('[name="negated-' + topic + '"]:checked').val(),
         "genuine": $('[name="genuine-' + topic + '"]:checked').val()
       };
@@ -228,25 +236,28 @@ app.InfoBoxView = Backbone.View.extend({
         if (result) {
           result.forEach(function(data) {
             var tr = $("<tr></tr>", {
-              "class": "extract_tr",
-              "draggable": true
-            }).appendTo($(".fews-form table tbody"))
-            .on("dragend", function(obj){
-              var children = this.childNodes;
+                "class": "extract_tr",
+                "draggable": true
+              }).appendTo($(".fews-form table tbody"))
+              .on("dragstart", function(obj) {
+                obj.originalEvent.dataTransfer.setData('text/plain', null);
+              })
+              .on("dragend", function(obj) {
+                var children = this.childNodes;
 
-              // creates model of the node
-              var attr = app.workBoxView.createNode("info", children[1].innerText, children[0].innerText);
+                // creates model of the node
+                var attr = app.workBoxView.createNode("info", children[1].innerText, children[0].innerText);
 
-              var restart = true;
-              if (!chart.nodes || chart.nodes.length < 1)
-                restart = false;
+                var restart = true;
+                if (!chart.nodes || chart.nodes.length < 1)
+                  restart = false;
 
-              // draws a new node
-              chart.node = addNewNode(attr, obj.pageX, obj.pageY);
+                // draws a new node
+                chart.node = addNewNode(attr, obj.pageX, obj.pageY);
 
-              // re-start changed graph
-              chart.simulation = restart_simulation(chart.simulation, restart);
-            });
+                // re-start changed graph
+                chart.simulation = restart_simulation(chart.simulation, restart);
+              });
 
             var td_extract = $("<td></td>", {
                 "text": data.extract
@@ -278,7 +289,7 @@ app.InfoBoxView = Backbone.View.extend({
   },
 
   clearTopic: function() {
-    $(".topic-form").html(" ");
-    $(".fews-form table tbody").empty();
+    this.$(".topic-form").html(" ");
+    this.$(".fews-form table tbody").empty();
   }
 });

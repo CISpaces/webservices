@@ -24,11 +24,11 @@ app.WorkBoxView = Backbone.View
       push_chart_data(area_id, ret_chart);
 
       // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-      var zoom = set_zoom(chart.svg);
+      var zoom = set_zoom(chart.svg.el);
       chart.zoom = zoom;
 
       // set up simulations for force-directed graphs
-      var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
       push_node_style_data(ret_simulation);
 
       // the simulation used when drawing a force-directed graph
@@ -55,6 +55,32 @@ app.WorkBoxView = Backbone.View
 
       this.listenTo(app.Nodes, "update", function() {
         $("#saveProgress").attr("disabled", false);
+
+        // Calls PROVSIMP webservice to save the node provenance after evrytime it is added.
+
+        var param = {
+          "action": "save",
+          "nodes": app.Nodes.toJSON()
+        }
+
+        Backbone.ajax({
+          type: "POST",
+          contentType: "application/json",
+          url: "/PROVSIMP/rest/ProcProv",
+          data: JSON.stringify(param),
+          success: function(data) {
+          console.log(data);
+
+          },
+          error: function(e) {
+              var responseText = e.responseText;
+            var error_msg = responseText.split('h1>')[1];
+
+            // when evalutation is failed, the reason will be shown
+            console.log(error_msg.substring(0, error_msg.length - 2));
+          }
+        });
+
       });
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
@@ -198,7 +224,11 @@ app.WorkBoxView = Backbone.View
       var date = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
+
       var sec = now.getSeconds();
+      if(!Number.isInteger(sec)){
+        sec = parseInt(sec);
+      }
 
       var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
         (date < 10 ? "0" + date : date) + " " +
@@ -206,7 +236,7 @@ app.WorkBoxView = Backbone.View
         (min < 10 ? "0" + min : min) + ":" +
         (sec < 10 ? "0" + sec : sec);
 
-      var nodeID = generateUUID(); // Math.floor(Math.random() * 1000) + 1;
+      var nodeID = generateUUID();
 
       var source = (tweet_uri)? tweet_uri : readCookie('user_name');
 
@@ -410,11 +440,11 @@ app.WorkBoxView = Backbone.View
       push_chart_data(area_id, ret_chart);
 
       // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-      var zoom = set_zoom(chart.svg);
+      var zoom = set_zoom(chart.svg.el);
       chart.zoom = zoom;
 
       // set up simulations for force-directed graphs
-      var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+      var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
       push_node_style_data(ret_simulation);
 
       // the simulation used when drawing a force-directed graph

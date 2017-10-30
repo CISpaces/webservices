@@ -24,11 +24,11 @@ app.ToolBoxView = Backbone.View.extend({
     'click #exportToFile': 'exportToFile',
 
     // 'click .btn-sm': 'createNode',
+    'dragstart .btn-sm': 'dataTransfer',
     'dragend .btn-sm': 'createNode'
   },
 
   initialize: function() {
-
   },
 
   render: function() {
@@ -54,7 +54,11 @@ app.ToolBoxView = Backbone.View.extend({
     var date = now.getDate();
     var hour = now.getHours();
     var min = now.getMinutes();
+
     var sec = now.getSeconds();
+    if(!Number.isInteger(sec)){
+      sec = parseInt(sec);
+    }
 
     var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
       (date < 10 ? "0" + date : date) + " " +
@@ -89,11 +93,11 @@ app.ToolBoxView = Backbone.View.extend({
         push_chart_data(area_id, ret_chart);
 
         // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-        var zoom = set_zoom(chart.svg);
+        var zoom = set_zoom(chart.svg.el);
         chart.zoom = zoom;
 
         // set up simulations for force-directed graphs
-        var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
+        var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
         push_node_style_data(ret_simulation);
 
         // the simulation used when drawing a force-directed graph
@@ -120,7 +124,7 @@ app.ToolBoxView = Backbone.View.extend({
     return input_file;
   },
 
-  exportToFile: function() {
+  exportToFile: function(obj) {
 
     if((!app.Nodes && !app.Edges) || (app.Nodes.length < 1 && app.Edges.length < 1)){
       alert("There is no analysis in Work Box.");
@@ -149,8 +153,23 @@ app.ToolBoxView = Backbone.View.extend({
     if (!chart.nodes || chart.nodes.length < 1)
       restart = false;
 
+    var dot, eventDoc, doc, body, pageX, pageY;
+    var ev = obj.originalEvent || window.event;
+
+    if(ev.pageX == null && ev.clientX != null){
+      eventDoc = (ev.target && ev.target.ownerDocument) || document;
+      doc = eventDoc.documentElement;
+      body = eventDoc.body;
+
+      ev.pageX = ev.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.scrollLeft);
+      ev.pageY = ev.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop);
+    }
+
+    var x = ev.pageX;
+    var y = ev.pageY;
+
     // draws a new node
-    chart.node = addNewNode(attr, obj.pageX, obj.pageY);
+    chart.node = addNewNode(attr, x, y);
 
     // re-start changed graph
     chart.simulation = restart_simulation(chart.simulation, restart);
@@ -271,7 +290,7 @@ app.ToolBoxView = Backbone.View.extend({
 
     var length = (chart.nodes) ? chart.nodes.length : 15;
 
-    var ret_simulation = set_simulation(length, chart.svg_width, chart.svg_height);
+    var ret_simulation = set_simulation(length, chart.svg.width, chart.svg.height);
     push_node_style_data(ret_simulation);
 
     chart.simulation = restart_simulation(ret_simulation.simulation, false);
@@ -282,5 +301,9 @@ app.ToolBoxView = Backbone.View.extend({
         d.fy = null;
       })
     }
+  },
+
+  dataTransfer: function(event){
+    event.originalEvent.dataTransfer.setData('text/plain', null);
   }
 });

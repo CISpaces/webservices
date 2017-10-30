@@ -2,8 +2,12 @@
 **/.idea
 **/*.iml
 
-# Nebeans project files
+# Netbeans project files
 **/nbproject
+**/nb-configuration.xml
+
+# Eclipse project files
+**/.settings
 
 # Compiled output
 **/*.class
@@ -22,6 +26,7 @@ out/*
 
 # CISpaces tools
 cispaces/*
+tools/*
 
 # Python venv
 **/env/

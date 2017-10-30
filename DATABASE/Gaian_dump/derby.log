@@ -1,4 +1,0 @@
-Wed Sep 20 14:23:01 BST 2017 Thread[main,5,main] Class org.apache.derby.jdbc.Driver42 java.lang.ClassNotFoundException: org.apache.derby.jdbc.Driver42, module ignored.
-----------------------------------------------------------------
-Wed Sep 20 14:23:01 BST 2017: Shutting down Derby engine
-----------------------------------------------------------------

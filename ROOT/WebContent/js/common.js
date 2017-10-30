@@ -64,56 +64,55 @@ function validateFile(input_file){ // validate json format of the file
         } else return("Fail");
 }
 
-function readFile(input_files){
+function readFile(input_files) {
 
-       var file = input_files[0];
-       var reader = new FileReader();
+  var file = input_files[0];
+  var reader = new FileReader();
 
-       reader.onload = function(progressEvent){
+  reader.onload = function(progressEvent) {
 
-	        // Entire file
-	        var jsonData = JSON.parse(this.result);
-	        //call the Validate File funtion to validate json
-	        var res = validateFile(jsonData);
+    // Entire file
+    var jsonData = JSON.parse(this.result);
+    //call the Validate File funtion to validate json
+    var res = validateFile(jsonData);
 
-	        if(res == 'success'){
-		        var nodes = jsonData['nodes'];
-	            var edges = jsonData['edges'];
+    if (res == 'success') {
+      var nodes = jsonData['nodes'];
+      var edges = jsonData['edges'];
 
-	            if(!nodes && !edges){
-	                nodes = jsonData['graph']['nodes'];
-	                edges = jsonData['graph']['edges'];
-	            }
+      if (!nodes && !edges) {
+        nodes = jsonData['graph']['nodes'];
+        edges = jsonData['graph']['edges'];
+      }
 
-	            // set up simulations for force-directed graphs
-	            var ret_simulation = set_simulation(15, chart.svg_width, chart.svg_height);
-	            push_node_style_data(ret_simulation);
+      // set up simulations for force-directed graphs
+      var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
+      push_node_style_data(ret_simulation);
 
-	            // the simulation used when drawing a force-directed graph
-	            chart.simulation = ret_simulation.simulation;
+      // the simulation used when drawing a force-directed graph
+      chart.simulation = ret_simulation.simulation;
 
-	            var ret_graph = draw(nodes, edges, chart);
-	            push_graph_data(ret_graph);
+      var ret_graph = draw(nodes, edges, chart);
+      push_graph_data(ret_graph);
 
-	            // start simulation for displaying graphsv
-	            chart.simulation = restart_simulation(chart.simulation, false);
+      // start simulation for displaying graphsv
+      chart.simulation = restart_simulation(chart.simulation, false);
 
-              $("#saveProgress").attr("disabled", true);
-	        }
-	        else {
-	            console.log("Invalid JSON format");
-	            return("Fail");
-	        }
-        };
+      $("#saveProgress").attr("disabled", true);
+    } else {
+      alert(res);
+      return ("Fail");
+    }
+  };
 
-        reader.onerror = function(event){
-                console.log("Fail to read the file:");
-                console.log(event);
-        };
+  reader.onerror = function(event) {
+    console.log("Fail to read the file:");
+    console.log(event);
+  };
 
-        reader.readAsText(file);
+  reader.readAsText(file);
 
-        return reader;
+  return reader;
 }
 
 function alertMessage(obj, msg) {
