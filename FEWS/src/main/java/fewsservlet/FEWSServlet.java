@@ -1,18 +1,21 @@
 package fewsservlet;
 
-import database.Topic;
 import database.PostgreSQLDB;
+import database.Topic;
 import database.Tweet;
+import database.VocabularyTopic;
 import filters.JWTTokenNeeded;
-import messagebus.ControlMessage;
 import messagebus.MessageBus;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -38,8 +41,8 @@ public class FEWSServlet {
     @GET
     @Path("/hello")
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello World!";
+    public Response hello() {
+        return Response.status(418).entity("Hello World!").build();
     }
 
     /**
@@ -138,23 +141,124 @@ public class FEWSServlet {
         return topicList;
     }
 
+    @JWTTokenNeeded
+    @GET
+    @Path("/vocab")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVocab() {
+        log.info("#### Getting vocabulary");
+
+        List<VocabularyTopic> vocabularyTopicList =  postgreSQLDB.getVocab();
+        return Response.status(Response.Status.OK).entity(vocabularyTopicList).build();
+    }
+
+    @JWTTokenNeeded
+    @GET
+    @Path("/vocab/{vocabTopic}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVocab(@PathParam("vocabTopic") String vocabTopic) {
+        log.info("#### Getting vocabulary");
+
+        try {
+            VocabularyTopic vocabularyTopic = postgreSQLDB.getVocab(vocabTopic).get(0);
+            return Response.status(Response.Status.OK).entity(vocabularyTopic).build();
+
+        } catch (IndexOutOfBoundsException exc) {
+            return Response.status(Response.Status.NOT_FOUND).entity(vocabTopic).build();
+        }
+    }
+
+    private void refreshFactExtraction() {
+        List<VocabularyTopic> fullVocab = postgreSQLDB.getVocab();
+        Map<String, Map<String, List<String>>> controlMessage = VocabularyTopic.asControlMessage(fullVocab);
+        messageBus.send(controlMessage);
+    }
 
     /**
      * Add a new Topic to Fact-Extraction's index.
      *
-     * POST Request at FEWSROOT/topics/{topicName} where 'topicName' is the new topic to add to Fact-Extraction's index
-     *
-     * @param topicName Topic to add to index
-     * @return "OK" if message was sent, else "NOK"
+     * POST Request at FEWSROOT/topics/ with JSON representation of List of Topics
      */
     @JWTTokenNeeded
     @POST
-    @Path("/topics/{topicName}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String addTopic(@PathParam("topicName") String topicName) {
-        log.info("#### Adding Topic");
+    @Path("/vocab/{vocabTopic}/schema/{vocabSchema}")
+    public Response createVocabTopic(@PathParam("vocabTopic") String vocabTopic,
+                                     @PathParam("vocabSchema") String vocabSchema) {
+        log.info("#### Creating VocabularyTopic: " + vocabTopic);
 
-        ControlMessage cMessage = new ControlMessage(topicName);
-        return messageBus.sendMessage(cMessage) ? "OK" : "NOK";
+        try {
+            if (postgreSQLDB.existsVocabTopic(vocabTopic)) {
+                return Response.status(Response.Status.CONFLICT).entity(vocabTopic).build();
+            }
+
+            postgreSQLDB.createVocabTopic(vocabTopic, vocabSchema);
+            return Response.status(Response.Status.CREATED).entity(vocabTopic).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
     }
+
+    // add keywords
+    @JWTTokenNeeded
+    @POST
+    @Path("/vocab/{vocabTopic}/keywords/{vocabKeyword}")
+    public Response createVocabKeyword(@PathParam("vocabTopic") String vocabTopic,
+                                       @PathParam("vocabKeyword") String vocabKeyword){
+        String keywordSlug = vocabTopic + "/keywords/" + vocabKeyword;
+        log.info("#### Creating VocabularyTopic keyword: " + keywordSlug);
+
+        try {
+            if (!postgreSQLDB.existsVocabTopic(vocabTopic)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(vocabTopic).build();
+            }
+            if (postgreSQLDB.existsVocabKeyword(vocabTopic, vocabKeyword)) {
+                return Response.status(Response.Status.CONFLICT).entity(keywordSlug).build();
+            }
+
+            postgreSQLDB.createVocabKeyword(vocabTopic, vocabKeyword);
+            refreshFactExtraction();
+            return Response.status(Response.Status.CREATED).entity(keywordSlug).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
+    }
+
+    @JWTTokenNeeded
+    @DELETE
+    @Path("/vocab/{vocabTopic}")
+    public Response deleteVocabTopic(@PathParam("vocabTopic") String vocabTopic) {
+        log.info("#### Deleting VocabularyTopic: " + vocabTopic);
+
+        try {
+            postgreSQLDB.deleteVocabTopic(vocabTopic);
+            refreshFactExtraction();
+            return Response.status(Response.Status.NO_CONTENT).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+    }
+
+    @JWTTokenNeeded
+    @DELETE
+    @Path("/vocab/{vocabTopic}/keywords/{vocabKeyword}")
+    public Response deleteVocabKeyword(@PathParam("vocabTopic") String vocabTopic,
+                                       @PathParam("vocabKeyword") String vocabKeyword) {
+        String keywordSlug = vocabTopic + "/keywords/" + vocabKeyword;
+        log.info("#### Deleting VocabularyTopic keyword: " + keywordSlug);
+
+        try {
+            postgreSQLDB.deleteVocabKeyword(vocabTopic, vocabKeyword);
+            refreshFactExtraction();
+            return Response.status(Response.Status.NO_CONTENT).build();
+
+        } catch (SQLException exc) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
+    }
+
 }

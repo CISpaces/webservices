@@ -2,9 +2,7 @@ package database;
 
 import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,7 +51,7 @@ public class PostgreSQLDB {
                     prop.getProperty("password")
             );
 
-            log.info("Read Postgresql config from file");
+            log.info("#### Read Postgresql config from file");
 
             return true;
 
@@ -238,6 +236,11 @@ public class PostgreSQLDB {
         }
     }
 
+    private static boolean isResultSetEmpty(ResultSet rs)
+            throws SQLException {
+        return (!rs.isBeforeFirst() && rs.getRow() == 0);
+    }
+
     /**
      * Get the list of all known Topics.
      *
@@ -254,7 +257,8 @@ public class PostgreSQLDB {
 
             String queryString =
                     "SELECT * " +
-                    "FROM factextract.phase1_ext_db_topic;";
+                    "FROM factextract.phase1_ext_db_topic " +
+                    "ORDER BY topic_key;";
 
             statement = conn.createStatement();
             resultSet = statement.executeQuery(queryString);
@@ -276,5 +280,234 @@ public class PostgreSQLDB {
         }
 
         return topicList;
+    }
+
+    /**
+     * Get the list of all known VocabularyTopics.
+     *
+     * @return List of all VocabularyTopics present in database
+     *
+     * @see VocabularyTopic
+     * @see Topic
+     */
+    public List<VocabularyTopic> getVocab() {
+        return getVocab(null);
+    }
+
+    public List<VocabularyTopic> getVocab(String vocabTopic) {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        Map<String, VocabularyTopic> keywordMap = new LinkedHashMap<>();
+
+        try {
+            if (!connect()) { return null; }
+
+            String queryString =
+                    "SELECT topic.topic, topic.schema, keyword.keyword " +
+                    "FROM factextract.vocab_topic as topic " +
+                    "JOIN factextract.vocab_keyword as keyword " +
+                    "ON (topic.topic_id = keyword.topic_id) ";
+
+            if (vocabTopic != null) {
+                queryString += "WHERE topic.topic = ?;";
+                statement = conn.prepareStatement(queryString);
+                statement.setString(1, vocabTopic);
+            } else {
+                queryString += ";";
+                statement = conn.prepareStatement(queryString);
+            }
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String topicName = resultSet.getString("topic");
+                String topicSchema = resultSet.getString("schema");
+                String keyword = resultSet.getString("keyword");
+
+                VocabularyTopic topic = keywordMap.get(topicName);
+                if (topic == null) {
+                    keywordMap.put(topicName, new VocabularyTopic(topicName, topicSchema));
+                    topic = keywordMap.get(topicName);
+                }
+                topic.addKeyword(keyword);
+            }
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB query", exc);
+            exc.printStackTrace();
+            return null;
+        } finally {
+            finalise(resultSet, statement, conn);
+        }
+
+        return new ArrayList<>(keywordMap.values());
+    }
+
+    public boolean existsVocabTopic(String vocabTopic)
+            throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            String queryString =
+                    "SELECT EXISTS (" +
+                        "SELECT 1 FROM factextract.vocab_topic " +
+                        " WHERE topic = ?" +
+                    ") AS \"exists\";";
+
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getBoolean("exists");
+            } else {
+                throw new SQLException();
+            }
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB insert", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(resultSet, statement, conn);
+        }
+    }
+
+    public boolean existsVocabKeyword(String vocabTopic, String vocabKeyword)
+            throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            String queryString =
+                    "SELECT EXISTS ( " +
+                        "SELECT 1 FROM factextract.vocab_topic " +
+                        "JOIN factextract.vocab_keyword " +
+                        "ON (vocab_topic.topic_id = vocab_keyword.topic_id) " +
+                        "WHERE topic = ? AND keyword = ?" +
+                    ") AS \"exists\";";
+
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            statement.setString(2, vocabKeyword);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getBoolean("exists");
+            } else {
+                throw new SQLException();
+            }
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB insert", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(resultSet, statement, conn);
+        }
+    }
+
+    public void createVocabTopic(String vocabTopic, String vocabSchema)
+            throws SQLException {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            String queryString =
+                    "INSERT INTO factextract.vocab_topic (topic, schema) " +
+                    "VALUES (?, ?);";
+
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            statement.setString(2, vocabSchema);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB insert", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(null, statement, conn);
+        }
+    }
+
+    public void createVocabKeyword(String vocabTopic, String vocabKeyword)
+            throws SQLException {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            String queryString =
+                    "INSERT INTO factextract.vocab_keyword (topic_id, keyword) " +
+                    "VALUES ((SELECT topic_id FROM factextract.vocab_topic WHERE topic = ?), ?);";
+
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            statement.setString(2, vocabKeyword);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB insert", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(null, statement, conn);
+        }
+    }
+
+    public void deleteVocabTopic(String vocabTopic)
+            throws SQLException {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            // Then delete topic - database is setup to cascade
+            String queryString = "DELETE FROM factextract.vocab_topic WHERE topic = ?;";
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB delete", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(null, statement, conn);
+        }
+    }
+
+    public void deleteVocabKeyword(String vocabTopic, String vocabKeyword)
+            throws SQLException {
+        PreparedStatement statement = null;
+
+        try {
+            if (!connect()) throw new SQLException();
+
+            // Delete keyword
+            String queryString =
+                    "DELETE FROM factextract.vocab_keyword " +
+                    "WHERE topic_id IN (SELECT topic_id FROM factextract.vocab_topic WHERE topic = ?)" +
+                    "AND keyword = ?;";
+            statement = conn.prepareStatement(queryString);
+            statement.setString(1, vocabTopic);
+            statement.setString(2, vocabKeyword);
+            statement.execute();
+
+        } catch (SQLException exc) {
+            log.log(Level.SEVERE, "Failed PostgreSQL DB delete", exc);
+            exc.printStackTrace();
+            throw exc;
+        } finally {
+            finalise(null, statement, conn);
+        }
     }
 }

@@ -28,6 +28,10 @@ $ cd cispaces-web-services
 $ ./install-prereqs.sh
 ```
 
+- Run the fact-extraction installation script (currently requires GitLab access or a deployment key and usually takes ~15 minutes)
+
+```$ FEWS/extra/install-fact-extraction.sh```
+
 - Update the environment
 
 ```$ source ~/.profile```
@@ -58,11 +62,21 @@ $ <CTRL+A>,<D>
 
 ```$ screen -r```
 
+- Start the fact-extraction engine running in another Screen session
+
+```
+$ screen
+$ cd ${CISPACES}/tools/fact-extraction
+$ source env/bin/activate
+$ ant run.fact-extraction-app
+$ <CTRL+A>,<D>
+```
+
 - Start Tomcat web server:
 
 ```$ $CATALINA_HOME/bin/startup.sh```
 
-- To use CISpaces we interface, point your web browser to http://YOUR_IP:8080
+- To use CISpaces web interface, point your web browser to http://YOUR_IP:8080
 - You can login with sample users 'Ella', 'Joe' or 'Miles' with password 'password'
 
 - To stop Tomcat:
