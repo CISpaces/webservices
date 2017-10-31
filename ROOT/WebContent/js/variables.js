@@ -43,6 +43,10 @@ function push_graph_data(ret){
 	if(ret.edge){
 		chart.edge = ret.edge;
 	}
+
+  if(ret.edgepath){
+    chart.edgepath = ret.edgepath;
+  }
 }
 
 /*
