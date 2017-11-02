@@ -110,6 +110,8 @@ app.WorkBoxView = Backbone.View
       var index = obj.currentTarget.__data__.index;
       var target = obj.currentTarget.id.substr(5);
 
+      var self = this;
+
       // open menu
       var menu = $("#contextMenu")
         .show()
@@ -144,8 +146,12 @@ app.WorkBoxView = Backbone.View
               // re-start force-directed graph
               chart.simulation = restart_simulation(chart.simulation, true);
 
+              if (link_from == target) {
+                self.changeLinkFrom(target);
+              }
+
             } else if (opt.currentTarget.id == "link-from") {
-              app.workBoxView.changeLinkFrom(target);
+              self.changeLinkFrom(target);
             } else if (opt.currentTarget.id == "link-to") {
               var attr = null;
 
@@ -154,7 +160,7 @@ app.WorkBoxView = Backbone.View
                 alertMessage(obj, "You can't choose the same node for connection.");
               } else {
                 // create a new model of edge
-                attr = app.workBoxView.createEdge(link_from, target);
+                attr = self.createEdge(link_from, target);
 
                 if (attr) {
                   // draw the node
@@ -163,11 +169,15 @@ app.WorkBoxView = Backbone.View
                   // re-start graph
                   chart.simulation = restart_simulation(chart.simulation, true);
 
-                  app.workBoxView.changeLinkFrom(target);
+                  self.changeLinkFrom(target);
                 } else {
                   // if the edge connects between i-nodes(Info, Claim), shows an error message
                   alertMessage(obj, "This connection looks not correct. You should choose at least one between Pref, Con or Pro.");
                 }
+              }
+            } else if (opt.currentTarget.id == "cancel-link") {
+              if (!_.isEmpty(link_from)) {
+                self.changeLinkFrom(target);
               }
             }
 
@@ -241,7 +251,7 @@ app.WorkBoxView = Backbone.View
       var min = now.getMinutes();
 
       var sec = now.getSeconds();
-      if(!Number.isInteger(sec)){
+      if (!Number.isInteger(sec)) {
         sec = parseInt(sec);
       }
 
@@ -253,7 +263,7 @@ app.WorkBoxView = Backbone.View
 
       var nodeID = generateUUID();
 
-      var source = (tweet_uri)? tweet_uri : readCookie('user_name');
+      var source = (tweet_uri) ? tweet_uri : readCookie('user_name');
 
       var attr = {
         source: source,
