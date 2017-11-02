@@ -42,7 +42,7 @@ app.EvalBoxView = Backbone.View.extend({
       type: "POST",
       contentType: "application/json",
       // dataType : "application/json",
-      url: "/ers/rest/WriteRules",
+      url: vm_server + "/ers/rest/WriteRules",
       data: JSON.stringify(param),
       success: function(data) {
         // console.log(data);
@@ -209,7 +209,7 @@ app.EvalBoxView = Backbone.View.extend({
       type: "POST",
       contentType: "application/json",
       // dataType : "application/json",
-      url: "/ers/rest/WriteRules",
+      url: vm_server + "/ers/rest/WriteRules",
       data: JSON.stringify(param),
       success: function(result) {
         if (result) {

@@ -78,7 +78,7 @@ app.ToolBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: 'POST',
-      url: 'VC/rest/new',
+      url: vm_server + '/VC/rest/new',
       //dataType: 'text',
       contentType: 'application/json', //Supply the JWT auth token
       data: JSON.stringify(object),
@@ -188,7 +188,7 @@ app.ToolBoxView = Backbone.View.extend({
 
       Backbone.ajax({
         type: 'POST',
-        url: 'VC/rest/save',
+        url: vm_server + '/VC/rest/save',
         //dataType: 'text',
         contentType: 'application/json',
         data: JSON.stringify(object),
@@ -210,7 +210,7 @@ app.ToolBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: 'GET',
-      url: 'VC/rest/history',
+      url: vm_server + '/VC/rest/history',
       contentType: 'application/json',
       data: JSON.parse(object),
       success: function(result) {
@@ -262,7 +262,7 @@ app.ToolBoxView = Backbone.View.extend({
       };
       Backbone.ajax({
         type: 'POST',
-        url: 'VC/rest/updateAnalysis',
+        url: vm_server + '/VC/rest/updateAnalysis',
         contentType: 'application/json',
         data: JSON.stringify(object),
         success: function(result) {

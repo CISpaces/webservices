@@ -3,7 +3,7 @@ function getLatestAnalysis(callback){
 
 	Backbone.ajax({
 		type: 'POST',
-		url: 'VC/rest/getAnalysis',
+		url: vm_server + '/VC/rest/getAnalysis',
 		contentType: 'text/plain',
         //Supply the JWT auth token
         // headers: {"Authorization": localStorage.getItem('auth_token')},

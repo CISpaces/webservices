@@ -66,18 +66,22 @@ app.WorkBoxView = Backbone.View
         Backbone.ajax({
           type: "POST",
           contentType: "application/json",
-          url: "/PROVSIMP/rest/ProcProv",
+          url: vm_server + "/PROVSIMP/rest/ProcProv",
           data: JSON.stringify(param),
           success: function(data) {
-          console.log(data);
+            console.log(data);
 
           },
           error: function(e) {
-              var responseText = e.responseText;
-            var error_msg = responseText.split('h1>')[1];
+            var responseText = e.responseText;
+            if (responseText) {
+              var error_msg = responseText.split('h1>')[1];
 
-            // when evalutation is failed, the reason will be shown
-            console.log(error_msg.substring(0, error_msg.length - 2));
+              // when evalutation is failed, the reason will be shown
+              console.log(error_msg.substring(0, error_msg.length - 2));
+            } else {
+              console.log(e);
+            }
           }
         });
 
