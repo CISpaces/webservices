@@ -85,6 +85,17 @@ app.WorkBoxView = Backbone.View
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
       });
+
+      slider_wb = $("#slider-wb").slider({
+        formatter: function(value) {
+          if (chart.nodes) {
+            chart.nodes.forEach(function(d) {
+              $("#draw_" + d.nodeID + ' text').html(parseText(d.text, value));
+            });
+          }
+          return value;
+        }
+      });
     },
 
     onRightClick: function(obj) {

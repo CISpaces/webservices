@@ -11,6 +11,8 @@
 
 	<!-- Bootstrap Core CSS -->
 	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css" rel="stylesheet">
 
 	<!-- Custom CSS -->
 	<link href="dist/css/sb-admin-2.css" rel="stylesheet">
@@ -131,6 +133,11 @@
 								</svg>
 						</div>
 						<!-- /.panel-body -->
+						<div class="panel-footer">
+							<div class="input-group">
+								<input id="slider-wb" data-slider-id="slider-workbox" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="15" style="width: 100%"/>
+							</div>
+						</div>
 					</div>
 					<!-- /.panel -->
 					<div class="panel panel-default" id="panel-browsebox">
@@ -482,9 +489,13 @@
 
 		<!-- loads for bootstrap -->
 		<script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/bootstrap-slider.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/bootstrap-slider.min.js"></script>
 
 		<!-- loads for json-validation -->
 		<script type="text/javascript" src="vendor/node_modules/json-validation/lib/json-validation.js"></script>
+
+		<script type="text/javascript" src="js/variables.js"></script>
 
 		<script type="text/javascript" src="js/backbone/models/node.js"></script>
 		<script type="text/javascript" src="js/backbone/models/edge.js"></script>
@@ -511,7 +522,6 @@
 	-->
 		<script type="text/javascript" src="js/backbone/app.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
-		<script type="text/javascript" src="js/variables.js"></script>
 		<script type="text/javascript" src="js/draws.js"></script>
 
 		<script type="text/javascript" src="js/latestAnalysis.js"></script>

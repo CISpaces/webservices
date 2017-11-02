@@ -24,17 +24,15 @@ function push_chart_data(area_id, ret){
 
 var link_from = null;	// flag used when making a new edge
 
+var slider_wb = null;
+
 /*
 	push nodes, edges into chart
 */
 function push_graph_data(ret){
-	if(ret.nodes){
-		chart.nodes = ret.nodes;
-	}
 
-	if(ret.edges){
-		chart.edges = ret.edges;
-	}
+	chart.nodes = ret.nodes || [];
+	chart.edges = ret.edges || [];
 
 	if(ret.node){
 		chart.node = ret.node;

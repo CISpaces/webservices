@@ -199,6 +199,24 @@ hr {
 }
 
 /**
+  styles for slider
+*/
+
+#panel-workbox .panel-footer .input-group {
+  width: 99%;
+  margin: 15px 10px 15px 0;
+}
+
+#slider-workbox .slider-track .slider-selection {
+  background: #bcbcbc;
+}
+
+#slider-workbox .slider-track .slider-track-high {
+  background: #cdcdcd;
+}
+
+
+/**
 	styles for evalBox
 */
 
