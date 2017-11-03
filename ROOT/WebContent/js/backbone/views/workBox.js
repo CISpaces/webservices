@@ -12,6 +12,7 @@ app.WorkBoxView = Backbone.View
 
     events: {
       'click .node': 'viewDetails',
+      'dblclick .node': 'popupTextModal',
       'contextmenu .node': 'onRightClick'
     },
 
@@ -211,20 +212,27 @@ app.WorkBoxView = Backbone.View
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
-      // view details of node via details box
-      var form_list = $("form");
-      for (var i = 0; i < form_list.length; i++) {
-        if (form_list[i].id.substr(5) == id) {
-          $("#" + form_list[i].id).show();
-        } else {
-          $("#" + form_list[i].id).hide();
-        }
-      }
+      var node = app.Nodes.get(id).attributes;
+
+      $("#details-node .details-nodeID").text(node.nodeID);
+      $("#details-node .details-dtg").text(node.dtg);
+      $("#details-node .details-source").text(node.source);
+      $("#details-node .details-text").text(node.text);
+      $("#details-node .details-eval").text(node.eval);
+      $("#details-node .details-commit").text(node.commit);
+      $("#details-node .details-uncert").text(node.uncert);
 
       $("#details-node").show();
       $("#details-tweet").hide();
 
       return id;
+    },
+
+    popupTextModal: function(obj) {
+      var id = obj.currentTarget.id;
+      id = id.substr(5);
+
+      $("#node_"+ id).modal('show');
     },
 
     createNode: function(id, tweet_uri, text) {
@@ -312,7 +320,8 @@ app.WorkBoxView = Backbone.View
       var view = new app.NodeView({
         model: node
       });
-      $("#details-node").append(view.render().el);
+
+      this.$el.append(view.render().el);
     },
 
     createEdge: function(source, target) {

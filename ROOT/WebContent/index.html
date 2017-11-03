@@ -135,7 +135,7 @@
 						<!-- /.panel-body -->
 						<div class="panel-footer">
 							<div class="input-group">
-								<input id="slider-wb" data-slider-id="slider-workbox" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="15" style="width: 100%"/>
+								<input id="slider-wb" data-slider-id="slider-workbox" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="15" style="width: 100%" />
 							</div>
 						</div>
 					</div>
@@ -319,6 +319,38 @@
 						<div id="div-details" class="panel-collapse collapse in">
 							<div class="panel-body" id="details">
 								<div id="details-node" style="display: none;">
+									<div class="form-group">
+										<label>NodeID</label>
+										<p class="form-control-static"><span class="details-nodeID"></span></p>
+									</div>
+									<div class="form-group">
+										<label>DTG</label>
+										<p class="form-control-static"><span class="details-dtg"></span></p>
+									</div>
+									<div class="form-group">
+										<label>Source</label>
+										<p class="form-control-static"><span class="details-source"></span></p>
+									</div>
+									<div class="form-group">
+										<label>Text</label>
+										<p class="form-control-static"><span class="details-text"></span></p>
+										<!--
+											<label>Text <a class="btn btn-outline btn-primary btn-xs" style="margin-left: 10px">Update</a></label>
+											<textarea id="details-text" class="form-control" rows="3"><%= text %></textarea>
+										-->
+									</div>
+									<div class="form-group">
+										<label>Eval</label>
+										<p class="form-control-static"><span class="details-eval"></span></p>
+									</div>
+									<div class="form-group">
+										<label>Commit</label>
+										<p class="form-control-static"><span class="details-commit"></span></p>
+									</div>
+									<div class="form-group">
+										<label>Accuracy</label>
+										<p class="form-control-static"><span class="details-uncert"></span></p>
+									</div>
 								</div>
 								<div id="details-tweet" style="display: none;">
 									<div class="form-group">
@@ -366,47 +398,6 @@
 			<span></span> <a class="alert-link">Close</a>
 		</div>
 
-		<script type="text/template" id="node-template">
-			<div class="form-group">
-				<label>nodeID</label>
-				<p class="form-control-static">
-					<%= nodeID %>
-				</p>
-			</div>
-			<div class="form-group">
-				<label>DTG</label>
-				<p class="form-control-static">
-					<%= dtg %>
-				</p>
-			</div>
-			<div class="form-group">
-				<label>Source</label>
-				<p class="form-control-static">
-					<%= source %>
-				</p>
-			</div>
-			<div class="form-group">
-				<label>Text <a class="btn btn-outline btn-primary btn-xs" style="margin-left: 10px">Update</a></label>
-				<textarea id="details-text" class="form-control" rows="3"><%= text %></textarea>
-			</div>
-			<div class="form-group">
-				<label>Eval</label>
-				<p class="form-control-static"><span class="details-eval"><%= eval %></span></p>
-			</div>
-			<div class="form-group">
-				<label>Commit</label>
-				<p class="form-control-static">
-					<%= commit %>
-				</p>
-			</div>
-			<div class="form-group">
-				<label>Accuracy</label>
-				<p class="form-control-static">
-					<%= uncert %>
-				</p>
-			</div>
-		</script>
-
 		<div class="modal fade" id="modal_select_analysis" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -420,6 +411,26 @@
 				</div>
 			</div>
 		</div>
+
+		<script type="text/template" id="node-template">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title"><%= nodeID %></h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-2"><b>Text</b></div>
+								<div class="col-md-10"><textarea class="form-control" rows="3"><%= text %></textarea></div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default btn-update">Update</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+		</script>
 
 		<div class="modal fade" id="nlg_result" role="dialog">
 			<div class="modal-dialog">
@@ -513,7 +524,6 @@
 		<script type="text/javascript" src="js/backbone/views/infoBox.js"></script>
 		<script type="text/javascript" src="js/backbone/views/workBox.js"></script>
 		<script type="text/javascript" src="js/backbone/views/evalBox.js"></script>
-		<script type="text/javascript" src="js/backbone/views/details.js"></script>
 		<script type="text/javascript" src="js/backbone/views/vocabularyBox.js"></script>
 
 		<!--

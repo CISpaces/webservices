@@ -131,22 +131,19 @@ function alertMessage(obj, msg) {
   return alert_msg;
 }
 
-function parseText(content) {
+function parseText(content, length) {
 
-  var result = "";
-
-  if (content) {
-    if (content.length < 12) {
-      result = content;
-    } else {
-      var split = content.split(' ');
-      if (split.length == 1 || split.length == 2) {
-        result = content;
-      } else {
-        result = split[0] + ' ' + split[1] + "...";
-      }
-    }
+  if(!length && typeof(length) == "undefined"){
+    length = slider_wb.slider('getValue');
   }
 
-  return result;
+  if (content && length != 0) {
+    if (content.length <= length) {
+      return content;
+    } else {
+      return content.substring(0, length) + "...";
+    }
+  } else {
+    return "";
+  }
 }

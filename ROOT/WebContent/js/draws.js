@@ -70,6 +70,8 @@ function set_zoom(svg) {
 
   zoom_handler(svg);
 
+  svg.on("dblclick.zoom", null);
+
   return ret;
 }
 

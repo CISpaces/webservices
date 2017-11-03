@@ -9,7 +9,6 @@ app.vocabularyBoxView;
 //app.prefBoxView;
 //app.moiraBoxView;
 //app.chatBoxView;
-app.detailView;
 
 $(function(){
 	// new app.AppView();
@@ -23,7 +22,6 @@ $(function(){
 	//app.prefBoxView = new app.PrefBoxView();
 	//app.moiraBoxView = new app.MoiraBoxView();
 	//app.chatBoxView = new app.ChatBoxView();
-	app.detailView = new app.DetailView();
 });
 
 Backbone.ajax = function(){
