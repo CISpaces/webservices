@@ -576,6 +576,9 @@ public class ExtensionsBulletPoints extends URIs {
 
 		if (this.getSkepticalLabelling() == null) {
 			NLG.log.log(Level.SEVERE, "Skeptical Labelling Not Found!");
+			JSONObject ret = new JSONObject();
+			ret.put("fail", true);
+			return ret.toString();
 		}
 
 		if (this.getSkepticalLabelling() != null) {
