@@ -55,10 +55,8 @@ app.WorkBoxView = Backbone.View
       this.listenTo(app.Nodes, "add", this.addNode);
 
       this.listenTo(app.Nodes, "update", function() {
-        $("#saveProgress").attr("disabled", false);
 
         // Calls PROVSIMP webservice to save the node provenance after evrytime it is added.
-
         var param = {
           "action": "save",
           "nodes": app.Nodes.toJSON()
@@ -67,7 +65,7 @@ app.WorkBoxView = Backbone.View
         Backbone.ajax({
           type: "POST",
           contentType: "application/json",
-          url: vm_server + "/PROVSIMP/rest/ProcProv",
+          url: remote_server + "/PROVSIMP/rest/ProcProv",
           data: JSON.stringify(param),
           success: function(data) {
             console.log(data);
@@ -86,7 +84,10 @@ app.WorkBoxView = Backbone.View
           }
         });
 
+
+        $("#saveProgress").attr("disabled", false);
       });
+      
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
       });

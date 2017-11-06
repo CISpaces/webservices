@@ -6,7 +6,7 @@ var app = app || {};
 
 var TopicList = Backbone.Collection.extend({
     model: app.Topic,
-    url: vm_server + '/fewsservlet/topics'
+    url: remote_server + '/fewsservlet/topics'
 });
 
 app.Topics = new TopicList();

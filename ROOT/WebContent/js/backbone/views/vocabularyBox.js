@@ -71,11 +71,11 @@ app.VocabularyBoxView = Backbone.View.extend({
 
         Backbone.ajax({
             type: "POST",
-            url: vm_server + "/fewsservlet/vocab/" + param.topic + "/schema/" + param.schema,
+            url: remote_server + "/fewsservlet/vocab/" + param.topic + "/schema/" + param.schema,
             success: function(result) {
                 Backbone.ajax({
                     type: "POST",
-                    url: vm_server + "/fewsservlet/vocab/" + param.topic + "/keywords/" + param.keywords[0],
+                    url: remote_server + "/fewsservlet/vocab/" + param.topic + "/keywords/" + param.keywords[0],
                     success: function(result) {
                         self.addTopic(param);
                     },
@@ -114,7 +114,7 @@ app.VocabularyBoxView = Backbone.View.extend({
     }).click(function() {
       Backbone.ajax({
           type: "DELETE",
-          url: vm_server + "/fewsservlet/vocab/" + topic.topic,
+          url: remote_server + "/fewsservlet/vocab/" + topic.topic,
           success: function(result) {
               p.remove();
           },

@@ -9,7 +9,7 @@ var NodeList = Backbone.Collection.extend({
   model: app.Node,
 
   // localStorage: new Backbone.LocalStorage('nodes-backbone'),
-  url: vm_server + '/VC/rest/node'
+  url: remote_server + '/VC/rest/node'
   
 });
 

@@ -2,7 +2,7 @@
  * global variables for cispaces
  */
 
-var vm_server = "http://rsg-xen-vm04.ecs.soton.ac.uk:8080";
+var remote_server = "http://rsg-xen-vm04.ecs.soton.ac.uk:8080";
 
 /*
 	object for chart
