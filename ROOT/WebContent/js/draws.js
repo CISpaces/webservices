@@ -179,64 +179,10 @@ function draw(nodes, edges, chart) {
 
       return className;
     }).attr("style", "pointer-events: none");
-/*
-  ret.edgepath = chart.zoom.append("g")
-    .selectAll(".edgepath")
-    .data(ret.edges)
-    .enter().append("path")
-    .attr("d", function(d) {
-      return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-    }).attr("class", "edgepath")
-    .attr("fill-opacity", 0.5)
-    .attr("stroke-opacity", 0)
-    .attr("fill", "blue")
-    .attr("stroke", "red")
-    .attr("style", "pointer-events: none");
-*/
-/*    var defs = chart.svg.el.append("defs");
-    defs.append("marker")
-    .attr("id", "pref-triangle")
-    .attr("viewBox", "-0 -5 10 10")
-    .attr("refX", chart.node_style_data.a_width/2 + 10)
-    .attr("refY", 0)
-    .attr("markerWidth", 5)
-    .attr("markerHeight", 5)
-    .attr("orient", "auto")
-    .attr("xoverflow", "visible")
-    .append("svg:path")
-    .attr("d", "M 0, -5 L 10, 0 L 0, 5")
-    .attr("class", "pref-arrow-head");
 
-    defs.append("marker")
-    .attr("id", "con-triangle")
-    .attr("viewBox", "-0 -5 10 10")
-    .attr("refX", chart.node_style_data.a_width/2 + 5)
-    .attr("refY", 0)
-    .attr("markerWidth", 5)
-    .attr("markerHeight", 5)
-    .attr("orient", "auto")
-    .attr("xoverflow", "visible")
-    .append("svg:path")
-    .attr("d", "M 0, -5 L 10, 0 L 0, 5")
-    .attr("class", "con-arrow-head");
-
-    defs.append("marker")
-    .attr("id", "pro-triangle")
-    .attr("viewBox", "-0 -5 10 10")
-    .attr("refX", chart.node_style_data.a_width/2 + 5)
-    .attr("refY", 0)
-    .attr("markerWidth", 5)
-    .attr("markerHeight", 5)
-    .attr("orient", "auto")
-    .attr("xoverflow", "visible")
-    .append("svg:path")
-    .attr("d", "M 0, -5 L 10, 0 L 0, 5")
-    .attr("class", "pro-arrow-head");
-*/
-
-  $("#pref-triangle").attr("refX", chart.node_style_data.a_width/2 + 10);
-  $("#con-triangle").attr("refX", chart.node_style_data.a_width/2 + 5);
-  $("#pro-triangle").attr("refX", chart.node_style_data.a_width/2 + 5);
+  $("#pref-triangle").attr("refX", chart.node_style_data.a_width/2);
+  $("#con-triangle").attr("refX", chart.node_style_data.a_width/2);
+  $("#pro-triangle").attr("refX", chart.node_style_data.a_width/2);
 
   return ret;
 }
@@ -260,60 +206,29 @@ function dragended(d) {
 
 function ticked() {
   if (chart.edge) {
-    /*
     chart.edge
       .attr("x1", function(d) {
-        if (d.source.x < d.target.x) {
-          return d.source.x + chart.node_style_data.a_width / 2;
-        } else {
-          return d.source.x - chart.node_style_data.a_width / 2;
-        }
+        return d.source.x + chart.node_style_data.a_width / 4;
       })
       .attr("y1", function(d) {
-        if (d.source.y < d.target.y) {
-          return d.source.y + chart.node_style_data.a_height / 2;
-        } else {
-          return d.source.y - chart.node_style_data.a_height / 2;
-        }
+        return d.source.y + chart.node_style_data.a_height / 4;
       })
       .attr("x2", function(d) {
         if (d.source.x < d.target.x) {
-          return d.target.x - chart.node_style_data.a_width / 2;
+          return d.target.x;
         } else {
           return d.target.x + chart.node_style_data.a_width / 2;
         }
       })
       .attr("y2", function(d) {
         if (d.source.y < d.target.y) {
-          return d.target.y - chart.node_style_data.a_height / 2;
+          return d.target.y;
         } else {
           return d.target.y + chart.node_style_data.a_height / 2;
         }
       });
-      */
-    chart.edge
-      .attr("x1", function(d) {
-        return d.source.x;
-      })
-      .attr("y1", function(d) {
-        return d.source.y;
-      })
-      .attr("x2", function(d) {
-        return d.target.x;
-      })
-      .attr("y2", function(d) {
-        return d.target.y;
-      });
   }
- /*
-  if (chart.edgepath) {
-    chart.edgepath.attr("d", function(d) {
-      var path = 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-      // console.log(path);
-      return path;
-    });
-  }
-*/
+
   if (chart.node) {
     chart.node
       .attr("x", function(d) {
