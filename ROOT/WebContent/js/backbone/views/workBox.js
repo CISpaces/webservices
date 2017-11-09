@@ -88,7 +88,7 @@ app.WorkBoxView = Backbone.View
 
         $("#saveProgress").attr("disabled", false);
       });
-      
+
       this.listenTo(app.Edges, "update", function() {
         $("#saveProgress").attr("disabled", false);
       });
@@ -235,29 +235,60 @@ app.WorkBoxView = Backbone.View
       id = id.substr(5);
 
       // If a node is linked with another node which is a pro-node and starts with 'L'
-      var edge = chart.edges.find(function(d) {
-        return (d.source.id == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3);
+      var edges = chart.edges.filter(function(d) {
+        return ((d.source.id == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
       });
-      if (edge) {
-        var pro_link = edge.target.text;
 
-        if (pro_link) {
-          $("#node_" + id + " .row-critical select").empty();
-          var cq = pro_link.replace("L", "CQ");
+      if (edges && edges.length > 0) {
 
-          d3.json('./cqs.json', function(data){
-            if (data["CQ"][cq]) {
-              data["CQ"][cq].forEach(function(d, idx) {
-                var option = $("<option></option>", {
-                  'value': cq + (idx + 1),
-                  'text': cq + (idx + 1) + " - " + d
-                }).appendTo($("#node_" + id + " .row-critical select"))
+        $("#node_" + id + " .row-critical .col-select").empty();
+
+        d3.json('./cqs.json', function(data) {
+          edges.forEach(function(edge, index) {
+            if (edge.target.text) {
+              var cq = edge.target.text.replace("L", "CQ");
+
+              var row = $("<div></div>", {
+                'class': "form-group row"
+              }).appendTo($("#node_" + id + " .row-critical .col-select"));
+
+              var select = $("<select></select>", {
+                'name': "sel_cq" + index,
+                'class': "form-control"
+              }).appendTo(
+                $("<div></div>", {
+                  'class': "col-md-10"
+                }).appendTo(row)
+              );
+
+              var cq_source = chart.edges.filter(function(d) {
+                return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
               });
+
+              var button = $("<button></button>", {
+                'name': "cq" + index,
+                'class': "btn " + (cq_source && cq_source.length > 0 ? "disabled" : "") + " btn-default btn-create",
+                'type': "button",
+                'text': "Create"
+              }).appendTo(
+                $("<div></div>", {
+                  'class': "col-md-2"
+                }).appendTo(row)
+              );
+
+              if (data["CQ"][cq]) {
+                data["CQ"][cq].forEach(function(d, idx) {
+                  var option = $("<option></option>", {
+                    'value': cq + (idx + 1),
+                    'text': cq + (idx + 1) + " - " + d
+                  }).appendTo(select);
+                });
+              }
             }
           });
+        });
 
-          $("#node_" + id + " .row-critical").show();
-        }
+        $("#node_" + id + " .row-critical").show();
       }
 
       $("#node_" + id).modal('show');

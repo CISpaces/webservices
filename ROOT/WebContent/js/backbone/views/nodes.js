@@ -88,7 +88,7 @@ app.NodeView = Backbone.View.extend({
     var nodeID = this.model.id;
 
     // gets information on a critical question and an answer of the question
-    var cq = $("#node_" + nodeID + " .row-critical select option:selected").val();
+    var cq = $("#node_" + nodeID + " .row-critical select[name=sel_" + event.target.name + "] option:selected").val();
     var link = cq.replace("CQ", "L").substring(0, 3);
 
     var cqansw = "";
@@ -132,8 +132,10 @@ app.NodeView = Backbone.View.extend({
         // re-start changed graph
         app.toolBoxView.restartSimulation();
       }
+
+      $("#node_" + nodeID + " .row-critical button[name=" + event.target.name + "]").toggleClass("disabled");
     });
 
-    $("#node_" + nodeID).modal('hide');
+    // $("#node_" + nodeID).modal('hide');
   }
 });
