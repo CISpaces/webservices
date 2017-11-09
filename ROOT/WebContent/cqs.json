@@ -1,0 +1,70 @@
+{
+  "L": {
+    "LPK": "Position to know",
+    "LEO": "Expert Opinion",
+    "LAN": "Analogy",
+    "LCE": "Cause to effect",
+    "LID": "Identification",
+    "LCS": "Crowdsourcing",
+    "LPV": "Provenance",
+    "LPP": "Preference"
+  },
+  "CQ": {
+    "CQPK": [
+      "Is the source in a position to know about the claim made?",
+      "Is the source reliable/trustworthy?",
+      "Is it the case that the source has asserted the claim?",
+      "Is the claim supported by evidence?",
+      "Is the claim consistent with other experts' claims?"
+    ],
+    "CQEO": [
+      "Is the expert credible in some field?",
+      "Is the expert an expert source in the field of the claim made?",
+      "Is it the case that the expert has asserted the claim?",
+      "Is the expert reliable as a source?",
+      "Is the claim consistent with other experts' claims?",
+      "Is the claim supported by evidence?"
+    ],
+    "CQAN": [
+      "Is there evidence for the previous case to be plausible?",
+      "Is the previous case similar to the current case?",
+      "Is the similarity between the cases relevant for this inference?",
+      "Are there important differences between the cases?",
+      "Is there some other case C3 similar to C1, but in which A is false?"
+    ],
+    "CQCE": [
+      "Is there evidence to show that the cause occurred?",
+      "Is there any other different cause that leads to the same effect?",
+      "Is there a general rule that connects the cause to the effect?",
+      "Is the relationship between the cause and the effect a causal relationship?",
+      "Is there any exception to the causal rule that impedes the effect to occur?",
+      "Has the cause happened before the effect?",
+      "Has the effect occurred?"
+    ],
+    "CQID": [
+      "Has the event E happened?",
+      "Does the event require property Q?",
+      "Does the actor fit property Q?",
+      "Are there other actors that fit the same property?",
+      "Is there an exception to property Q that undermines the association between actor and event?"
+    ],
+    "CQCS": [
+      "Is the claim A supported by evidence?",
+      "Is the group in a position to know about K?",
+      "Is the claim consistent with others' claims?",
+      "Does the group present characteristics appropriate for answering K?"
+    ],
+    "CQPV": [
+      "Is info Ik consistent with other information?",
+      "Is info Ik supported by evidence?",
+      "Does the provenance chain contain elements that lead us not to believe Ik?",
+      "Are there provenance elements that should have been included for believing Ik?"
+    ],
+    "CQPP": [
+      "Is there a different criterion such that Ik is not preferred to Ij?",
+      "Is there an exception to CrtX such that Ik is not preferred to Ij?",
+      "Is there a different reason for believing that Ik is not preferred to Ij?",
+      "Is there a different reason for Ik not to be credible?"
+    ]
+  }
+}

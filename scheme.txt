@@ -1,0 +1,312 @@
+LPK
+Position to know
+RA
+CQPK1
+Is the source in a position to know about the claim made?
+The source is not in a position to know about this claim
+CQPK2
+Is the source reliable/trustworthy?
+The expert is not a reliable/trustworthy source
+CQPK3
+Is it the case that the source has asserted the claim?
+The source did not assert this claim
+CQPK4
+Is the claim supported by evidence?
+This claim is not supported by evidence
+CQPK5
+Is the claim consistent with other experts' claims?
+This claim is not consistent with other experts' claims
+PREM
+PPK1
+E is in a position to know whether A is true
+PPK2
+E asserts that A is true
+ASSUMP
+APK1
+The source is reliable
+APK2
+There is evidence for A
+CONNECT
+CPK1:CQPK5
+APK2:CQPK4
+PPK2:CQPK3,CQPK4
+APK1:CQPK2
+PPK1:CQPK2,CQPK1
+CONC
+CPK1
+A may plausibly be true
+
+LEO
+Expert Opinion
+RA
+CQEO1
+Is the expert credible in some field?
+The expert is not credible in his/her field of expertise
+CQEO2
+Is the expert an expert source in the field of the claim made?
+The expert is not an expert source in the field of this claim
+CQEO3
+Is it the case that the expert has asserted the claim?
+The expert did not assert this claim
+CQEO4
+Is the expert reliable as a source?
+The expert is not a reliable source
+CQEO5
+Is the claim consistent with other experts' claims?
+This claim is not consistent with other experts' claims
+CQEO6
+Is the claim supported by evidence?
+This claim is not supported by evidence
+PREM
+PEO1
+E is an expert in domain S containing A
+PEO2
+E asserts that A  is plausible
+ASSUMP
+AEO1
+The expert is credible in the domain
+AEO2
+The expert is a reliable source
+AEO3
+There is evidence for A
+CONNECT
+AEO1:CQEO1
+PEO1:CQEO1,CQEO4,CQEO2
+PEO2:CQEO3,CQEO6
+AEO2:CQEO4
+CEO1:CQEO5
+AEO3:CQEO6
+CONC
+CEO1
+A may plausibly be true
+
+LAN
+Analogy
+RA
+CQAN1
+Is there evidence for the previous case to be plausible?
+There is no evidence for the previous case to be plausible
+CQAN2
+Is the previous case similar to the current case?
+The previous case is not similar to the current case
+CQAN3
+Is the similarity between the cases relevant for this inference?
+ The similarity between the cases is not relevant for this inference
+CQAN4
+Are there important differences between the cases?
+There important differences between the cases that do not support this inference
+CQAN5
+Is there some other case C3 similar to C1, but in which A is false?
+There is another case C3 similar to C1 where A is false
+PREM
+PAN1
+Case C1 is similar to case C2
+PAN2
+A is true in case C1
+ASSUMP
+AAN1
+There is a relevant  similarity about feature F between C1 and C2
+AAN2
+There is no important difference between C1 and C2
+CONNECT
+CAN1:CQAN5
+PAN2:CQAN1
+PAN1:CQAN2,CQAN3,CQAN4
+AAN1:CQAN3
+AAN2:CQAN4
+CONC
+CAN1
+A may plausibly be true in C2
+
+LCE
+Cause to effect
+RA
+CQCE1
+Is there evidence to show that the cause occurred?
+There is no evidence to show that the cause occurred
+CQCE2
+Is there any other different cause that leads to the same effect?
+There is an alternative cause that leads to the same effect
+CQCE3
+Is there a general rule that connects the cause to the effect?
+There is not a general rule that connects the cause to the effect
+CQCE4
+Is the relationship between  the cause and  the effect a causal relationship?
+The relationship between  the cause and  the effect is not a causal relationship
+CQCE5
+Is there any exception to the causal rule that impedes the effect to occur?
+There is an exception to the causal rule that impedes the effect to occur
+CQCE6
+Has the cause happened before the effect?
+The cause has not happened before the effect
+CQCE7
+Has the effect occurred?
+The effect has not occurred.
+PREM
+PCE1
+Generally, if a cause occurs, the effect would also occur
+PCE2
+Cause occurs
+ASSUMP
+ACE1
+There is a causal relationship between cause and effect
+ACE2
+There are no verified exceptions to the causal rule
+ACE3
+The cause has happened before the effect
+CONNECT
+PCE1:CQCE3,CQCE6,CQCE4,CQCE5
+PCE2:CQCE1,CQCE2
+CCE1:CQCE7
+ACE1:CQCE4
+ACE2:CQCE5
+ACE3:CQCE6
+CONC
+CCE1
+Effect will occur
+
+LID
+Identification
+RA
+CQID1
+Has the event E happened?
+There is no evidence to show that the event E happened
+CQID2
+Does the event require property Q?
+The event does not require property Q
+CQID3
+Does the actor fit property Q?
+The actor does not fit the property Q
+CQID4
+Are there other actors that fit the same property?
+There is another actor that fits the same property
+CQID5
+Is there an exception to property Q that undermines the association between actor and event?
+There is an exception to property Q that undermines the association between actor and event
+PREM
+PID1
+An event E appears to be associated with actor A
+PID2
+To perform event E, actor must have property Q (e.g. same loc, res)
+PID3
+Actor A has property Q
+ASSUMP
+AID1
+No exception to Q discards the association of E to A
+CONNECT
+PID1:CQID1
+PID2:CQID2
+PID3:CQID3,CQID5
+CID1:CQID4
+AID1:CQID5
+CONC
+CID1
+A is associated with E
+
+LCS
+Crowdsourcing
+RA
+CQCS1
+Is the claim A supported by evidence?
+This claim A is not supported by evidence
+CQCS2
+Is the group in a position to know about K?
+The group is not in a position to know about K
+CQCS3
+Is the claim consistent with others' claims?
+This claim is not consistent with others' claims
+CQCS4
+Does the group present characteristics appropriate for answering K?
+The group does not present characteristics appropriate for answering K
+PREM
+PCS1
+Given that the group was asked K
+PCS2
+Answer A is generally accepted as true
+ASSUMP
+ACS1
+The group is in a position to know about K
+ACS2
+The group presents characteristics appropriate for answering K
+ACS3
+The claim A is supported by evidence
+CONNECT
+PCS1:CQCS2,CQCS4
+PCS2:CQCS1
+CCS1:CQCS3
+ACS1:CQCS2
+ACS2:CQCS4
+ACS3:CQCS1
+CONC
+CCS1
+Answer A may plausibly be true
+
+LPV
+Provenance
+RA
+CQPV1
+Is info Ik consistent with other information?
+Info Ik is not consistent with other information.
+CQPV2
+Is info Ik supported by evidence?
+Info Ik is not supported by evidence.
+CQPV3
+Does the provenance chain contain elements that lead us not to believe Ik?
+The provenance chain contains elements that lead us not to believe Ik.
+CQPV4
+Are there provenance elements that should have been included for believing Ik?
+There are provenance elements that should have been included for believing Ik.
+PREM
+PPV1
+Info Ik is a credible information
+PPV2
+The provenance chain infers Info Ik
+ASSUMP
+APV1
+There are no missing provenance elements required to believe Ik
+APV2
+There are no provenance elements against believing Ik
+APV3
+There is evidential support for Ik
+CONNECT
+PPV1:CQPV2
+PPV2:CQPV3,CQPV4
+CPV1:CQPV1
+APV1:CQPV4
+APV2:CQPV3
+APV3:CQPV2
+CONC
+CPV1
+Info Ik may plausibly be true
+
+LPP
+Preference
+RA
+CQPP1
+Is there a different criterion such that Ik is not preferred to Ij?
+There is a different criterion such that Ik is not preferred to Ij.
+CQPP2
+Is there an exception to CrtX such that Ik is not preferred to Ij?
+There is  an exception to CrtX such that Ik is not preferred to Ij.
+CQPP3
+Is there a different reason for believing that Ik is not preferred to Ij?
+There is a different reason for believing that Ik is not preferred to Ij.
+CQPP4
+Is there a different reason for Ik not to be credible?
+There is a different reason for Ik not to be credible.
+PREM
+PPP1
+The provenance chain infers Info Ik is credible
+PPP2
+CrtX infers prov Ik is preferred than Prov Ij
+ASSUMP
+APP1
+There is no exception to CrtX such that Ik is not preferred to Ij
+CONNECT
+PPP1:CQPP4
+PPP2:CQPP1,CQPP2
+APP1:CQPP2
+CPP1:CQPP3
+CONC
+CPP1
+Ik may be preferred to Ij

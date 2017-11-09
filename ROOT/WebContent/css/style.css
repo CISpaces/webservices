@@ -82,13 +82,13 @@ hr {
   padding-bottom: 5px;
 }
 
-#info_box .topic-form, .fews-form {
+#info_box .topic-form, #info_box .fews-form {
   overflow-y: auto;
   height: 45%;
   width: 100%;
 }
 
-.topic-form label, button {
+.topic-form label, .topic-form button {
   margin-left: 10px
 }
 

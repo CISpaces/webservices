@@ -12,11 +12,12 @@ app.WorkBoxView = Backbone.View
 
     events: {
       'click .node': 'viewDetails',
-      'dblclick .node': 'popupTextModal',
+      'dblclick .node': 'popupNodeView',
       'contextmenu .node': 'onRightClick'
     },
 
     initialize: function() {
+
       /* -------------------- initialisation for drawing a graph -------------------- */
       var area_id = this.el.id;
 
@@ -229,11 +230,37 @@ app.WorkBoxView = Backbone.View
       return id;
     },
 
-    popupTextModal: function(obj) {
+    popupNodeView: function(obj) {
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
-      $("#node_"+ id).modal('show');
+      // If a node is linked with another node which is a pro-node and starts with 'L'
+      var edge = chart.edges.find(function(d) {
+        return (d.source.id == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3);
+      });
+      if (edge) {
+        var pro_link = edge.target.text;
+
+        if (pro_link) {
+          $("#node_" + id + " .row-critical select").empty();
+          var cq = pro_link.replace("L", "CQ");
+
+          d3.json('./cqs.json', function(data){
+            if (data["CQ"][cq]) {
+              data["CQ"][cq].forEach(function(d, idx) {
+                var option = $("<option></option>", {
+                  'value': cq + (idx + 1),
+                  'text': cq + (idx + 1) + " - " + d
+                }).appendTo($("#node_" + id + " .row-critical select"))
+              });
+            }
+          });
+
+          $("#node_" + id + " .row-critical").show();
+        }
+      }
+
+      $("#node_" + id).modal('show');
     },
 
     createNode: function(id, tweet_uri, text) {
