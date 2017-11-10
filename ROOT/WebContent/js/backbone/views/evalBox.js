@@ -254,7 +254,7 @@ app.EvalBoxView = Backbone.View.extend({
 	      type: "POST",
 	      contentType: "application/json",
 	      // dataType : "application/json",
-	      url: "/nlg/rest/NLG",
+	      url: remote_server + "/nlg/rest/NLG",
 	      data: JSON.stringify(param),
 	      success: function(result) {
 
