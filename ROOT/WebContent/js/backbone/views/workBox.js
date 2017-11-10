@@ -103,6 +103,8 @@ app.WorkBoxView = Backbone.View
           return value;
         }
       });
+
+      $("#panel-workbox").show();
     },
 
     onRightClick: function(obj) {

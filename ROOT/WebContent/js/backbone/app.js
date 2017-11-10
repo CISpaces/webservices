@@ -3,6 +3,7 @@ var app = app || {};
 app.toolBoxView;
 app.infoBoxView;
 app.workBoxView;
+app.browseBoxView;
 //app.reqBoxView;
 app.evalBoxView;
 app.vocabularyBoxView;
@@ -13,7 +14,8 @@ app.vocabularyBoxView;
 $(function(){
 	// new app.AppView();
 	app.workBoxView = new app.WorkBoxView();
-
+	app.browseBoxView = new app.BrowseBoxView();
+	
 	//app.reqBoxView = new app.ReqBoxView();
 	app.toolBoxView = new app.ToolBoxView();
 	app.infoBoxView = new app.InfoBoxView();
