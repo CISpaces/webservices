@@ -36,23 +36,6 @@ app.WorkBoxView = Backbone.View
       // the simulation used when drawing a force-directed graph
       chart.simulation = ret_simulation.simulation;
 
-      getLatestAnalysis(function(data) {
-
-        // $("#modal_select_analysis").modal('show');
-
-        // initiate the SVG on the work box for drawing a graph
-        if (data.graphID && !_.isEmpty(data.graphID)) {
-          createCookie('graph_id', data.graphID, 2);
-        }
-
-        var ret_graph = draw(data.nodes, data.edges, chart);
-        push_graph_data(ret_graph);
-
-        chart.simulation = restart_simulation(chart.simulation, false);
-        /* ------------------------------------------------------------------------------- */
-
-      });
-
       this.listenTo(app.Nodes, "add", this.addNode);
 
       this.listenTo(app.Nodes, "update", function() {
@@ -334,24 +317,7 @@ app.WorkBoxView = Backbone.View
       }
 
       // generates created time using format string type
-      var now = new Date();
-
-      var year = now.getFullYear();
-      var month = now.getMonth() + 1;
-      var date = now.getDate();
-      var hour = now.getHours();
-      var min = now.getMinutes();
-
-      var sec = now.getSeconds();
-      if (!Number.isInteger(sec)) {
-        sec = parseInt(sec);
-      }
-
-      var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
-        (date < 10 ? "0" + date : date) + " " +
-        (hour < 10 ? "0" + hour : hour) + ":" +
-        (min < 10 ? "0" + min : min) + ":" +
-        (sec < 10 ? "0" + sec : sec);
+      var time = generateDate();
 
       var nodeID = generateUUID();
 
