@@ -263,7 +263,7 @@ app.WorkBoxView = Backbone.View
                 });
 
                 var select_value = "";
-                if(cq_source && cq_source.length > 0){
+                if (cq_source && cq_source.length > 0) {
                   select_value = cq_source[0].source.text;
                 }
 
@@ -274,14 +274,14 @@ app.WorkBoxView = Backbone.View
                   $("<div></div>", {
                     'class': "col-md-10"
                   }).appendTo(row)
-                ).on("change", function(event){
+                ).on("change", function(event) {
                   var selected_cq = $("#node_" + id + " .row-critical select[name=" + event.target.name + "] option:selected").val();
 
                   var existed_cq_number = chart.edges.filter(function(d) {
                     return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
                   });
 
-                  if(existed_cq_number && existed_cq_number.length > 0){
+                  if (existed_cq_number && existed_cq_number.length > 0) {
                     $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
                   } else {
                     $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
@@ -292,7 +292,7 @@ app.WorkBoxView = Backbone.View
                   'name': "btn_" + cq,
                   'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-create",
                   'type': "button",
-                  'text': "Create"
+                  'text': "Ask"
                 }).appendTo(
                   $("<div></div>", {
                     'class': "col-md-2"
