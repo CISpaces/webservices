@@ -75,6 +75,13 @@ sudo sed -i.bak "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc
     && echo "host    ${SQL_DB_NAME}     ${SQL_USER}             all                     password" | sudo tee --append /etc/postgresql/9.5/main/pg_hba.conf
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
+echo "# - Modifying RabbitMQ config...(Y/n)"
+if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
+sudo rabbitmqctl add_user ${SQL_USER} ${SQL_PASSWORD} \
+    && sudo rabbitmqctl set_user_tags ${SQL_USER} administrator \
+    && sudo rabbitmqctl set_permissions ${SQL_USER} ".*" ".*" ".*"
+if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
+
 echo "# - Restarting services...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 sudo systemctl restart postgresql rabbitmq-server \

@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 public class MessageBus {
     private final String HOSTNAME;
     private final String EXCHANGE;
+    private final String USERNAME;
 
     private static final ObjectWriter objectWriter = new ObjectMapper().writer();
     private static final AMQP.BasicProperties amqpProperties =
@@ -50,7 +51,12 @@ public class MessageBus {
         } finally {
             HOSTNAME = prop.getProperty("hostname", null);
             EXCHANGE = prop.getProperty("exchange", null);
+            USERNAME = prop.getProperty("username", null);
+            final String password = prop.getProperty("password", null);
+
             if (HOSTNAME != null) connectionFactory.setHost(HOSTNAME);
+            if (USERNAME != null) connectionFactory.setUsername(USERNAME);
+            if (password != null) connectionFactory.setPassword(password);
 
             if (input != null) {
                 try {
