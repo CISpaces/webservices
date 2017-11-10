@@ -13,6 +13,30 @@ function generateUUID() {
   return uuid;
 }
 
+function generateDate(){
+  // generates created time using format string type
+  var now = new Date();
+
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var date = now.getDate();
+  var hour = now.getHours();
+  var min = now.getMinutes();
+
+  var sec = now.getSeconds();
+  if (!Number.isInteger(sec)) {
+    sec = parseInt(sec);
+  }
+
+  var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
+    (date < 10 ? "0" + date : date) + " " +
+    (hour < 10 ? "0" + hour : hour) + ":" +
+    (min < 10 ? "0" + min : min) + ":" +
+    (sec < 10 ? "0" + sec : sec);
+
+  return time;
+}
+
 function createCookie(name, value, days) {
   if (days) {
     var date = new Date();

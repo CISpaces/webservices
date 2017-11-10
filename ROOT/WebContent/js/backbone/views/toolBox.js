@@ -15,7 +15,7 @@ app.ToolBoxView = Backbone.View.extend({
     'click #settings': 'settings',
     'click #help': 'help',
 
-    'click #newWorkBox': 'newWorkBox',
+    // 'click #newWorkBox': 'newWorkBox',
     'click #saveProgress': 'save',
     'click #history': 'analysisHistory',
     'click #simulation': 'restartSimulation',
@@ -41,78 +41,6 @@ app.ToolBoxView = Backbone.View.extend({
 
   help: function() {
     // alert('help');
-  },
-
-  newWorkBox: function() {
-    app.workBoxView.clearWorkBox();
-
-    // generates created time using format string type
-    var now = new Date();
-
-    var year = now.getFullYear();
-    var month = now.getMonth() + 1;
-    var date = now.getDate();
-    var hour = now.getHours();
-    var min = now.getMinutes();
-
-    var sec = now.getSeconds();
-    if(!Number.isInteger(sec)){
-      sec = parseInt(sec);
-    }
-
-    var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
-      (date < 10 ? "0" + date : date) + " " +
-      (hour < 10 ? "0" + hour : hour) + ":" +
-      (min < 10 ? "0" + min : min) + ":" +
-      (sec < 10 ? "0" + sec : sec);
-
-    var graphID = generateUUID();
-
-    var object = {
-      "graphID": graphID,
-      "userID": readCookie('user_id'),
-      "timest": time,
-      "isshared": false,
-      "parentgraphid": null
-    };
-
-    Backbone.ajax({
-      type: 'POST',
-      url: remote_server + '/VC/rest/new',
-      //dataType: 'text',
-      contentType: 'application/json', //Supply the JWT auth token
-      data: JSON.stringify(object),
-      success: function(result) {
-        createCookie('graph_id', graphID, 2);
-
-        /* -------------------- initialisation for drawing a graph -------------------- */
-        var area_id = app.workBoxView.el.id;
-
-        // set the size of the SVG element using the size of a window
-        var ret_chart = init_chart_data(area_id, 700);
-        push_chart_data(area_id, ret_chart);
-
-        // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
-        var zoom = set_zoom(chart.svg.el);
-        chart.zoom = zoom;
-
-        // set up simulations for force-directed graphs
-        var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
-        push_node_style_data(ret_simulation);
-
-        // the simulation used when drawing a force-directed graph
-        chart.simulation = ret_simulation.simulation;
-
-        var ret_graph = draw([], [], chart);
-        push_graph_data(ret_graph);
-
-        chart.simulation = restart_simulation(chart.simulation, false);
-
-      },
-      error: function(result) {
-        alert('Something went wrong. Please try again.');
-      }
-    });
   },
 
   importFromFile: function() {

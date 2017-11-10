@@ -36,23 +36,6 @@ app.WorkBoxView = Backbone.View
       // the simulation used when drawing a force-directed graph
       chart.simulation = ret_simulation.simulation;
 
-      getLatestAnalysis(function(data) {
-
-        // $("#modal_select_analysis").modal('show');
-
-        // initiate the SVG on the work box for drawing a graph
-        if (data.graphID && !_.isEmpty(data.graphID)) {
-          createCookie('graph_id', data.graphID, 2);
-        }
-
-        var ret_graph = draw(data.nodes, data.edges, chart);
-        push_graph_data(ret_graph);
-
-        chart.simulation = restart_simulation(chart.simulation, false);
-        /* ------------------------------------------------------------------------------- */
-
-      });
-
       this.listenTo(app.Nodes, "add", this.addNode);
 
       this.listenTo(app.Nodes, "update", function() {
@@ -263,7 +246,7 @@ app.WorkBoxView = Backbone.View
                 });
 
                 var select_value = "";
-                if(cq_source && cq_source.length > 0){
+                if (cq_source && cq_source.length > 0) {
                   select_value = cq_source[0].source.text;
                 }
 
@@ -274,14 +257,14 @@ app.WorkBoxView = Backbone.View
                   $("<div></div>", {
                     'class': "col-md-10"
                   }).appendTo(row)
-                ).on("change", function(event){
+                ).on("change", function(event) {
                   var selected_cq = $("#node_" + id + " .row-critical select[name=" + event.target.name + "] option:selected").val();
 
                   var existed_cq_number = chart.edges.filter(function(d) {
                     return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
                   });
 
-                  if(existed_cq_number && existed_cq_number.length > 0){
+                  if (existed_cq_number && existed_cq_number.length > 0) {
                     $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
                   } else {
                     $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
@@ -292,7 +275,7 @@ app.WorkBoxView = Backbone.View
                   'name': "btn_" + cq,
                   'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-create",
                   'type': "button",
-                  'text': "Create"
+                  'text': "Ask"
                 }).appendTo(
                   $("<div></div>", {
                     'class': "col-md-2"
@@ -334,24 +317,7 @@ app.WorkBoxView = Backbone.View
       }
 
       // generates created time using format string type
-      var now = new Date();
-
-      var year = now.getFullYear();
-      var month = now.getMonth() + 1;
-      var date = now.getDate();
-      var hour = now.getHours();
-      var min = now.getMinutes();
-
-      var sec = now.getSeconds();
-      if (!Number.isInteger(sec)) {
-        sec = parseInt(sec);
-      }
-
-      var time = year + "-" + (month < 10 ? "0" + month : month) + "-" +
-        (date < 10 ? "0" + date : date) + " " +
-        (hour < 10 ? "0" + hour : hour) + ":" +
-        (min < 10 ? "0" + min : min) + ":" +
-        (sec < 10 ? "0" + sec : sec);
+      var time = generateDate();
 
       var nodeID = generateUUID();
 
