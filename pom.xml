@@ -16,5 +16,6 @@
         <module>setProvenance</module>
         <!-- Unused services -->
         <module>info</module>
+        <module>nlg</module>
     </modules>
 </project>

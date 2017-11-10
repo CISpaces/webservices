@@ -197,37 +197,87 @@ app.EvalBoxView = Backbone.View.extend({
 
   nlg: function() {
 
-    var param = {
-      "action": "nlg",
-      "graph": {
-        "nodes": app.Nodes.toJSON(),
-        "edges": app.Edges.toJSON()
-      }
+
+	function getEvaluation(){
+		var param = {
+		      "action": "eval",
+		      "graph": {
+		    	  "uncert": "OFF",
+		    	  "nodes": app.Nodes.toJSON(),
+		    	  "edges": app.Edges.toJSON()
+	      }
+	    }
+
+	    evaluated = null;
+
+	    Backbone.ajax({
+	      type: "POST",
+	      contentType: "application/json",
+	      // dataType : "application/json",
+	      url: remote_server + "/ers/rest/WriteRules",
+	      data: JSON.stringify(param),
+	      success: function(data) {
+	        // console.log(data);
+
+	        if (data) {
+	          if (data.fail) {
+	        	  $("#nlg_result_fail").text(result.fail);
+	        	  $("#nlg_result").modal('show');
+	          } else {
+	        	getNLG(data)
+	          }
+	        }
+	      },
+	      error: function(e) {
+	        var responseText = e.responseText;
+	        var error_msg = responseText.split('h1>')[1];
+
+	        // when evalutation is failed, the reason will be shown
+	        $("#nlg_fail_msg").text(error_msg.substring(0, error_msg.length - 2));
+	        $("#nlg_fail").show();
+	      }
+	    });
+	}
+
+    function getNLG(data){
+
+	    var param = {
+	      "action": "nlg",
+	      "graph": {
+	        "nodes": app.Nodes.toJSON(),
+	        "edges": app.Edges.toJSON()
+	      },
+	      "eval": data
+	    }
+
+	    Backbone.ajax({
+	      type: "POST",
+	      contentType: "application/json",
+	      // dataType : "application/json",
+	      url: "/nlg/rest/NLG",
+	      data: JSON.stringify(param),
+	      success: function(result) {
+
+	        if (result) {
+	          $("#nlg_result_fail").text(result.fail);
+
+	          if (!result.fail) {
+	            $("#nlg_result_text").html((JSON.parse(result)).text);
+	            $("#nlg_result_fail").hide();
+	          } else {
+	            $("#nlg_result_text").html(" ");
+	          }
+
+	          $("#nlg_result").modal('show');
+	        }
+	      },
+	      error: function(e) {
+	        console.log(e);
+	      }
+	    });
     }
 
-    Backbone.ajax({
-      type: "POST",
-      contentType: "application/json",
-      // dataType : "application/json",
-      url: remote_server + "/ers/rest/WriteRules",
-      data: JSON.stringify(param),
-      success: function(result) {
-        if (result) {
-          $("#nlg_result_fail").text(result.fail);
-
-          if (result.text) {
-            $("#nlg_result_text").text(result.text);
-          } else {
-            $("#nlg_result_text").text(" ");
-          }
-
-          $("#nlg_result").modal('show');
-        }
-      },
-      error: function(e) {
-        console.log(e);
-      }
-    });
+    getEvaluation();
   },
 
   clickColors: function(targetID, colors) {
