@@ -88,13 +88,12 @@ app.NodeView = Backbone.View.extend({
     var nodeID = this.model.id;
 
     // gets information on a critical question and an answer of the question
-    var cq = $("#node_" + nodeID + " .row-critical select[name=sel_" + event.target.name + "] option:selected").val();
+    var cq = $("#node_" + nodeID + " .row-critical select[name=" + event.target.name.replace("btn", "sel") + "] option:selected").val();
     var link = cq.replace("CQ", "L").substring(0, 3);
 
     var cqansw = "";
     d3.json("./schema.json", function(data) {
       cqansw = data[link]["CQANSW"][cq];
-      console.log(cqansw);
 
       if (cqansw) {
         // add hypotheses using the question and the answer

@@ -244,45 +244,68 @@ app.WorkBoxView = Backbone.View
         $("#node_" + id + " .row-critical .col-select").empty();
 
         d3.json('./cqs.json', function(data) {
-          edges.forEach(function(edge, index) {
+          edges.forEach(function(edge) {
             if (edge.target.text) {
               var cq = edge.target.text.replace("L", "CQ");
 
-              var row = $("<div></div>", {
-                'class': "form-group row"
-              }).appendTo($("#node_" + id + " .row-critical .col-select"));
+              var select_cq = $("#node_" + id + " .row-critical select[name=sel_" + cq + "]");
 
-              var select = $("<select></select>", {
-                'name': "sel_cq" + index,
-                'class': "form-control"
-              }).appendTo(
-                $("<div></div>", {
-                  'class': "col-md-10"
-                }).appendTo(row)
-              );
+              if (select_cq.length < 1) {
 
-              var cq_source = chart.edges.filter(function(d) {
-                return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
-              });
+                var row = $("<div></div>", {
+                  'class': "form-group row"
+                }).appendTo($("#node_" + id + " .row-critical .col-select"));
 
-              var button = $("<button></button>", {
-                'name': "cq" + index,
-                'class': "btn " + (cq_source && cq_source.length > 0 ? "disabled" : "") + " btn-default btn-create",
-                'type': "button",
-                'text': "Create"
-              }).appendTo(
-                $("<div></div>", {
-                  'class': "col-md-2"
-                }).appendTo(row)
-              );
-
-              if (data["CQ"][cq]) {
-                data["CQ"][cq].forEach(function(d, idx) {
-                  var option = $("<option></option>", {
-                    'value': cq + (idx + 1),
-                    'text': cq + (idx + 1) + " - " + d
-                  }).appendTo(select);
+                var cq_source = chart.edges.filter(function(d) {
+                  return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
                 });
+
+                var select_value = "";
+                if(cq_source && cq_source.length > 0){
+                  select_value = cq_source[0].source.text;
+                }
+
+                var select = $("<select></select>", {
+                  'name': "sel_" + cq,
+                  'class': "form-control"
+                }).appendTo(
+                  $("<div></div>", {
+                    'class': "col-md-10"
+                  }).appendTo(row)
+                ).on("change", function(event){
+                  var selected_cq = $("#node_" + id + " .row-critical select[name=" + event.target.name + "] option:selected").val();
+
+                  var existed_cq_number = chart.edges.filter(function(d) {
+                    return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
+                  });
+
+                  if(existed_cq_number && existed_cq_number.length > 0){
+                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
+                  } else {
+                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                  }
+                });
+
+                var button = $("<button></button>", {
+                  'name': "btn_" + cq,
+                  'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-create",
+                  'type': "button",
+                  'text': "Create"
+                }).appendTo(
+                  $("<div></div>", {
+                    'class': "col-md-2"
+                  }).appendTo(row)
+                );
+
+                if (data["CQ"][cq]) {
+                  data["CQ"][cq].forEach(function(d, idx) {
+                    var option = $("<option></option>", {
+                      'value': cq + (idx + 1),
+                      'text': cq + (idx + 1) + " - " + d,
+                      'selected': ((cq + (idx + 1)) == select_value)
+                    }).appendTo(select);
+                  });
+                }
               }
             }
           });
