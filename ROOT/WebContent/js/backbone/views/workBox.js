@@ -87,7 +87,7 @@ app.WorkBoxView = Backbone.View
         }
       });
 
-      $("#panel-workbox").show();
+      $("#panel-workbox").hide();
     },
 
     onRightClick: function(obj) {
@@ -331,7 +331,7 @@ app.WorkBoxView = Backbone.View
         dtg: time,
         type: type,
         nodeID: nodeID,
-        graphID: readCookie('graph_id')
+        graphID: chart.graph_id
       };
 
       // creates model of the node in the collection and sends POST request to a back-end service
@@ -408,7 +408,7 @@ app.WorkBoxView = Backbone.View
       }
 
       var edgeID = generateUUID(); // Math.floor(Math.random() * 100000) + 1;
-      var graphID = readCookie('graph_id');
+      var graphID = chart.graph_id;
 
       var attr = {
         id: edgeID,

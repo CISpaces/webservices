@@ -101,6 +101,13 @@ function readFile(input_files) {
     var res = validateFile(jsonData);
 
     if (res == 'success') {
+
+      // saves the meta data of the graph
+      chart.graph_id = jsonData['graphID'];
+      chart.title = jsonData['title'];
+      chart.desciption = jsonData['description'];
+      chart.date = jsonData['date'];
+
       var nodes = jsonData['nodes'];
       var edges = jsonData['edges'];
 

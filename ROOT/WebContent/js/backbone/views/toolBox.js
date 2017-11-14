@@ -60,6 +60,9 @@ app.ToolBoxView = Backbone.View.extend({
     }
 
     var param = {
+      "graph_id": chart.graph_id,
+      "title": chart.title,
+      "description": chart.description,
       "nodes": app.Nodes.toJSON(),
       "edges": app.Edges.toJSON()
     }
@@ -68,7 +71,7 @@ app.ToolBoxView = Backbone.View.extend({
       type: 'text/plain'
     });
     obj.target.href = URL.createObjectURL(file);
-    obj.target.download = "export_" + readCookie('graph_id') + ".cis";
+    obj.target.download = "export_" + chart.graph_id + ".cis";
   },
 
   createNode: function(obj) {
@@ -104,36 +107,50 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   save: function() {
-    var title = prompt("Please enter a title", "Analysis1");
-    if (title != null) {
-      var graphID = readCookie('graph_id');
-      var userID = readCookie('user_id');
-      var object = {
-        "graphID": graphID,
-        "userID": userID,
-        "title": title
-      };
+    $("#graph_info .modal-header span").text(chart.graph_id);
 
-      Backbone.ajax({
-        type: 'POST',
-        url: remote_server + '/VC/rest/save',
-        //dataType: 'text',
-        contentType: 'application/json',
-        data: JSON.stringify(object),
-        success: function(result) {
-          alert("Version " + title + " saved.");
-        },
-        error: function(result) {
-          alert('Something went wrong. Please try again.');
-        }
-      });
-    }
+    $("#graph_info .modal-body input").val("");
+    $("#graph_info .modal-body textarea").val("");
+
+    $("#graph_info .modal-footer .btn-create").on("click", function(event){
+
+      var title = $("#graph_info .modal-body input").val();
+      var desciption = $("#graph_info .modal-body textarea").val();
+
+      if (title != null) {
+        var graphID = chart.graph_id;
+        var userID = readCookie('user_id');
+        var object = {
+          "graphID": graphID,
+          "userID": userID,
+          "title": title.trim(),
+          "description": description.trim()
+        };
+
+        Backbone.ajax({
+          type: 'POST',
+          url: remote_server + '/VC/rest/save',
+          //dataType: 'text',
+          contentType: 'application/json',
+          data: JSON.stringify(object),
+          success: function(result) {
+            alert("Version " + title + " saved.");
+
+            $("#graph_info").modal('hide');
+          },
+          error: function(result) {
+            alert('Something went wrong. Please try again.');
+          }
+        });
+      }
+    });
+
+    $("#graph_info").modal('show');
   },
 
   analysisHistory: function() {
-    var graphID = readCookie('graph_id');
     var object = {
-      "graphID": graphID
+      "graphID": chart.graph_id
     };
 
     Backbone.ajax({

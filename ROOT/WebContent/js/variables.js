@@ -4,10 +4,19 @@
 
 var remote_server = "http://rsg-xen-vm04.ecs.soton.ac.uk:8080";
 
+var link_from = null;	// flag used when making a new edge
+
+var slider_wb = null;
+
 /*
 	object for chart
 */
-var chart = {};
+var chart = {
+  graph_id: "",
+  title: "",
+  description: "",
+  date: null
+};
 
 /*
 	push new chart data
@@ -23,10 +32,6 @@ function push_chart_data(area_id, ret){
 
   chart.svg = svg;
 }
-
-var link_from = null;	// flag used when making a new edge
-
-var slider_wb = null;
 
 /*
 	push nodes, edges into chart
