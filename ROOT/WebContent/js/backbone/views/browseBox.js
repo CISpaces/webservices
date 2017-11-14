@@ -10,15 +10,17 @@ app.BrowseBoxView = Backbone.View.extend({
   el: '#browse_box',
 
   events: {
-    'click #new_analysis': 'newWorkBox'
+    'click .btn-create': 'newWorkBox',
+    'click .btn-view': 'viewAnalysis',
+    'click .btn-checkout': 'checkoutAnalysis'
   },
 
   initialize: function() {
-    // 'New' button is added
 
     // Gets the list of analysis from the server
+    this.getAnalysisList();
 
-    $("#panel-browsebox").hide();
+    $("#panel-browsebox").show();
   },
 
   render: function() {},
@@ -26,68 +28,196 @@ app.BrowseBoxView = Backbone.View.extend({
   newWorkBox: function() {
     // app.workBoxView.clearWorkBox();
 
-    var time = generateDate();
-
     var graphID = generateUUID();
 
-    var object = {
-      "graphID": graphID,
-      "userID": readCookie('user_id'),
-      "timest": time,
-      "isshared": false,
-      "parentgraphid": null
-    };
+    $("#graph_info .modal-header span").text(graphID);
 
-    Backbone.ajax({
-      type: 'POST',
-      url: remote_server + '/VC/rest/new',
-      //dataType: 'text',
-      contentType: 'application/json', //Supply the JWT auth token
-      data: JSON.stringify(object),
-      success: function(result) {
-        createCookie('graph_id', graphID, 2);
+    $("#graph_info .modal-body input").val("");
+    $("#graph_info .modal-body textarea").val("");
 
-        $("#panel-workbox").show();
+    $("#graph_info .modal-footer .btn-create").on("click", function(event) {
 
-        app.workBoxView.initialize();
+      var title = $("#graph_info .modal-body input").val();
+      var description = $("#graph_info .modal-body textarea").val();
 
-        $("#panel-workbox").show();
-        $("#panel-browsebox").hide();
-      },
-      error: function(result) {
-        alert('Something went wrong. Please try again.');
+      if(_.isEmpty(title)){
+        alert("Please, enter a title");
+      } else {
+        var object = {
+          "graphID": graphID,
+          "userID": readCookie('user_id'),
+          "timest": generateDate(),
+          "title": title.trim(),
+          "description": description.trim(),
+          "isshared": false,
+          "parentgraphid": null
+        };
+
+        Backbone.ajax({
+          type: 'POST',
+          url: remote_server + '/VC/rest/new',
+          //dataType: 'text',
+          contentType: 'application/json', //Supply the JWT auth token
+          data: JSON.stringify(object),
+          success: function(result) {
+
+            // saves the meta data of the graph
+            chart.graph_id = graphID;
+            chart.title = object.title;
+            chart.desciption = object.description;
+            chart.date = object.timest;
+
+            $("#panel-workbox").show();
+
+            app.workBoxView.initialize();
+
+            $("#panel-workbox").show();
+            $("#panel-browsebox").hide();
+
+            $("#graph_info").modal('hide');
+          },
+          error: function(xhr) {
+            console.error("Ajax failed: " + xhr.statusText);
+            alert('Something went wrong. Please try again.');
+          }
+        });
       }
     });
+
+    $("#graph_info").modal('show');
   },
 
   getAnalysisList: function(data) {
     var userID = readCookie('user_id');
 
+    /*
     Backbone.ajax({
-      type: 'post',
-      url: remote_server + '/VC/rest/browseAnalysis',
-      contentType: 'text/plain',
-      data: userID,
+      type: 'GET',
+      url: remote_server + '/analyses/' + userID,
       success: function(data){
 
       },
-      error: function(xhr, txtStatus, errorThrown){
-        console.error("Ajax failed: " + errorThrown);
+      error: function(xhr){
+        console.error("Ajax failed: " + xhr.statusText);
       }
-    })
+    });
+    */
+
+    var example = [{
+        graph_id: 'graphID_0',
+        title: 'graphTitle_0',
+        user: 'user_0',
+        date: '2017-00-00',
+        description: 'description_0'
+      },
+      {
+        graph_id: 'graphID_1',
+        title: 'graphTitle_1',
+        user: 'user_1',
+        date: '2017-00-00',
+        description: 'description_1'
+      },
+      {
+        graph_id: 'graphID_2',
+        title: 'graphTitle_2',
+        user: 'user_2',
+        date: '2017-00-00',
+        description: 'description_2'
+      },
+      {
+        graph_id: 'graphID_3',
+        title: 'graphTitle_3',
+        user: 'user_3',
+        date: '2017-00-00',
+        description: 'description_3'
+      },
+      {
+        graph_id: 'graphID_4',
+        title: 'graphTitle_4',
+        user: 'user_4',
+        date: '2017-00-00',
+        description: 'description_4'
+      },
+      {
+        graph_id: 'graphID_5',
+        title: 'graphTitle_5',
+        user: 'user_5',
+        date: '2017-00-00',
+        description: 'description_5'
+      },
+      {
+        graph_id: 'graphID_6',
+        title: 'graphTitle_6',
+        user: 'user_6',
+        date: '2017-00-00',
+        description: 'description_6'
+      }
+    ];
+
+    example.forEach(function(analysis) {
+
+      var div_panel = $("<div></div>", {
+        'class': "panel panel-green"
+      }).appendTo(
+        $("<div></div>", {
+          'class': "col-lg-3 col-md-6"
+        }).appendTo($("#browse_box"))
+      );
+
+      var div_heading = $("<div></div>", {
+        'class': "panel-heading"
+      }).appendTo(div_panel);
+
+      d3.keys(analysis).forEach(function(data) {
+        var span = analysis[data];
+
+        $("<label></label>", {
+          'text': data,
+          'style': "margin: 5px 10px"
+        }).appendTo(
+          $("<div></div>", {
+            'class': "row"
+          }).appendTo(div_heading)
+        ).after(
+          $("<span></span>", {
+            'text': span
+          })
+        );
+      });
+
+      var btn = $("<span></span>", {
+        'class': "pull-right btn-checkout",
+        'name': "btn_" + analysis.graph_id,
+        'text': "Checkout"
+      }).appendTo(
+        $("<div></div>", {
+          'class': "panel-footer"
+        }).appendTo(
+          $("<a></a>", {
+            'href': "#"
+          }).appendTo(div_panel)
+        )
+      ).before(
+        $("<span></span>", {
+          'class': "pull-left btn-view",
+          'name': "btn_" + analysis.graph_id,
+          'text': "View"
+        })
+      ).after(
+        $("<div></div>", {
+          'class': "clearfix"
+        })
+      );
+    });
   },
 
-  getLatestAnalysis: function(data) {
+  viewAnalysis: function(event) {
 
-    var userID = readCookie('user_id');
+    var graphID = event.target.attributes.name.value.replace("btn_", "");
 
     Backbone.ajax({
-      type: 'POST',
-      url: remote_server + '/VC/rest/getAnalysis',
-      contentType: 'text/plain',
-      //Supply the JWT auth token
-      // headers: {"Authorization": localStorage.getItem('auth_token')},
-      data: userID,
+      type: 'GET',
+      url: remote_server + '/analysis/' + graphID,
       success: function(result) {
         // $("#modal_select_analysis").modal('show');
 
@@ -102,10 +232,14 @@ app.BrowseBoxView = Backbone.View.extend({
         chart.simulation = restart_simulation(chart.simulation, false);
         /* ------------------------------------------------------------------------------- */
       },
-      error: function(result) {
+      error: function(xhr) {
+        console.error("Ajax failed: " + xhr.statusText);
         alert('An error occurred fetching data.');
-        //callback(result);
       }
     });
+  },
+
+  checkoutAnalysis: function(event) {
+    var graphID = event.target.attributes.name.value.replace("btn_", "");
   }
 });

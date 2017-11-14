@@ -514,6 +514,35 @@
 			</div>
 		</div>
 
+		<!--
+			************************************* Modal for inputiing a graph title and a description *************************************
+		-->
+		<div class="modal fade" id="graph_info" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title"><em><span></span></em></h4>
+					</div>
+					<div class="modal-body">
+						<div class="row form-group">
+							<div class="col-md-2"><label>Title</label></div>
+							<div class="col-md-10"><input type="text" class="form-control" placeholder="Enter a title"/></div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-2"><label>Description</label></div>
+							<div class="col-md-10"><textarea class="form-control" rows="3"></textarea></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-create">Create</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- loads for backbone.js -->
 		<script type="text/javascript" src="vendor/jquery/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="vendor/underscore-min.js"></script>
