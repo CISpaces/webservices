@@ -26,7 +26,7 @@ app.VocabularyBoxView = Backbone.View.extend({
         }
       },
       error: function(response) {
-        alert("Your JWT is probably out of date, please relog");
+        alert("Your credentials have expired, please log out and back in");
         console.error("Could not get vocabulary");
         console.error(response);
       }

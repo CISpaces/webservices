@@ -221,7 +221,7 @@ app.EvalBoxView = Backbone.View.extend({
 
 	        if (data) {
 	          if (data.fail) {
-	        	  $("#nlg_result_fail").text(result.fail);
+	        	  $("#nlg_result_fail").text(data.fail);
 	        	  $("#nlg_result").modal('show');
 	          } else {
 	        	getNLG(data)

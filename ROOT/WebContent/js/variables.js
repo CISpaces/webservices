@@ -2,7 +2,7 @@
  * global variables for cispaces
  */
 
-var remote_server = "http://rsg-xen-vm04.ecs.soton.ac.uk:8080";
+var remote_server = "";
 
 var link_from = null;	// flag used when making a new edge
 
