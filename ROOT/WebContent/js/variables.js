@@ -6,7 +6,7 @@ var remote_server = "";
 
 var link_from = null;	// flag used when making a new edge
 
-var slider_wb = null;
+var slider_wb = null; 
 
 /*
 	object for chart
