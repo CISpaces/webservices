@@ -82,8 +82,7 @@ function validateFile(input_file){ // validate json format of the file
                 }
                 else{
                         console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
-                        alert("Invalid JSON schema. Please check that data follows CISpaces JSON schema.");
-                        return("Fail");
+                        return("The uploaded file failed validation and could not be opened:\n\n"+result.errors.join(", "));
                 }
         } else return("Fail");
 }
@@ -96,7 +95,14 @@ function readFile(input_files) {
   reader.onload = function(progressEvent) {
 
     // Entire file
-    var jsonData = JSON.parse(this.result);
+    try {        
+        var jsonData = JSON.parse(this.result);       
+    }
+    catch(err) {
+        console.log("The uploaded file was not valid JSON");
+        alert("The uploaded file was not valid JSON and could not be opened");
+        return("Fail");
+     }
     //call the Validate File funtion to validate json
     var res = validateFile(jsonData);
 
