@@ -273,7 +273,7 @@ app.WorkBoxView = Backbone.View
 
                 var button = $("<button></button>", {
                   'name': "btn_" + cq,
-                  'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-create",
+                  'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-ask",
                   'type': "button",
                   'text': "Ask"
                 }).appendTo(

@@ -8,7 +8,7 @@ app.NodeView = Backbone.View.extend({
 
   events: {
     'click .btn-update': 'update',
-    'click .btn-create': 'createCriticalQuestions'
+    'click .btn-ask': 'createCriticalQuestions'
   },
 
   initialize: function() {
