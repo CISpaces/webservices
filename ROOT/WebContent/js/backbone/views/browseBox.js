@@ -90,125 +90,71 @@ app.BrowseBoxView = Backbone.View.extend({
   getAnalysisList: function(data) {
     var userID = readCookie('user_id');
 
-    /*
+    
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/analyses/' + userID,
+      url: remote_server + 'VC/rest/analyses/user/'+ userID +'/meta',
       success: function(data){
+        data.forEach(function(analysis) {
 
-      },
-      error: function(xhr){
-        console.error("Ajax failed: " + xhr.statusText);
-      }
-    });
-    */
-
-    var example = [{
-        graph_id: 'graphID_0',
-        title: 'graphTitle_0',
-        user: 'user_0',
-        date: '2017-00-00',
-        description: 'description_0'
-      },
-      {
-        graph_id: 'graphID_1',
-        title: 'graphTitle_1',
-        user: 'user_1',
-        date: '2017-00-00',
-        description: 'description_1'
-      },
-      {
-        graph_id: 'graphID_2',
-        title: 'graphTitle_2',
-        user: 'user_2',
-        date: '2017-00-00',
-        description: 'description_2'
-      },
-      {
-        graph_id: 'graphID_3',
-        title: 'graphTitle_3',
-        user: 'user_3',
-        date: '2017-00-00',
-        description: 'description_3'
-      },
-      {
-        graph_id: 'graphID_4',
-        title: 'graphTitle_4',
-        user: 'user_4',
-        date: '2017-00-00',
-        description: 'description_4'
-      },
-      {
-        graph_id: 'graphID_5',
-        title: 'graphTitle_5',
-        user: 'user_5',
-        date: '2017-00-00',
-        description: 'description_5'
-      },
-      {
-        graph_id: 'graphID_6',
-        title: 'graphTitle_6',
-        user: 'user_6',
-        date: '2017-00-00',
-        description: 'description_6'
-      }
-    ];
-
-    example.forEach(function(analysis) {
-
-      var div_panel = $("<div></div>", {
-        'class': "panel panel-green"
-      }).appendTo(
-        $("<div></div>", {
-          'class': "col-lg-3 col-md-6"
-        }).appendTo($("#browse_box"))
-      );
-
-      var div_heading = $("<div></div>", {
-        'class': "panel-heading"
-      }).appendTo(div_panel);
-
-      d3.keys(analysis).forEach(function(data) {
-        var span = analysis[data];
-
-        $("<label></label>", {
-          'text': data,
-          'style': "margin: 5px 10px"
+        var div_panel = $("<div></div>", {
+          'class': "panel panel-green"
         }).appendTo(
           $("<div></div>", {
-            'class': "row"
-          }).appendTo(div_heading)
-        ).after(
+            'class': "col-lg-3 col-md-6"
+          }).appendTo($("#browse_box"))
+        );
+
+        var div_heading = $("<div></div>", {
+          'class': "panel-heading"
+        }).appendTo(div_panel);
+
+        d3.keys(analysis).forEach(function(data) {
+          var span = analysis[data];
+
+          $("<label></label>", {
+            'text': data,
+            'style': "margin: 5px 10px"
+          }).appendTo(
+            $("<div></div>", {
+              'class': "row"
+            }).appendTo(div_heading)
+          ).after(
+            $("<span></span>", {
+              'text': span
+            })
+          );
+        });
+
+        var btn = $("<span></span>", {
+          'class': "pull-right btn-checkout",
+          'name': "btn_" + analysis.graph_id,
+          'text': "Checkout"
+        }).appendTo(
+          $("<div></div>", {
+            'class': "panel-footer"
+          }).appendTo(
+            $("<a></a>", {
+              'href': "#"
+            }).appendTo(div_panel)
+          )
+        ).before(
           $("<span></span>", {
-            'text': span
+            'class': "pull-left btn-view",
+            'name': "btn_" + analysis.graph_id,
+            'text': "View"
+          })
+        ).after(
+          $("<div></div>", {
+            'class': "clearfix"
           })
         );
       });
-
-      var btn = $("<span></span>", {
-        'class': "pull-right btn-checkout",
-        'name': "btn_" + analysis.graph_id,
-        'text': "Checkout"
-      }).appendTo(
-        $("<div></div>", {
-          'class': "panel-footer"
-        }).appendTo(
-          $("<a></a>", {
-            'href': "#"
-          }).appendTo(div_panel)
-        )
-      ).before(
-        $("<span></span>", {
-          'class': "pull-left btn-view",
-          'name': "btn_" + analysis.graph_id,
-          'text': "View"
-        })
-      ).after(
-        $("<div></div>", {
-          'class': "clearfix"
-        })
-      );
-    });
+        },
+        error: function(xhr){
+          console.error("Ajax failed: " + xhr.statusText);
+        }
+      });    
   },
 
   viewAnalysis: function(event) {

@@ -140,6 +140,8 @@ public class VControl {
         TimeHelper timeHelper = new TimeHelper();
         String graphID = map.get("graphID").toString();
         String userID = map.get("userID").toString();
+        String title = map.get("title").toString();
+        String description = map.get("description").toString();
         Timestamp timestamp = timeHelper.formatDateCIS(map.get("timest").toString());
         boolean isShared = Boolean.parseBoolean(map.get("isshared").toString());
         String parentGraphID = null;
@@ -149,7 +151,7 @@ public class VControl {
 
 
         DBQuery dbQuery = new DBQuery();
-        dbQuery.insertGraph(graphID, userID, timestamp, isShared, parentGraphID);
+        dbQuery.insertGraph(graphID, userID, timestamp, title, description, isShared, parentGraphID);
     }
 
     /**
@@ -193,9 +195,14 @@ public class VControl {
     public String onSaveAnalysis(HashMap map) {
         String graphID = map.get("graphID").toString();
         String title = null;
+        String description = null;
         if(map.get("title") != null){
             title = map.get("title").toString();
         }
+        if(map.get("description") != null){
+            description = map.get("description").toString();
+        }
+        
         String userID = map.get("userID").toString();
 
         DBQuery dbQuery = new DBQuery();

@@ -34,7 +34,7 @@ public class DBQuery {
      These methods show the statements used to create the database tables. They are for reference only! A script should be written to create the database tables.
      */
     public void createTableGraph(){
-        String query = "CREATE TABLE CISPACES_GRAPH ( graphid varchar (255), userid varchar(255), timest timestamp, isshared boolean, parentgraphid varchar(255), ";
+        String query = "CREATE TABLE CISPACES_GRAPH ( graphid varchar (255), userid varchar(255), timest timestamp, title varchar(255), description varchar (5000), isshared boolean, parentgraphid varchar(255), ";
         query+="CONSTRAINT CISPACES_GRAPH_pk PRIMARY KEY (graphid))";
         dbcn.updateSQL(query);
     }
@@ -87,12 +87,14 @@ public class DBQuery {
     }
 
     //the query to insert a new graph into the database
-    public void insertGraph(String graphid, String userid, Timestamp timest, boolean isshared, String parentgraphid){
+    public void insertGraph(String graphid, String userid, Timestamp timest, String title, String description, boolean isshared, String parentgraphid){
         String sql;
-        sql = "INSERT INTO CISPACES_GRAPH(graphid, userid, timest, isshared, parentgraphid) VALUES "
+        sql = "INSERT INTO CISPACES_GRAPH(graphid, userid, timest, title, description, isshared, parentgraphid) VALUES "
                 + "( '" + graphid + "' ,"
                 + " '" + userid + "' ,"
                 + " '" + timest + "' ,"
+                + " '" + title +  "' ,"
+                + " '" + description +"' ,"
                 + " '" + isshared + "' ,"
                 + " '" + parentgraphid + "'"
                 +" )";
@@ -289,6 +291,97 @@ public class DBQuery {
         else throw new IllegalArgumentException("The selected username is already in use");        
     }//insertUser
 
+    /**
+     * Return metadata for analyses belonging to the supplied user
+     * @param userID The user
+     * @return The analyses as a JSON formatted string
+     */
+    public String getAnalysesMetaByUser(String userID) {
+        String sql = "SELECT * FROM CISPACES_GRAPH WHERE USERID = '"+ userID + "'";
+        //JSONObject jsonGraph = new JSONObject();
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        JSONArray jsonAnalysesMetaArray = new JSONArray();
+        for(HashMap graphIdMap : rs) { 
+            JSONObject jsonGraph = new JSONObject();
+            jsonGraph.put("graphID", (String) graphIdMap.get("graphid"));
+            jsonGraph.put("userID", (String) graphIdMap.get("userid"));
+            jsonGraph.put("title", (String) graphIdMap.get("title"));
+            jsonGraph.put("description", (String) graphIdMap.get("description"));
+            jsonGraph.put("timest", (String) graphIdMap.get("timest"));
+            jsonGraph.put("isshared", (String) graphIdMap.get("isshared"));
+            jsonGraph.put("parentgraphid", (String) graphIdMap.get("parentgraphid"));
+            jsonAnalysesMetaArray.add(jsonGraph);
+           
+            String graphId = (String) graphIdMap.get("graphid");
+            System.out.println(graphId);                      
+        }
+        return jsonAnalysesMetaArray.toJSONString();
+    }
+    
+    /**
+     * Return metadata for an analysis as JSON, based on a graph id.
+     * @param graphID The graph id
+     * @return The analysis metadata as a JSON formatted string
+     */
+    public String getAnalysisMeta(String graphID) {
+        System.out.println("Fetching Analysis metadata for graphid: "+graphID);
+        String getMetaSql = "SELECT * FROM CISPACES_GRAPH WHERE GRAPHID = '" + graphID + "'";
+        ArrayList<HashMap<String, Object>> graphMeta = dbcn.execSQL(getMetaSql);
+        
+        if(!graphMeta.isEmpty()) {
+            JSONObject jsonGraph = new JSONObject();
+            jsonGraph.put("graphID", (String) graphMeta.get(0).get("graphid"));
+            jsonGraph.put("userID", (String) graphMeta.get(0).get("userid"));
+            jsonGraph.put("title", (String) graphMeta.get(0).get("title"));
+            jsonGraph.put("description", (String) graphMeta.get(0).get("description"));
+            jsonGraph.put("timest", (String) graphMeta.get(0).get("timest"));
+            jsonGraph.put("isshared", (String) graphMeta.get(0).get("isshared"));
+            jsonGraph.put("parentgraphid", (String) graphMeta.get(0).get("parentgraphid"));  
+            return jsonGraph.toString();
+        }
+        else {
+            return null; //Not found
+        }
+    }//getAnalysis
+    
+    /**
+     * Return an analysis as JSON, based on a graph id.
+     * @param graphID The graph id
+     * @return The analysis as a JSON formatted string
+     */
+    public String getAnalysis(String graphID) {
+        System.out.println("Fetching Analysis for graphid: "+graphID);
+        String getMetaSql = "SELECT * FROM CISPACES_GRAPH WHERE GRAPHID = '" + graphID + "'";
+        String getNodesSql = "SELECT * FROM CISPACES_NODE WHERE GRAPHID = '" + graphID + "'";
+        String getEdgesSql = "SELECT * FROM CISPACES_EDGE WHERE GRAPHID = '" + graphID + "'";
+        ArrayList<HashMap<String, Object>> graphMeta = dbcn.execSQL(getMetaSql);
+        
+        if(!graphMeta.isEmpty()) {
+            JSONObject jsonGraph = new JSONObject();
+            jsonGraph.put("graphID", (String) graphMeta.get(0).get("graphid"));
+            jsonGraph.put("userID", (String) graphMeta.get(0).get("userid"));
+            jsonGraph.put("title", (String) graphMeta.get(0).get("title"));
+            jsonGraph.put("description", (String) graphMeta.get(0).get("description"));
+            jsonGraph.put("timest", (String) graphMeta.get(0).get("timest"));
+            jsonGraph.put("isshared", (String) graphMeta.get(0).get("isshared"));
+            jsonGraph.put("parentgraphid", (String) graphMeta.get(0).get("parentgraphid"));            
+            
+            ArrayList<HashMap<String, Object>> resultNodes = dbcn.execSQL(getNodesSql);
+            JSONArray jsonNodesArray = getResultListJSON(resultNodes);       
+            jsonGraph.put("nodes", jsonNodesArray);           
+            
+            ArrayList<HashMap<String, Object>> resultEdges = dbcn.execSQL(getEdgesSql);
+            JSONArray jsonEdgesArray = getResultListJSON(resultEdges);
+            jsonGraph.put("edges", jsonEdgesArray);
+
+            return jsonGraph.toString();
+        }
+        else {
+            return null; //Not found
+        }
+    }//getAnalysis      
+   
+    
     /* Retrieves the latest analysis associated with a user upon loading the index page.
      * Checks if a user has worked on an analysis before.
      * If the user is new, then a new graph (analysis) is created and linked to them.

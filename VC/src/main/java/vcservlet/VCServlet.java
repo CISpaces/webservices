@@ -10,14 +10,12 @@ package vcservlet;
 
 import database.DBQuery;
 import filters.JWTTokenNeeded;
-import filters.KeyGenerator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Context;
@@ -29,6 +27,9 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.logging.Logger;
 import filters.KeyGenerator;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
@@ -60,7 +61,7 @@ public class VCServlet {
     public String sayHello(){
         return "Hello Jersey";
     }
-
+    
     /**
      * @param graphID a graph id
      * @return all saved variations of an analysis which can be imported into the work box
@@ -90,12 +91,127 @@ public class VCServlet {
     {
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET LATEST ANALYSIS REQUEST ***");
         log.log(Level.INFO, "user id payload " + userID);
-        DBQuery dbQuery  = new DBQuery();
+        DBQuery dbQuery = new DBQuery();
         String response = dbQuery.getLatestAnalysis(userID);
 
         return response;
     }
 
+    /**
+     * Fetch metadata for *all* graphs owned by supplied user
+     * @param userID The owner
+     * @return A JSON formatted string comprising an array of graph metadata items. e.g.
+     * {[{
+        "timest": "2017-11-15 14:27:12.0",
+        "isshared": "false",
+        "parentgraphid": "null",
+        "description": "Desc. 1",
+        "graphID": "d9f2fddc-9a37-49bd-87d8-10a24b7fb20f",
+        "title": "title 1",
+        "userID": "5a90c91f-1884-4f45-bc2e-49057745293c"
+    },]}
+     */
+    @GET
+    @Path("/analyses/user/{userID}/meta")
+    //@JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnalysesMetaByUserId(@PathParam("userID") String userID) {       
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET ANALYSES METADATA REQUEST");
+        if(userID != null) {
+            log.log(Level.INFO, "** USER_ID="+userID);
+            DBQuery dbquery = new DBQuery();
+            String analyses = dbquery.getAnalysesMetaByUser(userID);
+            return Response.ok()
+                .entity(analyses)
+                .build();            
+        }
+        else return Response.status(Response.Status.NOT_FOUND).build();
+        // ToDo - There's scope here for checking the user exists before looking for analyses -
+        // Because that isn't done we end up returning 200 and an empty list
+    }//getAnalysesMetaByUserId
+    
+    @GET
+    @Path("/analysis/{graphID}/meta")
+    //@JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnalysisMeta(@PathParam("graphID") String graphID) {       
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET ANALYSIS METADATA REQUEST");
+        if(graphID != null) {
+            log.log(Level.INFO, "** GRAPH_ID="+graphID);
+            DBQuery dbquery = new DBQuery();
+            String analysis = dbquery.getAnalysisMeta(graphID);
+            if(analysis != null)  return Response.ok().entity(analysis).build();
+            else return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        else return Response.status(Response.Status.NOT_FOUND).build();
+    }//getAnalysisMeta
+    
+    
+    /**
+     * Fetch a full data (metadata, nodes and edges) for the requested graphID
+     * @param graphID The graph
+     * @return A JSON formatted string e.g.
+     * {"timest": "2017-11-15 14:28:40.0",
+        "isshared": "false",
+        "nodes":
+        [
+        ],
+        "parentgraphid": "null",
+        "edges":
+        [
+        ],
+        "description": "Desc 4",
+        "graphID": "842b9eef-8a21-4ad5-ff3b-f5f2931ff37a",
+        "title": "Title 4",
+        "userID": "5a90c91f-1884-4f45-bc2e-49057745293c"  }
+    */
+    @GET
+    @Path("/analysis/{graphID}")
+    //@JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnalysis(@PathParam("graphID") String graphID) {       
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET ANALYSIS REQUEST");
+        if(graphID != null) {
+            log.log(Level.INFO, "** GRAPH_ID="+graphID);
+            DBQuery dbquery = new DBQuery();
+            String analysis = dbquery.getAnalysis(graphID);
+            if(analysis != null)  return Response.ok().entity(analysis).build();
+            else return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        else return Response.status(Response.Status.NOT_FOUND).build();
+    }//getAnalysis    
+    
+    /*
+    //ToDo - Secure this
+    @GET
+    @Path("/analysis/{analysisID}/export")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportAnalysis(@PathParam("analysisID") String analysisID) {       
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - EXPORT ANALYSIS REQUEST");
+        if(analysisID != null) {
+            try {
+                log.log(Level.INFO, "** ANALYSIS_ID="+analysisID);
+                DBQuery dbquery = new DBQuery();
+                String analysis = dbquery.getAnalysis(analysisID);
+                
+                File file = new File(analysisID+".cis");
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(analysis);
+                fileWriter.flush();
+                fileWriter.close();                
+                return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" )
+                    .build();
+            } catch (IOException ex) {
+                log.log(Level.WARNING, "*** VERSION CONTROL SERVICE - EXPORT ANALYSIS REQUEST Failed due to an IOException");
+                ex.printStackTrace();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();                    
+            }//catch            
+        }//if
+        else return Response.status(Response.Status.NOT_FOUND).build();
+        
+    }
+    */
 
     /**
      * Authenticate the user
@@ -174,7 +290,8 @@ public class VCServlet {
     
 
     /**
-     * @param graph a json containing the basic information for a new graph
+     * Inserts a new graph into CISPACES_GRAPH
+     * @param graph a JSON string containing the basic information for a new graph
      * @return a response indicating whether the graph has been inserted into the database
      * URL: http://localhost:8080/VC/rest/new
      */
@@ -192,6 +309,8 @@ public class VCServlet {
     }
 
     /**
+     * Save a new *version* of an existing graph.  
+     * Because of the lack of foreign key checks this will merrily record history for graphs which have no record in CISPACES_GRAPH
      * @param graphInfo a json containing the graph id, the creator of the analysis' id and the title of the analysis
      * @return a response indicating whether the analysis has been saved
      * URL: http://localhost:8080/VC/rest/save

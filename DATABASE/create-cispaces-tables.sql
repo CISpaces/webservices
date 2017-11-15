@@ -32,6 +32,8 @@ CREATE TABLE GAIANDB.CISPACES_GRAPH
     GRAPHID varchar(255) PRIMARY KEY NOT NULL,
     USERID varchar(255),
     TIMEST timestamp,
+    TITLE varchar(255),
+    DESCRIPTION varchar(5000),
     ISSHARED boolean,
     PARENTGRAPHID varchar(255)
 );
