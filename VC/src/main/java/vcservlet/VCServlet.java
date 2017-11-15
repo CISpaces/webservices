@@ -250,7 +250,7 @@ public class VCServlet {
             .setSubject(login)
             .setIssuer(uriInfo.getAbsolutePath().toString())
             .setIssuedAt(new Date())
-            .setExpiration(toDate(LocalDateTime.now().plusMinutes(15L)))
+            .setExpiration(toDate(LocalDateTime.now().plusHours(48)))
             .signWith(SignatureAlgorithm.HS512, key)
             .compact();
     log.info("#### generating token for a key : " + jwtToken + " - " + key);
