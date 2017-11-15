@@ -130,6 +130,20 @@ public class VCServlet {
         // Because that isn't done we end up returning 200 and an empty list
     }//getAnalysesMetaByUserId
     
+    /**
+     * Fetch metadata for the supplied graphID
+     * @param graphID The graph
+     * @return A JSON formatted string comprising metadata items. e.g.
+     * {
+        "timest": "2017-11-15 14:27:12.0",
+        "isshared": "false",
+        "parentgraphid": "null",
+        "description": "Desc. 1",
+        "graphID": "d9f2fddc-9a37-49bd-87d8-10a24b7fb20f",
+        "title": "title 1",
+        "userID": "5a90c91f-1884-4f45-bc2e-49057745293c"
+        }     
+    */
     @GET
     @Path("/analysis/{graphID}/meta")
     //@JWTTokenNeeded
@@ -148,7 +162,7 @@ public class VCServlet {
     
     
     /**
-     * Fetch a full data (metadata, nodes and edges) for the requested graphID
+     * Fetch full data (metadata, nodes and edges) for the requested graphID
      * @param graphID The graph
      * @return A JSON formatted string e.g.
      * {"timest": "2017-11-15 14:28:40.0",
@@ -244,10 +258,15 @@ public class VCServlet {
             return Response.status(Response.Status.FORBIDDEN).build();
     }
     
-    private String issueToken(String login) {
+    /**
+     * Generate a signed JWT Token, with the subject set as the supplied UserID, with a lifetime of 48hrs
+     * @param userID - Becomes the subject
+     * @return The JWT to be supplied with requests
+     */
+    private String issueToken(String userID) {
     Key key = KeyGenerator.generateKey();
     String jwtToken = Jwts.builder()
-            .setSubject(login)
+            .setSubject(userID)
             .setIssuer(uriInfo.getAbsolutePath().toString())
             .setIssuedAt(new Date())
             .setExpiration(toDate(LocalDateTime.now().plusHours(48)))
