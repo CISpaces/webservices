@@ -16,12 +16,10 @@ app.ToolBoxView = Backbone.View.extend({
     'click #help': 'help',
 
     // 'click #newWorkBox': 'newWorkBox',
+    'click #browseAnalyses': 'callBrowseBox',
     'click #saveProgress': 'save',
     'click #history': 'analysisHistory',
     'click #simulation': 'restartSimulation',
-
-    'click #importFromFile': 'importFromFile',
-    'click #exportToFile': 'exportToFile',
 
     // 'click .btn-sm': 'createNode',
     'dragstart .btn-sm': 'dataTransfer',
@@ -43,35 +41,9 @@ app.ToolBoxView = Backbone.View.extend({
     // alert('help');
   },
 
-  importFromFile: function() {
-
-    app.workBoxView.clearWorkBox();
-
-    var input_file = $("#myFile").click();
-
-    return input_file;
-  },
-
-  exportToFile: function(obj) {
-
-    if((!app.Nodes && !app.Edges) || (app.Nodes.length < 1 && app.Edges.length < 1)){
-      alert("There is no analysis in Work Box.");
-      return;
-    }
-
-    var param = {
-      "graph_id": chart.graph_id,
-      "title": chart.title,
-      "description": chart.description,
-      "nodes": app.Nodes.toJSON(),
-      "edges": app.Edges.toJSON()
-    }
-
-    var file = new Blob([JSON.stringify(param)], {
-      type: 'text/plain'
-    });
-    obj.target.href = URL.createObjectURL(file);
-    obj.target.download = "export_" + chart.graph_id + ".cis";
+  callBrowseBox: function(obj){
+    $("#row-workbox").hide();
+    $("#row-browsebox").show();
   },
 
   createNode: function(obj) {
@@ -109,10 +81,12 @@ app.ToolBoxView = Backbone.View.extend({
   save: function() {
     $("#graph_info .modal-header span").text(chart.graph_id);
 
-    $("#graph_info .modal-body input").val("");
-    $("#graph_info .modal-body textarea").val("");
+    $("#graph_info .modal-body input").val(chart.title);
+    $("#graph_info .modal-body textarea").val(chart.description);
 
-    $("#graph_info .modal-footer .btn-create").on("click", function(event){
+    $("#graph_info .modal-footer .btn-create")
+    .text("Save")
+    .on("click", function(event){
 
       var title = $("#graph_info .modal-body input").val();
       var desciption = $("#graph_info .modal-body textarea").val();

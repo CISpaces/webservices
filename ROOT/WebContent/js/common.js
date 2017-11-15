@@ -88,52 +88,13 @@ function validateFile(input_file){ // validate json format of the file
         } else return("Fail");
 }
 
-function readFile(input_files) {
+function readFile(input_files, callback) {
 
   var file = input_files[0];
   var reader = new FileReader();
 
   reader.onload = function(progressEvent) {
-
-    // Entire file
-    var jsonData = JSON.parse(this.result);
-    //call the Validate File funtion to validate json
-    var res = validateFile(jsonData);
-
-    if (res == 'success') {
-
-      // saves the meta data of the graph
-      chart.graph_id = jsonData['graphID'];
-      chart.title = jsonData['title'];
-      chart.desciption = jsonData['description'];
-      chart.date = jsonData['date'];
-
-      var nodes = jsonData['nodes'];
-      var edges = jsonData['edges'];
-
-      if (!nodes && !edges) {
-        nodes = jsonData['graph']['nodes'];
-        edges = jsonData['graph']['edges'];
-      }
-
-      // set up simulations for force-directed graphs
-      var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
-      push_node_style_data(ret_simulation);
-
-      // the simulation used when drawing a force-directed graph
-      chart.simulation = ret_simulation.simulation;
-
-      var ret_graph = draw(nodes, edges, chart);
-      push_graph_data(ret_graph);
-
-      // start simulation for displaying graphsv
-      chart.simulation = restart_simulation(chart.simulation, false);
-
-      $("#saveProgress").attr("disabled", true);
-    } else {
-      alert(res);
-      return ("Fail");
-    }
+    callback(this.result);
   };
 
   reader.onerror = function(event) {
