@@ -20,7 +20,7 @@ app.BrowseBoxView = Backbone.View.extend({
     // Gets the list of analysis from the server
     this.getAnalysisList();
 
-    $("#panel-browsebox").show();
+    $("#row-browsebox").show();
   },
 
   render: function() {},
@@ -67,12 +67,12 @@ app.BrowseBoxView = Backbone.View.extend({
             chart.desciption = object.description;
             chart.date = object.timest;
 
-            $("#panel-workbox").show();
+            $("#row-workbox").show();
 
             app.workBoxView.initialize();
 
-            $("#panel-workbox").show();
-            $("#panel-browsebox").hide();
+            $("#row-workbox").show();
+            $("#row-browsebox").hide();
 
             $("#graph_info").modal('hide');
           },

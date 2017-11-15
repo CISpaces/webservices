@@ -87,7 +87,7 @@ app.WorkBoxView = Backbone.View
         }
       });
 
-      $("#panel-workbox").show();
+      $("#row-workbox").show();
     },
 
     onRightClick: function(obj) {

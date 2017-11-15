@@ -11,8 +11,7 @@
 
 	<!-- Bootstrap Core CSS -->
 	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css" rel="stylesheet">
+	<link href="vendor/bootstrap/css/bootstrap-slider.min.css" rel="stylesheet">
 
 	<!-- Custom CSS -->
 	<link href="dist/css/sb-admin-2.css" rel="stylesheet">
@@ -95,12 +94,12 @@
 		</nav>
 
 		<div id="page-wrapper" style="margin: 0">
-			<div class="row">
+			<div class="row" id="row-workbox">
 				<div class="col-xs-10 col-md-6">
 					<!--
 						************************************* Work Box *************************************
 					-->
-					<div class="panel panel-default" id="panel-workbox">
+					<div class="panel panel-default">
 						<div class="panel-heading">
 							<i class="fa fa-codepen fa-fw"></i> Work Box
 						</div>
@@ -122,32 +121,6 @@
 						<div class="panel-footer">
 							<div class="input-group">
 								<input id="slider-wb" data-slider-id="slider-workbox" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="15" style="width: 100%" />
-							</div>
-						</div>
-					</div>
-
-					<!--
-						************************************* Browse Box *************************************
-					-->
-					<div class="panel panel-default" id="panel-browsebox">
-						<div class="panel-heading">
-							<i class="fa fa-codepen fa-fw"></i> Browse Box
-						</div>
-						<div class="panel-body" id="browse_box">
-							<div class="col-lg-3 col-md-6">
-								<div class="panel panel-primary" id="new_analysis">
-									<div class="panel-heading">
-										<div class="row text-center">
-											<div class="huge">NEW</div>
-										</div>
-									</div>
-									<a href="#">
-										<div class="panel-footer">
-											<span class="pull-left btn-create">Create</span>
-											<div class="clearfix"></div>
-										</div>
-									</a>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -390,6 +363,37 @@
 				</div>
 			</div>
 			<!-- /#page-wrapper -->
+			<div class="row" id="row-browsebox">
+				<div class="col-xs-12 col-md-12">
+					<!--
+							************************************* Browse Box *************************************
+						-->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<i class="fa fa-codepen fa-fw"></i> Browse Box
+						</div>
+						<div class="panel-body" id="browse_box">
+							<div class="col-lg-2 col-md-4">
+								<div class="btn btn-primary btn-lg btn-block" id="new_analysis">
+									<div class="panel-heading">
+										<div class="row text-center">
+											<div class="huge">New</div>
+										</div>
+									</div>
+								</div>
+								<div class="btn btn-info btn-lg btn-block">
+									<div class="panel-heading">
+										<div class="row text-center">
+											<div id="importFromFile" class="huge">Import</div>
+											<input type="file" id="myFile" style="display:none;" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<!-- /#wrapper -->
 
@@ -528,7 +532,7 @@
 					<div class="modal-body">
 						<div class="row form-group">
 							<div class="col-md-2"><label>Title</label></div>
-							<div class="col-md-10"><input type="text" class="form-control" placeholder="Enter a title"/></div>
+							<div class="col-md-10"><input type="text" class="form-control" placeholder="Enter a title" /></div>
 						</div>
 						<div class="row form-group">
 							<div class="col-md-2"><label>Description</label></div>
