@@ -41,12 +41,12 @@ app.BrowseBoxView = Backbone.View.extend({
     $("#graph_info .modal-body input").val("");
     $("#graph_info .modal-body textarea").val("");
 
-    $("#graph_info .modal-footer .btn-create").on("click", function(event) {
+    $("#graph_info .modal-footer .btn-create").text("Create").on("click", function(event) {
 
       var title = $("#graph_info .modal-body input").val();
       var description = $("#graph_info .modal-body textarea").val();
 
-      if(_.isEmpty(title)){
+      if (_.isEmpty(title)) {
         alert("Please, enter a title");
       } else {
         var object = {
@@ -75,7 +75,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
             $("#row-workbox").show();
 
-            app.workBoxView.initialize();
+            app.workBoxView.clearWorkBox();
 
             $("#row-workbox").show();
             $("#row-browsebox").hide();
@@ -99,7 +99,7 @@ app.BrowseBoxView = Backbone.View.extend({
     /*
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/analyses/' + userID,
+      url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta'
       success: function(data){
 
       },
@@ -209,20 +209,46 @@ app.BrowseBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/analysis/' + graphID,
-      success: function(result) {
-        // $("#modal_select_analysis").modal('show');
+      url: remote_server + '/VC/rest/analysis/' + graphID,
+      success: function(data) {
 
-        // initiate the SVG on the work box for drawing a graph
-        if (data.graphID && !_.isEmpty(data.graphID)) {
-          createCookie('graph_id', data.graphID, 2);
+        // validates the json data
+        var result = validateFile(data);
+
+        if (result == 'success') {
+          // initialises a workbox
+          $("#row-workbox").show();
+          $("#row-browsebox").hide();
+
+          app.workBoxView.clearWorkBox();
+
+          // saves the meta data of the graph
+          chart.graph_id = data['graphID'];
+          chart.title = data['title'];
+          chart.desciption = data['description'];
+          chart.date = data['date'];
+
+          var nodes = data['nodes'];
+          var edges = data['edges'];
+
+          // set up simulations for force-directed graphs
+          var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
+          push_node_style_data(ret_simulation);
+
+          // the simulation used when drawing a force-directed graph
+          chart.simulation = ret_simulation.simulation;
+
+          var ret_graph = draw(nodes, edges, chart);
+          push_graph_data(ret_graph);
+
+          // start simulation for displaying graphsv
+          chart.simulation = restart_simulation(chart.simulation, false);
+
+          $("#saveProgress").attr("disabled", true);
+        } else {
+          alert(result);
+          return ("Fail");
         }
-
-        var ret_graph = draw(data.nodes, data.edges, chart);
-        push_graph_data(ret_graph);
-
-        chart.simulation = restart_simulation(chart.simulation, false);
-        /* ------------------------------------------------------------------------------- */
       },
       error: function(xhr) {
         console.error("Ajax failed: " + xhr.statusText);
