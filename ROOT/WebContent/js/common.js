@@ -82,8 +82,7 @@ function validateFile(input_file){ // validate json format of the file
                 }
                 else{
                         console.log("JSON has the following errors: " + result.errors.join(", ") + " at path " + result.path);
-                        alert("Invalid JSON schema. Please check that data follows CISpaces JSON schema.");
-                        return("Fail");
+                        return("The uploaded file failed validation and could not be opened:\n\n"+result.errors.join(", "));
                 }
         } else return("Fail");
 }
@@ -94,7 +93,53 @@ function readFile(input_files, callback) {
   var reader = new FileReader();
 
   reader.onload = function(progressEvent) {
-    callback(this.result);
+
+    // Entire file
+    try {
+        var jsonData = JSON.parse(this.result);
+    }
+    catch(err) {
+        console.log("The uploaded file was not valid JSON");
+        alert("The uploaded file was not valid JSON and could not be opened");
+        return("Fail");
+     }
+    //call the Validate File funtion to validate json
+    var res = validateFile(jsonData);
+
+    if (res == 'success') {
+
+      // saves the meta data of the graph
+      chart.graph_id = jsonData['graphID'];
+      chart.title = jsonData['title'];
+      chart.desciption = jsonData['description'];
+      chart.date = jsonData['date'];
+
+      var nodes = jsonData['nodes'];
+      var edges = jsonData['edges'];
+
+      if (!nodes && !edges) {
+        nodes = jsonData['graph']['nodes'];
+        edges = jsonData['graph']['edges'];
+      }
+
+      // set up simulations for force-directed graphs
+      var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
+      push_node_style_data(ret_simulation);
+
+      // the simulation used when drawing a force-directed graph
+      chart.simulation = ret_simulation.simulation;
+
+      var ret_graph = draw(nodes, edges, chart);
+      push_graph_data(ret_graph);
+
+      // start simulation for displaying graphsv
+      chart.simulation = restart_simulation(chart.simulation, false);
+
+      $("#saveProgress").attr("disabled", true);
+    } else {
+      alert(res);
+      return ("Fail");
+    }
   };
 
   reader.onerror = function(event) {

@@ -96,11 +96,12 @@ app.BrowseBoxView = Backbone.View.extend({
   getAnalysisList: function(data) {
     var userID = readCookie('user_id');
 
-    /*
+
     Backbone.ajax({
       type: 'GET',
       url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta'
       success: function(data){
+        data.forEach(function(analysis) {
 
       },
       error: function(xhr){

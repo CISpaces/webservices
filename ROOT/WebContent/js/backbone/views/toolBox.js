@@ -89,7 +89,7 @@ app.ToolBoxView = Backbone.View.extend({
     .on("click", function(event){
 
       var title = $("#graph_info .modal-body input").val();
-      var desciption = $("#graph_info .modal-body textarea").val();
+      var description = $("#graph_info .modal-body textarea").val();
 
       if (title != null) {
         var graphID = chart.graph_id;

@@ -1,217 +1,111 @@
 {
-  "$schema": "http://rsg-xen-vm05.ecs.soton.ac.uk/schema#",
-  "definitions": {},
-  "id": "http://rsg-xen-vm05.ecs.soton.ac.uk/example.json",
+  "definitions": {}, 
+  "$schema": "http://json-schema.org/draft-06/schema#", 
+  "$id": "http://cispaces.org/cispaces.json", 
+  "type": "object", 
   "properties": {
-    "edges": {
-      "id": "/properties/edges",
-      "required": ["items"],
-      "items": {
-        "id": "/properties/edges/items",
-        "properties": {
-          "edgeID": {
-            "default": "426323ca-69b9-4b7e-ea87-80342bcc74b5",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "426323ca-69b9-4b7e-ea87-80342bcc74b5"
-            ],
-            "id": "/properties/edges/items/properties/edgeID",
-            "title": "The edgeid schema.",
-            "type": "string"
-          },
-          "formedgeid": {
-            "default": "null",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "null"
-            ],
-            "id": "/properties/edges/items/properties/formedgeid",
-            "title": "The formedgeid schema.",
-            "type": "string"
-          },
-          "graphID": {
-            "default": "900df5e5-0be5-43b8-891f-beeed0be8857",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "900df5e5-0be5-43b8-891f-beeed0be8857"
-            ],
-            "id": "/properties/edges/items/properties/graphID",
-            "title": "The graphid schema.",
-            "type": "string"
-          },
-          "islocked": {
-            "default": "false",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "false"
-            ],
-            "id": "/properties/edges/items/properties/islocked",
-            "title": "The islocked schema.",
-            "type": "string"
-          },
-          "source": {
-            "default": "138a1779-ddbc-4150-e3de-6eb3b7f6666a",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "138a1779-ddbc-4150-e3de-6eb3b7f6666a"
-            ],
-            "id": "/properties/edges/items/properties/source",
-            "title": "The source schema.",
-            "type": "string"
-          },
-          "target": {
-            "default": "dfdc6541-4cc6-4c53-f5f8-99df1b5c1da9",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "dfdc6541-4cc6-4c53-f5f8-99df1b5c1da9"
-            ],
-            "id": "/properties/edges/items/properties/target",
-            "title": "The target schema.",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "type": "array"
+    "graphID": {
+      "$id": "/properties/graphID", 
+      "type": "string",
+      "required": true
+    }, 
+    "title": {
+      "$id": "/properties/title", 
+      "type": "string",
+      "description": "A short description of the analysis"
+    }, 
+    "description": {
+      "$id": "/properties/description", 
+      "type": "string",
+      "description": "A longer description of the analysis"
+    },
+    "date": {
+      "$id": "/properties/date", 
+      "type": "string",
+      "description": "Create date"
     },
     "nodes": {
-      "id": "/properties/nodes",
+      "$id": "/properties/nodes", 
+      "type": "array", 
       "items": {
-        "id": "/properties/nodes/items",
+        "$id": "/properties/nodes/items", 
+        "type": "object", 
         "properties": {
+          "text": {
+            "$id": "/properties/nodes/items/properties/text", 
+            "type": "string"
+          }, 
+          "dtg": {
+            "$id": "/properties/nodes/items/properties/dtg", 
+            "type": "string"
+          }, 
           "annot": {
-            "id": "/properties/nodes/items/properties/annot",
+            "$id": "/properties/nodes/items/properties/annot", 
+            "type": "object", 
             "properties": {
               "id": {
-                "default": "N/A",
-                "description": "An explanation about the purpose of this instance.",
-                "examples": [
-                  "N/A"
-                ],
-                "id": "/properties/nodes/items/properties/annot/properties/id",
-                "title": "The id schema.",
+                "$id": "/properties/nodes/items/properties/annot/properties/id", 
                 "type": "string"
               }
-            },
-            "type": "object"
-          },
-          "cmt": {
-            "default": "N/A",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "N/A"
-            ],
-            "id": "/properties/nodes/items/properties/cmt",
-            "title": "The cmt schema.",
-            "type": "string"
-          },
-          "dtg": {
-            "default": "2017-10-12 10:43:18.0",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "2017-10-12 10:43:18.0"
-            ],
-            "id": "/properties/nodes/items/properties/dtg",
-            "title": "The dtg schema.",
-            "type": "string"
-          },
-          "eval": {
-            "default": "N/A",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "N/A"
-            ],
-            "id": "/properties/nodes/items/properties/eval",
-            "title": "The eval schema.",
-            "type": "string"
-          },
-          "graphID": {
-            "default": "900df5e5-0be5-43b8-891f-beeed0be8857",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "900df5e5-0be5-43b8-891f-beeed0be8857"
-            ],
-            "id": "/properties/nodes/items/properties/graphID",
-            "title": "The graphid schema.",
-            "type": "string"
-          },
-          "input": {
-            "default": "INFO",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "INFO"
-            ],
-            "id": "/properties/nodes/items/properties/input",
-            "title": "The input schema.",
-            "type": "string"
-          },
-          "islocked": {
-            "default": "false",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "false"
-            ],
-            "id": "/properties/nodes/items/properties/islocked",
-            "title": "The islocked schema.",
-            "type": "string"
-          },
+            }
+          }, 
           "nodeID": {
-            "default": "138a1779-ddbc-4150-e3de-6eb3b7f6666a",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "138a1779-ddbc-4150-e3de-6eb3b7f6666a"
-            ],
-            "id": "/properties/nodes/items/properties/nodeID",
-            "title": "The nodeid schema.",
-            "type": "string",
-            "required": true
-          },
+            "$id": "/properties/nodes/items/properties/nodeID", 
+            "type": "string"
+          }, 
           "source": {
-            "default": "user",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "user"
-            ],
-            "id": "/properties/nodes/items/properties/source",
-            "title": "The source schema.",
+            "$id": "/properties/nodes/items/properties/source", 
             "type": "string"
-          },
-          "text": {
-            "default": "INFO",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "INFO"
-            ],
-            "id": "/properties/nodes/items/properties/text",
-            "title": "The text schema.",
-            "type": "string"
-          },
+          }, 
           "type": {
-            "default": "I",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "I"
-            ],
-            "id": "/properties/nodes/items/properties/type",
-            "title": "The type schema.",
+            "$id": "/properties/nodes/items/properties/type", 
             "type": "string"
-          },
-          "uncert": {
-            "default": "Confirmed",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              "Confirmed"
-            ],
-            "id": "/properties/nodes/items/properties/uncert",
-            "title": "The uncert schema.",
+          }, 
+          "graphID:": {
+            "$id": "/properties/nodes/items/properties/graphID:", 
+            "type": "string"
+          }, 
+          "islocked": {
+            "$id": "/properties/nodes/items/properties/islocked", 
             "type": "string"
           }
-        },
-        "type": "object"
+        }
+      }, "required": true
+    }, 
+    "edges": {
+      "$id": "/properties/edges", 
+      "type": "array", 
+      "items": {
+        "$id": "/properties/edges/items", 
+        "type": "object", 
+        "properties": {
+          "target": {
+            "$id": "/properties/edges/items/properties/target", 
+            "type": "string"
+          }, 
+          "source": {
+            "$id": "/properties/edges/items/properties/source", 
+            "type": "string"
+          }, 
+          "formEdgeID": {
+            "$id": "/properties/edges/items/properties/formEdgeID", 
+            "type": "null"
+          }, 
+          "edgeID": {
+            "$id": "/properties/edges/items/properties/edgeID", 
+            "type": "string"
+          }, 
+          "graphID:": {
+            "$id": "/properties/edges/items/properties/graphID:", 
+            "type": "string"
+          }, 
+          "islocked": {
+            "$id": "/properties/edges/items/properties/islocked", 
+            "type": "string"
+          }
+        }
       },
-      "type": "array",
-      "required": ["nodes", "edges"]
+      "required": true
     }
-  },
-  "type": "object"
+  }
 }
