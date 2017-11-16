@@ -9,7 +9,7 @@ var app = app || {};
  */
 
 app.ToolBoxView = Backbone.View.extend({
-  el: '.navbar',
+  el: '#nav-toolbox',
 
   events: {
     'click #settings': 'settings',
@@ -23,10 +23,14 @@ app.ToolBoxView = Backbone.View.extend({
 
     // 'click .btn-sm': 'createNode',
     'dragstart .btn-sm': 'dataTransfer',
-    'dragend .btn-sm': 'createNode'
+    'dragend .btn-sm': 'createNode',
+
+    'click #commitGraph': 'commitGraph',
+    'click #checkoutGraph': 'checkoutGraph'
   },
 
   initialize: function() {
+    this.$el.hide();
   },
 
   render: function() {
@@ -79,7 +83,7 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   save: function() {
-    $("#graph_info .modal-header span").text(chart.graph_id);
+    $("#graph_info .modal-header span").text(chart.graphID);
 
     $("#graph_info .modal-body input").val(chart.title);
     $("#graph_info .modal-body textarea").val(chart.description);
@@ -92,7 +96,7 @@ app.ToolBoxView = Backbone.View.extend({
       var description = $("#graph_info .modal-body textarea").val();
 
       if (title != null) {
-        var graphID = chart.graph_id;
+        var graphID = chart.graphID;
         var userID = readCookie('user_id');
         var object = {
           "graphID": graphID,
@@ -124,7 +128,7 @@ app.ToolBoxView = Backbone.View.extend({
 
   analysisHistory: function() {
     var object = {
-      "graphID": chart.graph_id
+      "graphID": chart.graphID
     };
 
     Backbone.ajax({
@@ -224,5 +228,14 @@ app.ToolBoxView = Backbone.View.extend({
 
   dataTransfer: function(event){
     event.originalEvent.dataTransfer.setData('text/plain', null);
+  },
+
+  commitGraph: function(event){
+
+  },
+
+  checkoutGraph: function(event){
+    view_flag = false;
+    app.browseBoxView.changeMode();
   }
 });

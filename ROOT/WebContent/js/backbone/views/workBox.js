@@ -216,6 +216,11 @@ app.WorkBoxView = Backbone.View
     },
 
     popupNodeView: function(obj) {
+
+      if(view_flag){
+        return null;
+      }
+
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
@@ -331,7 +336,7 @@ app.WorkBoxView = Backbone.View
         dtg: time,
         type: type,
         nodeID: nodeID,
-        graphID: chart.graph_id
+        graphID: chart.graphID
       };
 
       // creates model of the node in the collection and sends POST request to a back-end service
@@ -408,7 +413,7 @@ app.WorkBoxView = Backbone.View
       }
 
       var edgeID = generateUUID(); // Math.floor(Math.random() * 100000) + 1;
-      var graphID = chart.graph_id;
+      var graphID = chart.graphID;
 
       var attr = {
         id: edgeID,
