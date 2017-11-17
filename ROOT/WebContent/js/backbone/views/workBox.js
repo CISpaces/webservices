@@ -224,9 +224,12 @@ app.WorkBoxView = Backbone.View
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
+      // If a node is Pro-node, the value of the select should be matched with text
+      $("#node_" + id + " .row-link select").val($("#node_" + id + " textarea").val());
+
       // If a node is linked with another node which is a pro-node and starts with 'L'
       var edges = chart.edges.filter(function(d) {
-        return ((d.source.id == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
+        return ((d.source.nodeID == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
       });
 
       if (edges && edges.length > 0) {
@@ -247,7 +250,7 @@ app.WorkBoxView = Backbone.View
                 }).appendTo($("#node_" + id + " .row-critical .col-select"));
 
                 var cq_source = chart.edges.filter(function(d) {
-                  return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
+                  return ((d.target.nodeID == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
                 });
 
                 var select_value = "";
@@ -265,14 +268,16 @@ app.WorkBoxView = Backbone.View
                 ).on("change", function(event) {
                   var selected_cq = $("#node_" + id + " .row-critical select[name=" + event.target.name + "] option:selected").val();
 
-                  var existed_cq_number = chart.edges.filter(function(d) {
-                    return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
-                  });
+                  if(!_.isEmpty(selected_cq)){
+                    var existed_cq_number = chart.edges.filter(function(d) {
+                      return ((d.target.nodeID == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
+                    });
 
-                  if (existed_cq_number && existed_cq_number.length > 0) {
-                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
-                  } else {
-                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                    if (existed_cq_number && existed_cq_number.length > 0) {
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
+                    } else {
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                    }
                   }
                 });
 
@@ -310,14 +315,14 @@ app.WorkBoxView = Backbone.View
     createNode: function(id, tweet_uri, text) {
 
       // generates the type of a new node
-      var input = id.toUpperCase();
+      var input = id.substr(0, 1).toUpperCase() + id.substr(1).toLowerCase();
 
       var type = "I";
-      if (input == "PREF") {
+      if (input == "Pref") {
         type = "P";
-      } else if (input == "PRO") {
+      } else if (input == "Pro") {
         type = "RA";
-      } else if (input == "CON") {
+      } else if (input == "Con") {
         type = "CA";
       }
 

@@ -122,6 +122,7 @@ app.BrowseBoxView = Backbone.View.extend({
       'class': "panel-heading"
     }).appendTo(div_panel);
 
+    /*
     $("<label></label>", {
       'text': "graphID",
       'style': "margin: 5px 10px"
@@ -130,6 +131,7 @@ app.BrowseBoxView = Backbone.View.extend({
     }).appendTo(div_heading)).after($("<span></span>", {
       'text': analysis.graphID
     }));
+    */
 
     $("<label></label>", {
       'text': "title",
@@ -141,21 +143,21 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     $("<label></label>", {
-      'text': "date",
-      'style': "margin: 5px 10px"
-    }).appendTo($("<div></div>", {
-      'class': "row"
-    }).appendTo(div_heading)).after($("<span></span>", {
-      'text': analysis.timest
-    }));
-
-    $("<label></label>", {
       'text': "description",
       'style': "margin: 5px 10px"
     }).appendTo($("<div></div>", {
       'class': "row"
     }).appendTo(div_heading)).after($("<span></span>", {
       'text': analysis.description
+    }));
+
+    $("<label></label>", {
+      'text': "date",
+      'style': "margin: 5px 10px"
+    }).appendTo($("<div></div>", {
+      'class': "row"
+    }).appendTo(div_heading)).after($("<span></span>", {
+      'text': analysis.timest
     }));
 
     var btn = $("<button></button>", {

@@ -27,6 +27,11 @@ app.NodeView = Backbone.View.extend({
       var nodeID = this.model.attributes.nodeID;
 
       d3.json("./cqs.json", function(data) {
+        var first_option = $("<option></option>", {
+          'value': "Pro",
+          'text': "Please, select a link for critical questions"
+        }).appendTo($("#node_" + nodeID + " .row-link select"));
+
         d3.keys(data["L"]).forEach(function(d) {
           var option = $("<option></option>", {
             'value': d,
@@ -38,6 +43,8 @@ app.NodeView = Backbone.View.extend({
           var selected = $("#node_" + nodeID + " .row-link select option:selected").val();
           $("#node_" + nodeID + " .row-text textarea").text(selected);
         });
+
+        $("#node_" + nodeID + " .row-text textarea").attr("readonly", "readonly");
       });
 
       this.$(".row-critical").hide();
