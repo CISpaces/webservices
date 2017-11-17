@@ -275,8 +275,12 @@ app.WorkBoxView = Backbone.View
 
                     if (existed_cq_number && existed_cq_number.length > 0) {
                       $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").attr("disabled", true);
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").text("Asked");
                     } else {
                       $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").attr("disabled", false);
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").text("Ask");
                     }
                   }
                 });
@@ -285,7 +289,7 @@ app.WorkBoxView = Backbone.View
                   'name': "btn_" + cq,
                   'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-ask",
                   'type': "button",
-                  'text': "Ask"
+                  'text': (select_value ? "Asked" : "Ask")
                 }).appendTo(
                   $("<div></div>", {
                     'class': "col-md-2"
@@ -491,8 +495,6 @@ app.WorkBoxView = Backbone.View
 
     clearWorkBox: function() {
 
-      // debugger;
-
       // clear collections without sending DELETE requests
       while (app.Nodes.length > 0) {
         var model = app.Nodes.at(0);
@@ -503,6 +505,16 @@ app.WorkBoxView = Backbone.View
         var model = app.Edges.at(0);
         model.trigger("destroy", model);
       }
+
+      // clear variables in chart
+      chart = chart = {
+        graphID: "",
+        title: "",
+        description: "",
+        date: null,
+        nodes: [],
+        edges: [],
+      };
 
       // removes the div used for views of previous nodes.
       var divElement = this.$el[0].childNodes;

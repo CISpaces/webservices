@@ -67,18 +67,26 @@ app.BrowseBoxView = Backbone.View.extend({
           data: JSON.stringify(object),
           success: function(result) {
 
+            $("#row-workbox").show();
+
+            app.workBoxView.clearWorkBox();
+
+            var ret_graph = draw([], [], chart);
+            push_graph_data(ret_graph);
+
+            $("#saveProgress").attr("disabled", true);
+
             // saves the meta data of the graph
             chart.graphID = graphID;
             chart.title = object.title;
             chart.desciption = object.description;
             chart.date = object.timest;
+            $("#span-graphTitle").text("[" + chart.title + "]");
 
-            $("#row-workbox").show();
-
-            app.workBoxView.clearWorkBox();
-
-            $("#row-workbox").show();
             $("#row-browsebox").hide();
+            app.toolBoxView.$el.show();
+
+            app.browseBoxView.toggleViewMode(false);
 
             $("#graph_info").modal('hide');
           },
@@ -100,12 +108,12 @@ app.BrowseBoxView = Backbone.View.extend({
     Backbone.ajax({
       type: 'GET',
       url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta',
-      success: function(data){
+      success: function(data) {
         data.forEach(function(analysis) {
           self.makeGraphElement(analysis);
         });
       },
-      error: function(xhr){
+      error: function(xhr) {
         console.error("Ajax failed: " + xhr.statusText);
       }
     });
@@ -180,8 +188,11 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
   },
 
-  changeMode: function(){
-    if(view_flag){
+  toggleViewMode: function(_view_flag) {
+
+    view_flag = _view_flag;
+
+    if (view_flag) {
       // If a user click [View] button, the user should not be able to edit the graph
       $("#info").hide();
       $("#claim").hide();
@@ -220,8 +231,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
     var graphID = event.target.attributes.name.value.replace("btn_", "");
 
-    view_flag = (event.target.attributes.class.value.indexOf("view") > 0);
-    this.changeMode();
+    this.toggleViewMode((event.target.attributes.class.value.indexOf("view") > 0));
 
     Backbone.ajax({
       type: 'GET',
@@ -263,7 +273,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
           $("#saveProgress").attr("disabled", true);
 
-          $("#spen-graphTitle").text("[" + chart.title + "]");
+          $("#span-graphTitle").text("[" + chart.title + "]");
         } else {
           alert(result);
           return ("Fail");
@@ -330,84 +340,84 @@ app.BrowseBoxView = Backbone.View.extend({
         error: function(xhr) {
           console.log(xhr);
         },
-        complete: function(xhr){
-            if(xhr.status == 404){
-              // 3. Registers a new graph using jsonData
-              var title = jsonData['title'];
-              var description = jsonData['description'];
+        complete: function(xhr) {
+          if (xhr.status == 404) {
+            // 3. Registers a new graph using jsonData
+            var title = jsonData['title'];
+            var description = jsonData['description'];
 
-              var object = {
-                "graphID": graphID,
-                "userID": userID,
-                "timest": generateDate(),
-                "title": title.trim(),
-                "description": description.trim(),
-                "isshared": false,
-                "parentgraphid": null
-              };
+            var object = {
+              "graphID": graphID,
+              "userID": userID,
+              "timest": generateDate(),
+              "title": title.trim(),
+              "description": description.trim(),
+              "isshared": false,
+              "parentgraphid": null
+            };
 
-              Backbone.ajax({
-                type: 'POST',
-                url: remote_server + '/VC/rest/new',
-                contentType: 'application/json',
-                data: JSON.stringify(object),
-                success: function(result) {
+            Backbone.ajax({
+              type: 'POST',
+              url: remote_server + '/VC/rest/new',
+              contentType: 'application/json',
+              data: JSON.stringify(object),
+              success: function(result) {
 
-                  // 4. The graph is drawn in hidden workBox
-                  // initialises a workbox
-                  $("#row-workbox").show();
+                // 4. The graph is drawn in hidden workBox
+                // initialises a workbox
+                $("#row-workbox").show();
 
-                  app.workBoxView.clearWorkBox();
+                app.workBoxView.clearWorkBox();
 
-                  $("#row-workbox").hide();
+                $("#row-workbox").hide();
 
-                  // saves the meta data of the graph
-                  var nodes = jsonData['nodes'];
-                  var edges = jsonData['edges'];
+                // saves the meta data of the graph
+                var nodes = jsonData['nodes'];
+                var edges = jsonData['edges'];
 
-                  var ret_graph = draw(nodes, edges, chart);
-                  push_graph_data(ret_graph);
-                },
-                error: function(xhr) {
-                  console.error("Ajax failed: " + xhr.statusText);
-                  alert('Something went wrong. Please try again.');
-                }
-              });
+                var ret_graph = draw(nodes, edges, chart);
+                push_graph_data(ret_graph);
+              },
+              error: function(xhr) {
+                console.error("Ajax failed: " + xhr.statusText);
+                alert('Something went wrong. Please try again.');
+              }
+            });
 
-              // 5. Saves the graph in database
-              var object = {
-                "graphID": graphID,
-                "userID": userID,
-                "title": title.trim(),
-                "description": description.trim()
-              };
+            // 5. Saves the graph in database
+            var object = {
+              "graphID": graphID,
+              "userID": userID,
+              "title": title.trim(),
+              "description": description.trim()
+            };
 
-              Backbone.ajax({
-                type: 'POST',
-                url: remote_server + '/VC/rest/save',
-                //dataType: 'text',
-                contentType: 'application/json',
-                data: JSON.stringify(object),
-                success: function(result) {
-                  alert("Version " + title + " saved.");
+            Backbone.ajax({
+              type: 'POST',
+              url: remote_server + '/VC/rest/save',
+              //dataType: 'text',
+              contentType: 'application/json',
+              data: JSON.stringify(object),
+              success: function(result) {
+                alert("Version " + title + " saved.");
 
-                  $("#graph_info").modal('hide');
-                },
-                error: function(result) {
-                  alert('Something went wrong. Please try again.');
-                }
-              });
+                $("#graph_info").modal('hide');
+              },
+              error: function(result) {
+                alert('Something went wrong. Please try again.');
+              }
+            });
 
-              // 6. Creates a panel in the browsebox
-              var analysis = {
-                'graphID': graphID,
-                'title': title,
-                'timest': jsonData['timest'],
-                'description': description
-              };
+            // 6. Creates a panel in the browsebox
+            var analysis = {
+              'graphID': graphID,
+              'title': title,
+              'timest': jsonData['timest'],
+              'description': description
+            };
 
-              app.browseBoxView.makeGraphElement(analysis);
-            }
+            app.browseBoxView.makeGraphElement(analysis);
+          }
         }
       });
     });
@@ -422,15 +432,15 @@ app.BrowseBoxView = Backbone.View.extend({
       url: remote_server + "/VC/rest/analysis/" + graphID,
       success: function(data) {
         if (data) {
-          try{
-          var file = new Blob([JSON.stringify(data)], {
-            type: 'text/plain'
-          });
-          event.target.href = URL.createObjectURL(file);
-          event.target.download = "export_" + graphID + ".cis";
-        } catch(error){
-          console.error(error);
-        }
+          try {
+            var file = new Blob([JSON.stringify(data)], {
+              type: 'text/plain'
+            });
+            event.target.href = URL.createObjectURL(file);
+            event.target.download = "export_" + graphID + ".cis";
+          } catch (error) {
+            console.error(error);
+          }
         }
       },
       error: function(xhr) {

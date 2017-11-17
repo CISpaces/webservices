@@ -46,6 +46,10 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   callBrowseBox: function(obj){
+
+    // Gets the list of analysis from the server
+    this.getAnalysisList();
+    
     $("#row-workbox").hide();
     $("#row-browsebox").show();
   },
@@ -231,12 +235,10 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   commitGraph: function(event){
-    view_flag = true;
-    app.browseBoxView.changeMode();
+    app.browseBoxView.toggleViewMode(true);
   },
 
   checkoutGraph: function(event){
-    view_flag = false;
-    app.browseBoxView.changeMode();
+    app.browseBoxView.toggleViewMode(false);
   }
 });
