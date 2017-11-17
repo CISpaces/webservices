@@ -231,7 +231,8 @@ app.ToolBoxView = Backbone.View.extend({
   },
 
   commitGraph: function(event){
-
+    view_flag = true;
+    app.browseBoxView.changeMode();
   },
 
   checkoutGraph: function(event){

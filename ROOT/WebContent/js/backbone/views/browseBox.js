@@ -194,6 +194,8 @@ app.BrowseBoxView = Backbone.View.extend({
 
       $("#commitGraph").hide();
       $("#checkoutGraph").show();
+
+      $("#span-viewMode").text("(View Only)");
     } else {
       $("#info").show();
       $("#claim").show();
@@ -207,6 +209,8 @@ app.BrowseBoxView = Backbone.View.extend({
 
       $("#commitGraph").show();
       $("#checkoutGraph").hide();
+
+      $("#span-viewMode").text("");
     }
   },
 
@@ -256,6 +260,8 @@ app.BrowseBoxView = Backbone.View.extend({
           chart.simulation = restart_simulation(chart.simulation, false);
 
           $("#saveProgress").attr("disabled", true);
+
+          $("#spen-graphTitle").text("[" + chart.title + "]");
         } else {
           alert(result);
           return ("Fail");
