@@ -49,20 +49,11 @@ $ ./install-prereqs.sh
 
 ### Ubuntu 16.04
 
-- Start the Apache Derby database in a GNU Screen session (allows it to continue running in the background)
+- To start:
 
-```
-$ screen
-$ cd ${CISPACES}/tools/derby
-$ ${GAIAN}/bin/startNetworkServer
-$ <CTRL+A>,<D>
-```
+```$ ./start-cispaces.sh```
 
-- To re-attach:
-
-```$ screen -r```
-
-- Start the fact-extraction engine running in another Screen session
+- Start the fact-extraction engine running in a Screen session
 
 ```
 $ screen
@@ -72,13 +63,9 @@ $ ant run.fact-extraction-app
 $ <CTRL+A>,<D>
 ```
 
-- Start Tomcat web server:
-
-```$ $CATALINA_HOME/bin/startup.sh```
-
 - To use CISpaces web interface, point your web browser to http://YOUR_IP:8080
 - You can login with sample users 'Ella', 'Joe' or 'Miles' with password 'password'
 
-- To stop Tomcat:
+- To stop:
 
-```$ $CATALINA_HOME/bin/shutdown.sh```
+```$ ./stop-cispaces.sh```
