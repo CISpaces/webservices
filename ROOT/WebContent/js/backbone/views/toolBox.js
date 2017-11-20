@@ -48,8 +48,8 @@ app.ToolBoxView = Backbone.View.extend({
   callBrowseBox: function(obj){
 
     // Gets the list of analysis from the server
-    this.getAnalysisList();
-    
+    app.browseBoxView.getAnalysisList();
+
     $("#row-workbox").hide();
     $("#row-browsebox").show();
   },
