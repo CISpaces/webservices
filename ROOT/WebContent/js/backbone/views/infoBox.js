@@ -249,6 +249,10 @@ app.InfoBoxView = Backbone.View.extend({
                 obj.originalEvent.dataTransfer.setData('text/plain', null);
               })
               .on("dragend", function(obj) {
+                if(view_flag){
+                  return null;
+                }
+
                 var children = this.childNodes;
 
                 // creates model of the node

@@ -6,13 +6,15 @@ var remote_server = "";
 
 var link_from = null;	// flag used when making a new edge
 
-var slider_wb = null; 
+var view_flag = false;
+
+var slider_wb = null;
 
 /*
 	object for chart
 */
 var chart = {
-  graph_id: "",
+  graphID: "",
   title: "",
   description: "",
   date: null

@@ -87,7 +87,7 @@ app.WorkBoxView = Backbone.View
         }
       });
 
-      $("#panel-workbox").show();
+      $("#row-workbox").hide();
     },
 
     onRightClick: function(obj) {
@@ -216,12 +216,20 @@ app.WorkBoxView = Backbone.View
     },
 
     popupNodeView: function(obj) {
+
+      if(view_flag){
+        return null;
+      }
+
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
+      // If a node is Pro-node, the value of the select should be matched with text
+      $("#node_" + id + " .row-link select").val($("#node_" + id + " textarea").val());
+
       // If a node is linked with another node which is a pro-node and starts with 'L'
       var edges = chart.edges.filter(function(d) {
-        return ((d.source.id == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
+        return ((d.source.nodeID == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
       });
 
       if (edges && edges.length > 0) {
@@ -242,7 +250,7 @@ app.WorkBoxView = Backbone.View
                 }).appendTo($("#node_" + id + " .row-critical .col-select"));
 
                 var cq_source = chart.edges.filter(function(d) {
-                  return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
+                  return ((d.target.nodeID == id) && (d.source.type == "CA") && d.source.text.startsWith(cq) && (d.source.text.length == 5));
                 });
 
                 var select_value = "";
@@ -260,14 +268,20 @@ app.WorkBoxView = Backbone.View
                 ).on("change", function(event) {
                   var selected_cq = $("#node_" + id + " .row-critical select[name=" + event.target.name + "] option:selected").val();
 
-                  var existed_cq_number = chart.edges.filter(function(d) {
-                    return ((d.target.id == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
-                  });
+                  if(!_.isEmpty(selected_cq)){
+                    var existed_cq_number = chart.edges.filter(function(d) {
+                      return ((d.target.nodeID == id) && (d.source.type == "CA") && d.source.text.startsWith(selected_cq));
+                    });
 
-                  if (existed_cq_number && existed_cq_number.length > 0) {
-                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
-                  } else {
-                    $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                    if (existed_cq_number && existed_cq_number.length > 0) {
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").addClass("disabled");
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").attr("disabled", true);
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").text("Asked");
+                    } else {
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").removeClass("disabled");
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").attr("disabled", false);
+                      $("#node_" + id + " .row-critical button[name=" + event.target.name.replace("sel", "btn") + "]").text("Ask");
+                    }
                   }
                 });
 
@@ -275,7 +289,7 @@ app.WorkBoxView = Backbone.View
                   'name': "btn_" + cq,
                   'class': "btn " + (select_value ? "disabled" : "") + " btn-default btn-ask",
                   'type': "button",
-                  'text': "Ask"
+                  'text': (select_value ? "Asked" : "Ask")
                 }).appendTo(
                   $("<div></div>", {
                     'class': "col-md-2"
@@ -305,14 +319,14 @@ app.WorkBoxView = Backbone.View
     createNode: function(id, tweet_uri, text) {
 
       // generates the type of a new node
-      var input = id.toUpperCase();
+      var input = id.substr(0, 1).toUpperCase() + id.substr(1).toLowerCase();
 
       var type = "I";
-      if (input == "PREF") {
+      if (input == "Pref") {
         type = "P";
-      } else if (input == "PRO") {
+      } else if (input == "Pro") {
         type = "RA";
-      } else if (input == "CON") {
+      } else if (input == "Con") {
         type = "CA";
       }
 
@@ -331,7 +345,7 @@ app.WorkBoxView = Backbone.View
         dtg: time,
         type: type,
         nodeID: nodeID,
-        graphID: chart.graph_id
+        graphID: chart.graphID
       };
 
       // creates model of the node in the collection and sends POST request to a back-end service
@@ -408,7 +422,7 @@ app.WorkBoxView = Backbone.View
       }
 
       var edgeID = generateUUID(); // Math.floor(Math.random() * 100000) + 1;
-      var graphID = chart.graph_id;
+      var graphID = chart.graphID;
 
       var attr = {
         id: edgeID,
@@ -481,8 +495,6 @@ app.WorkBoxView = Backbone.View
 
     clearWorkBox: function() {
 
-      // debugger;
-
       // clear collections without sending DELETE requests
       while (app.Nodes.length > 0) {
         var model = app.Nodes.at(0);
@@ -493,6 +505,16 @@ app.WorkBoxView = Backbone.View
         var model = app.Edges.at(0);
         model.trigger("destroy", model);
       }
+
+      // clear variables in chart
+      chart = chart = {
+        graphID: "",
+        title: "",
+        description: "",
+        date: null,
+        nodes: [],
+        edges: [],
+      };
 
       // removes the div used for views of previous nodes.
       var divElement = this.$el[0].childNodes;
