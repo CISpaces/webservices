@@ -107,7 +107,7 @@ function readFile(input_files, callback) {
     var res = validateFile(jsonData);
 
     if (res == 'success') {
-      callback(jsonData);      
+      callback(jsonData);
     } else {
       alert(res);
       return ("Fail");

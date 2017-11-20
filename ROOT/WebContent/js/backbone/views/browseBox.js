@@ -101,7 +101,21 @@ app.BrowseBoxView = Backbone.View.extend({
     $("#graph_info").modal('show');
   },
 
-  getAnalysisList: function(data) {
+  getAnalysis: function(graphID, callback) {
+    Backbone.ajax({
+      type: 'GET',
+      url: remote_server + '/VC/rest/analysis/' + graphID,
+      success: function(response, status, xhr) {
+        callback(response, status, xhr);
+      },
+      error: function(xhr) {
+        console.error("Ajax failed: " + xhr.statusText);
+        alert('An error occurred fetching data.');
+      }
+    });
+  },
+
+  getAnalysisList: function() {
     var userID = readCookie('user_id');
     var self = this;
 
@@ -109,6 +123,11 @@ app.BrowseBoxView = Backbone.View.extend({
       type: 'GET',
       url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta',
       success: function(data) {
+
+        var firstElement = self.$el[0].firstElementChild.outerHTML;
+        self.$el.empty();
+        self.el.innerHTML = firstElement;
+
         data.forEach(function(analysis) {
           self.makeGraphElement(analysis);
         });
@@ -233,55 +252,46 @@ app.BrowseBoxView = Backbone.View.extend({
 
     this.toggleViewMode((event.target.attributes.class.value.indexOf("view") > 0));
 
-    Backbone.ajax({
-      type: 'GET',
-      url: remote_server + '/VC/rest/analysis/' + graphID,
-      success: function(data) {
+    this.getAnalysis(graphID, function(data) {
+      // validates the json data
+      // var result = validateFile(data);
+      var result = "success";
+      if (result == 'success') {
+        // initialises a workbox
+        $("#row-workbox").show();
+        $("#row-browsebox").hide();
+        app.toolBoxView.$el.show();
 
-        // validates the json data
-        // var result = validateFile(data);
-        var result = "success";
-        if (result == 'success') {
-          // initialises a workbox
-          $("#row-workbox").show();
-          $("#row-browsebox").hide();
-          app.toolBoxView.$el.show();
+        app.workBoxView.clearWorkBox();
 
-          app.workBoxView.clearWorkBox();
+        // saves the meta data of the graph
+        chart.graphID = data['graphID'];
+        chart.title = data['title'];
+        chart.desciption = data['description'];
+        chart.date = data['timest'];
 
-          // saves the meta data of the graph
-          chart.graphID = data['graphID'];
-          chart.title = data['title'];
-          chart.desciption = data['description'];
-          chart.date = data['timest'];
+        var nodes = data['nodes'];
+        var edges = data['edges'];
 
-          var nodes = data['nodes'];
-          var edges = data['edges'];
+        // set up simulations for force-directed graphs
+        var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
+        push_node_style_data(ret_simulation);
 
-          // set up simulations for force-directed graphs
-          var ret_simulation = set_simulation(15, chart.svg.width, chart.svg.height);
-          push_node_style_data(ret_simulation);
+        // the simulation used when drawing a force-directed graph
+        chart.simulation = ret_simulation.simulation;
 
-          // the simulation used when drawing a force-directed graph
-          chart.simulation = ret_simulation.simulation;
+        var ret_graph = draw(nodes, edges, chart);
+        push_graph_data(ret_graph);
 
-          var ret_graph = draw(nodes, edges, chart);
-          push_graph_data(ret_graph);
+        // start simulation for displaying graphsv
+        chart.simulation = restart_simulation(chart.simulation, false);
 
-          // start simulation for displaying graphsv
-          chart.simulation = restart_simulation(chart.simulation, false);
+        $("#saveProgress").attr("disabled", true);
 
-          $("#saveProgress").attr("disabled", true);
-
-          $("#span-graphTitle").text("[" + chart.title + "]");
-        } else {
-          alert(result);
-          return ("Fail");
-        }
-      },
-      error: function(xhr) {
-        console.error("Ajax failed: " + xhr.statusText);
-        alert('An error occurred fetching data.');
+        $("#span-graphTitle").text("[" + chart.title + "]");
+      } else {
+        alert(result);
+        return ("Fail");
       }
     });
   },
@@ -427,25 +437,53 @@ app.BrowseBoxView = Backbone.View.extend({
 
     var graphID = event.target.attributes.name.value.replace("btn_", "");
 
-    Backbone.ajax({
-      type: 'GET',
-      url: remote_server + "/VC/rest/analysis/" + graphID,
-      success: function(data) {
-        if (data) {
-          try {
-            var file = new Blob([JSON.stringify(data)], {
-              type: 'text/plain'
-            });
-            event.target.href = URL.createObjectURL(file);
-            event.target.download = "export_" + graphID + ".cis";
-          } catch (error) {
-            console.error(error);
-          }
+    this.getAnalysis(graphID, function(fileContent, status, xhr) {
+
+      // check for a filename
+      var fileName = event.target.parentElement.parentElement.firstElementChild.firstElementChild.getElementsByTagName("span")[0].innerText;
+      if (_.isEmpty(fileName)) {
+        fileName = graphID;
+      }
+
+      fileName = "export_" + fileName + ".cis";
+
+      var disposition = xhr.getResponseHeader('Content-Disposition');
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        var fileNameRegex = /fileName[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = fileNameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, '');
         }
-      },
-      error: function(xhr) {
-        console.error(xhr);
-        alert("An error occurred fetching data");
+      }
+
+      var type = 'text/plain;charset=utf-8'; // xhr.getResponseHeader('Content-type');
+      var blob = new Blob([JSON.stringify(fileContent)], {
+        type: type
+      });
+
+      if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        window.navigator.msSaveBlob(blob, fileName);
+      } else {
+        var URL = window.URL || window.webkitURL;
+        var downloadUrl = URL.createObjectURL(blob);
+
+        if (fileName) {
+          var a = document.createElement("a");
+          if (typeof a.download === 'undefined') {
+            window.location = downloadUrl;
+          } else {
+            a.href = downloadUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+          }
+        } else {
+          window.location = downloadUrl;
+        }
+
+        setTimeout(function() {
+          URL.revokeObjectURL(downloadUrl);
+        }, 100);
       }
     });
   }
