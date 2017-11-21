@@ -15,7 +15,7 @@ $(function(){
 	// new app.AppView();
 	app.workBoxView = new app.WorkBoxView();
 	app.browseBoxView = new app.BrowseBoxView();
-	
+
 	//app.reqBoxView = new app.ReqBoxView();
 	app.toolBoxView = new app.ToolBoxView();
 	app.infoBoxView = new app.InfoBoxView();
@@ -34,3 +34,11 @@ Backbone.ajax = function(){
 
 	return Backbone.$.ajax.apply(Backbone.$, arguments);
 };
+
+$(document).ajaxStart(function(event){
+	$("#loading-spinner").addClass("is-active");
+});
+
+$(document).ajaxStop(function(event){
+	$("#loading-spinner").removeClass("is-active");
+});
