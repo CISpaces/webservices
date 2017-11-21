@@ -77,8 +77,8 @@ if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 echo "# - Modifying RabbitMQ config...(Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-sudo rabbitmqctl add_user ${SQL_USER} ${SQL_PASSWORD} \
-    && sudo rabbitmqctl set_user_tags ${SQL_USER} administrator \
+if [ "${existing}" != 'true' ]; then sudo rabbitmqctl add_user ${SQL_USER} ${SQL_PASSWORD}; fi
+sudo rabbitmqctl set_user_tags ${SQL_USER} administrator \
     && sudo rabbitmqctl set_permissions ${SQL_USER} ".*" ".*" ".*"
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
