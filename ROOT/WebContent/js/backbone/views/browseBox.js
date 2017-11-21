@@ -109,6 +109,7 @@ app.BrowseBoxView = Backbone.View.extend({
       type: 'GET',
       url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta',
       success: function(data) {
+        $(".existing-analysis").remove();
         data.forEach(function(analysis) {
           self.makeGraphElement(analysis);
         });
@@ -123,7 +124,7 @@ app.BrowseBoxView = Backbone.View.extend({
     var div_panel = $("<div></div>", {
       'class': "panel panel-green"
     }).appendTo($("<div></div>", {
-      'class': "col-lg-2 col-md-4"
+      'class': "existing-analysis col-lg-2 col-md-4"
     }).appendTo($("#browse_box")));
 
     var div_heading = $("<div></div>", {
