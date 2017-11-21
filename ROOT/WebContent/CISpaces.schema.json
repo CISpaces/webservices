@@ -1,106 +1,107 @@
 {
-  "definitions": {}, 
-  "$schema": "http://json-schema.org/draft-06/schema#", 
-  "$id": "http://cispaces.org/cispaces.json", 
-  "type": "object", 
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "http://cispaces.org/cispaces.json",
+  "type": "object",
   "properties": {
     "graphID": {
-      "$id": "/properties/graphID", 
+      "$id": "/properties/graphID",
       "type": "string",
       "required": true
-    }, 
+    },
     "title": {
-      "$id": "/properties/title", 
+      "$id": "/properties/title",
       "type": "string",
       "description": "A short description of the analysis"
-    }, 
+    },
     "description": {
-      "$id": "/properties/description", 
+      "$id": "/properties/description",
       "type": "string",
       "description": "A longer description of the analysis"
     },
     "date": {
-      "$id": "/properties/date", 
+      "$id": "/properties/date",
       "type": "string",
       "description": "Create date"
     },
     "nodes": {
-      "$id": "/properties/nodes", 
-      "type": "array", 
+      "$id": "/properties/nodes",
+      "type": "array",
       "items": {
-        "$id": "/properties/nodes/items", 
-        "type": "object", 
+        "$id": "/properties/nodes/items",
+        "type": "object",
         "properties": {
           "text": {
-            "$id": "/properties/nodes/items/properties/text", 
+            "$id": "/properties/nodes/items/properties/text",
             "type": "string"
-          }, 
+          },
           "dtg": {
-            "$id": "/properties/nodes/items/properties/dtg", 
+            "$id": "/properties/nodes/items/properties/dtg",
             "type": "string"
-          }, 
+          },
           "annot": {
-            "$id": "/properties/nodes/items/properties/annot", 
-            "type": "object", 
+            "$id": "/properties/nodes/items/properties/annot",
+            "type": "string",
             "properties": {
               "id": {
-                "$id": "/properties/nodes/items/properties/annot/properties/id", 
+                "$id": "/properties/nodes/items/properties/annot/properties/id",
                 "type": "string"
               }
             }
-          }, 
+          },
           "nodeID": {
-            "$id": "/properties/nodes/items/properties/nodeID", 
+            "$id": "/properties/nodes/items/properties/nodeID",
             "type": "string"
-          }, 
+          },
           "source": {
-            "$id": "/properties/nodes/items/properties/source", 
+            "$id": "/properties/nodes/items/properties/source",
             "type": "string"
-          }, 
+          },
           "type": {
-            "$id": "/properties/nodes/items/properties/type", 
+            "$id": "/properties/nodes/items/properties/type",
             "type": "string"
-          }, 
+          },
           "graphID:": {
-            "$id": "/properties/nodes/items/properties/graphID:", 
+            "$id": "/properties/nodes/items/properties/graphID:",
             "type": "string"
-          }, 
+          },
           "islocked": {
-            "$id": "/properties/nodes/items/properties/islocked", 
+            "$id": "/properties/nodes/items/properties/islocked",
             "type": "string"
           }
         }
-      }, "required": true
-    }, 
+      },
+      "required": true
+    },
     "edges": {
-      "$id": "/properties/edges", 
-      "type": "array", 
+      "$id": "/properties/edges",
+      "type": "array",
       "items": {
-        "$id": "/properties/edges/items", 
-        "type": "object", 
+        "$id": "/properties/edges/items",
+        "type": "object",
         "properties": {
           "target": {
-            "$id": "/properties/edges/items/properties/target", 
+            "$id": "/properties/edges/items/properties/target",
             "type": "string"
-          }, 
+          },
           "source": {
-            "$id": "/properties/edges/items/properties/source", 
+            "$id": "/properties/edges/items/properties/source",
             "type": "string"
-          }, 
+          },
           "formEdgeID": {
-            "$id": "/properties/edges/items/properties/formEdgeID", 
+            "$id": "/properties/edges/items/properties/formEdgeID",
             "type": "null"
-          }, 
+          },
           "edgeID": {
-            "$id": "/properties/edges/items/properties/edgeID", 
+            "$id": "/properties/edges/items/properties/edgeID",
             "type": "string"
-          }, 
+          },
           "graphID:": {
-            "$id": "/properties/edges/items/properties/graphID:", 
+            "$id": "/properties/edges/items/properties/graphID:",
             "type": "string"
-          }, 
+          },
           "islocked": {
-            "$id": "/properties/edges/items/properties/islocked", 
+            "$id": "/properties/edges/items/properties/islocked",
             "type": "string"
           }
         }

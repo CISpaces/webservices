@@ -310,10 +310,7 @@ app.BrowseBoxView = Backbone.View.extend({
       var graphID = jsonData['graphID'];
       var userID = readCookie('user_id');
 
-      if (_.isEmpty(graphID)) {
-        alert("There is no id for this graph in a file");
-        return null;
-      }
+      var existing = null;
 
       // 1. Check this graph belongs to the user or not
       Backbone.ajax({
@@ -321,112 +318,99 @@ app.BrowseBoxView = Backbone.View.extend({
         url: remote_server + "/VC/rest/analyses/user/" + userID + "/meta",
         success: function(data) {
           if (data) {
-            var existing = data.find(function(d) {
+            existing = data.find(function(d) {
               return d.graphID == graphID;
             });
 
-            if (existing) {
+            if(!_.isEmpty(existing)){
               alert("A graph exists with this id.");
-              return null;
             }
           }
         },
         error: function(xhr) {
           console.error(xhr);
           alert("An error occurred fetching data");
-        }
-      });
-
-      // 2. Check this graph is saved in database
-      Backbone.ajax({
-        type: 'GET',
-        url: remote_server + "/VC/rest/analysis/" + graphID + "/meta",
-        success: function(data) {
-          if (data) {
-            alert("A graph exists with this id in database.");
-            return null;
-          }
         },
-        error: function(xhr) {
-          console.log(xhr);
-        },
-        complete: function(xhr) {
-          if (xhr.status == 404) {
-            // 3. Registers a new graph using jsonData
-            var title = jsonData['title'];
-            var description = jsonData['description'];
+        complete: function(xhr){
 
-            var object = {
-              "graphID": graphID,
-              "userID": userID,
-              "timest": generateDate(),
-              "title": title.trim(),
-              "description": description.trim(),
-              "isshared": false,
-              "parentgraphid": null
-            };
-
+          if(_.isEmpty(existing)){
+            // 2. Check this graph is saved in database
             Backbone.ajax({
-              type: 'POST',
-              url: remote_server + '/VC/rest/new',
-              contentType: 'application/json',
-              data: JSON.stringify(object),
-              success: function(result) {
-
-                // 4. The graph is drawn in hidden workBox
-                // initialises a workbox
-                $("#row-workbox").show();
-
-                app.workBoxView.clearWorkBox();
-
-                $("#row-workbox").hide();
-
-                // saves the meta data of the graph
-                var nodes = jsonData['nodes'];
-                var edges = jsonData['edges'];
-
-                var ret_graph = draw(nodes, edges, chart);
-                push_graph_data(ret_graph);
+              type: 'GET',
+              url: remote_server + "/VC/rest/analysis/" + graphID + "/meta",
+              success: function(data) {
+                if (data) {
+                  alert("A graph exists with this id in database.");
+                }
               },
               error: function(xhr) {
-                console.error("Ajax failed: " + xhr.statusText);
-                alert('Something went wrong. Please try again.');
-              }
-            });
-
-            // 5. Saves the graph in database
-            var object = {
-              "graphID": graphID,
-              "userID": userID,
-              "title": title.trim(),
-              "description": description.trim()
-            };
-
-            Backbone.ajax({
-              type: 'POST',
-              url: remote_server + '/VC/rest/save',
-              //dataType: 'text',
-              contentType: 'application/json',
-              data: JSON.stringify(object),
-              success: function(result) {
-                alert("Version " + title + " saved.");
-
-                $("#graph_info").modal('hide');
+                console.log(xhr);
               },
-              error: function(result) {
-                alert('Something went wrong. Please try again.');
+              complete: function(xhr) {
+                if (xhr.status == 404) {
+                  // 3. Registers a new graph using jsonData
+                  var title = jsonData['title'];
+                  var description = jsonData['description'];
+
+                  var object = {
+                    "graphID": graphID,
+                    "userID": userID,
+                    "timest": generateDate(),
+                    "title": title.trim(),
+                    "description": description.trim(),
+                    "isshared": false,
+                    "parentgraphid": null
+                  };
+
+                  Backbone.ajax({
+                    type: 'POST',
+                    url: remote_server + '/VC/rest/new',
+                    contentType: 'application/json',
+                    data: JSON.stringify(object),
+                    success: function(result) {
+
+                      // 4. The graph is drawn in hidden workBox in order to call the endpoint of every node and edge
+                      // initialises a workbox
+                      $("#row-workbox").show();
+
+                      app.workBoxView.clearWorkBox();
+
+                      $("#row-workbox").hide();
+
+                      // saves the meta data of the graph
+                      var nodes = jsonData['nodes'];
+                      var edges = jsonData['edges'];
+
+                      var ret_graph = draw(nodes, edges, chart);
+                      push_graph_data(ret_graph);
+                    },
+                    error: function(xhr) {
+                      console.error("Ajax failed: " + xhr.statusText);
+                      alert('Something went wrong. Please try again.');
+                    }
+                  });
+
+                  // 5. Saves the graph in database
+                  Backbone.ajax({
+                    type: 'POST',
+                    url: remote_server + '/VC/rest/save',
+                    //dataType: 'text',
+                    contentType: 'application/json',
+                    data: JSON.stringify(object),
+                    success: function(result) {
+                      confirm("Analysis [" + title + "] saved.");
+                    },
+                    error: function(xhr) {
+                      alert('Something went wrong. Please try again.');
+                      console.log(xhr);
+                    }
+                  });
+
+                  // 6. Creates a panel in the browsebox
+                  app.browseBoxView.makeGraphElement(object);
+                }
               }
             });
-
-            // 6. Creates a panel in the browsebox
-            var analysis = {
-              'graphID': graphID,
-              'title': title,
-              'timest': jsonData['timest'],
-              'description': description
-            };
-
-            app.browseBoxView.makeGraphElement(analysis);
           }
         }
       });

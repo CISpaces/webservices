@@ -115,9 +115,14 @@ function readFile(input_files, callback) {
   };
 
   reader.onerror = function(event) {
-    console.log("Fail to read the file:");
+    console.log("Error to read the file:");
     console.log(event);
   };
+
+  reader.onabort = function(event) {
+    console.log("Abort to read the file:");
+    console.log(event);
+  }
 
   reader.readAsText(file);
 
