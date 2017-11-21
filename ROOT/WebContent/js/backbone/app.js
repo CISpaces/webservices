@@ -36,9 +36,9 @@ Backbone.ajax = function(){
 };
 
 $(document).ajaxStart(function(event){
-	$("#loading-spinner").addClass("is-active");
+	// $("#loading-spinner").addClass("is-active");
 });
 
 $(document).ajaxStop(function(event){
-	$("#loading-spinner").removeClass("is-active");
+	// $("#loading-spinner").removeClass("is-active");
 });
