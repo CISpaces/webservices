@@ -226,6 +226,9 @@ app.WorkBoxView = Backbone.View
 
       // If a node is Pro-node, the value of the select should be matched with text
       $("#node_" + id + " .row-link select").val($("#node_" + id + " textarea").val());
+      if(_.isEmpty($("#node_" + id + " .row-link select").val())){
+        $("#node_" + id + " .row-link select").val("Pro");
+      }
 
       // If a node is linked with another node which is a pro-node and starts with 'L'
       var edges = chart.edges.filter(function(d) {
