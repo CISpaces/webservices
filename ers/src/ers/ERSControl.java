@@ -393,18 +393,21 @@ public class ERSControl {
 	    		//here if the node underminer or a rebuttal specify contradictory negation
 	    		if(((String)nd.get("type")).equals("CA")){
 	    			//this is a con link
-	    			LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
-	    			if(annot.containsKey("cq_id")){
-	    				String cq=(String)annot.get("cq_id");
-	    				if(cq!=null){
-	    					//this is a cq link 
-	    					link.setCqType();
-	    					//if its annotation is not one of the undercut then it is a contradictory negation
-	    					if(!cqs.contains(cq)){
-	    						link.setContradictory();
-	    					}
-	    				 }
-	    			 }
+                    if(!nd.get("annot").equals("{}")) {
+                        //LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
+                    	HashMap annot=jsh.convertInputMap((String)nd.get("annot"));
+                        if(annot.containsKey("cq_id")){
+                            String cq=(String)annot.get("cq_id");
+                            if(cq!=null){
+                                //this is a cq link 
+                                link.setCqType();
+                                //if its annotation is not one of the undercut then it is a contradictory negation
+                                if(!cqs.contains(cq)){
+                                    link.setContradictory();
+                                }
+                             }
+                         }
+                    }
 	    		 }
 	    		linksp.put(nd.get("nodeID"), link);
 	    		
