@@ -241,7 +241,7 @@ app.WorkBoxView = Backbone.View
 
         d3.json('./cqs.json', function(data) {
           edges.forEach(function(edge) {
-            if (edge.target.text) {
+            if (d3.keys(data["L"]).includes(edge.target.text)) {
               var cq = edge.target.text.replace("L", "CQ");
 
               var select_cq = $("#node_" + id + " .row-critical select[name=sel_" + cq + "]");
@@ -313,7 +313,9 @@ app.WorkBoxView = Backbone.View
           });
         });
 
-        $("#node_" + id + " .row-critical").show();
+        if($("#node_" + id + " .row-critical select").length > 0){
+          $("#node_" + id + " .row-critical").show();
+        }
       }
 
       $("#node_" + id).modal('show');
