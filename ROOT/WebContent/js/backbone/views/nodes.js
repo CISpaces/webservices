@@ -44,7 +44,7 @@ app.NodeView = Backbone.View.extend({
           $("#node_" + nodeID + " .row-text textarea").text(selected);
         });
 
-        $("#node_" + nodeID + " .row-text textarea").attr("readonly", "readonly");
+        // $("#node_" + nodeID + " .row-text textarea").attr("readonly", "readonly");
       });
 
       this.$(".row-critical").hide();

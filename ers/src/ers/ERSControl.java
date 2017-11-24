@@ -394,7 +394,8 @@ public class ERSControl {
 	    		if(((String)nd.get("type")).equals("CA")){
 	    			//this is a con link
                     if(!nd.get("annot").equals("{}")) {
-                        LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
+                        //LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
+                    	HashMap annot=jsh.convertInputMap((String)nd.get("annot"));
                         if(annot.containsKey("cq_id")){
                             String cq=(String)annot.get("cq_id");
                             if(cq!=null){

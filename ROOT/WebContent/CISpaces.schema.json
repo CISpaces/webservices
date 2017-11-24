@@ -41,7 +41,7 @@
           },
           "annot": {
             "$id": "/properties/nodes/items/properties/annot",
-            "type": "string",
+            "type": "object",
             "properties": {
               "id": {
                 "$id": "/properties/nodes/items/properties/annot/properties/id",

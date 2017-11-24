@@ -15,10 +15,7 @@ app.Node = Backbone.Model.extend({
     commit: 'N/A',
     type: '',
     nodeID: '',
-    annot: {
-      conc: {},
-      prem_assump: {}
-    },
+    annot: {},
     graphID: '',
     islocked: 'false'
   }

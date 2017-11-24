@@ -106,6 +106,16 @@ app.BrowseBoxView = Backbone.View.extend({
       type: 'GET',
       url: remote_server + '/VC/rest/analysis/' + graphID,
       success: function(response, status, xhr) {
+        // change the type of annot
+        if(response.nodes){
+          response.nodes.forEach(function(d){
+            try{
+            d.annot = JSON.parse(d.annot);
+          } catch(error){
+            console.log(error);
+          }
+          });
+        }
         callback(response, status, xhr);
       },
       error: function(xhr) {
