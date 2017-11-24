@@ -69,3 +69,10 @@ $ <CTRL+A>,<D>
 - To stop:
 
 ```$ ./stop-cispaces.sh```
+
+## Third party software
+Cispaces has dependencies on a number of third party software libraries, none of
+these dependencies are distributed here, but are fetched during the build 
+process.  Details of the dependencies and their licenses can be aggregated by running:
+
+```$  mvn license:add-third-party license:aggregate-download-licenses```
