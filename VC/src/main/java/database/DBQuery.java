@@ -228,6 +228,26 @@ public class DBQuery {
 
     }
 
+    /**
+     * Delete the analysis, all nodes, edges and provenance
+     * @param graphID the analysis to delete
+     * @return True if the operation succeeded, false if it did not
+     */
+    public boolean deleteAnalysis(String graphID) {
+        //ToDo - get nodeIds and delete from CISPACES_INFOPROV
+        String[] tables = {"CISPACES_GRAPH", "CISPACES_GRAPH_HISTORY", "CISPACES_EDGE",
+        "CISPACES_EDGE_HISTORY", "CISPACES_NODE", "CISPACES_NODE_HISTORY"};
+        String sql;
+        for(String table : tables) {
+            sql = "DELETE FROM "+table+" WHERE graphid = '" + graphID + "'";
+            if(!dbcn.updateSQL(sql)) {
+            System.out.println("Failed to delete Graph from "+table);
+            return false;
+            }
+        }
+       return true;       
+    }
+        
     //delete an edge from the database
     public boolean deleteEdge(String edgeid) {
         String sql = "DELETE FROM CISPACES_EDGE WHERE edgeid = " + "'" + edgeid + "'";

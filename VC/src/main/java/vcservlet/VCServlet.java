@@ -195,6 +195,22 @@ public class VCServlet {
         else return Response.status(Response.Status.NOT_FOUND).build();
     }//getAnalysis    
     
+    @DELETE
+    @Path("/analysis/{graphID}")
+    //@JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteAnalysis(@PathParam("graphID") String graphID) {       
+        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - DELETE ANALYSIS REQUEST");
+        //ToDo - Check ownership
+        if(graphID != null) {
+            log.log(Level.INFO, "** GRAPH_ID="+graphID);
+            DBQuery dbquery = new DBQuery();           
+            if(dbquery.deleteAnalysis(graphID)) return Response.ok().build();
+            else return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        else return Response.status(Response.Status.NOT_FOUND).build();
+    }//getAnalysis    
+    
     /*
     //ToDo - Secure this
     @GET
