@@ -61,9 +61,10 @@
             "$id": "/properties/nodes/items/properties/type",
             "type": "string"
           },
-          "graphID:": {
-            "$id": "/properties/nodes/items/properties/graphID:",
-            "type": "string"
+          "graphID": {
+            "$id": "/properties/nodes/items/properties/graphID",
+            "type": "string",
+            "required": true            
           },
           "islocked": {
             "$id": "/properties/nodes/items/properties/islocked",
@@ -96,8 +97,8 @@
             "$id": "/properties/edges/items/properties/edgeID",
             "type": "string"
           },
-          "graphID:": {
-            "$id": "/properties/edges/items/properties/graphID:",
+          "graphID": {
+            "$id": "/properties/edges/items/properties/graphID",
             "type": "string"
           },
           "islocked": {
