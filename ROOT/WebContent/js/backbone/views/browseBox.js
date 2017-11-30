@@ -19,6 +19,7 @@ app.BrowseBoxView = Backbone.View.extend({
     'click .btn-checkout': 'viewAnalysis',
 
     'click .btn-export': 'exportToFile',
+    'click .btn-delete': 'deleteAnalysis'
   },
 
   initialize: function() {
@@ -143,12 +144,13 @@ app.BrowseBoxView = Backbone.View.extend({
       }
     });
   },
-
+    
   makeGraphElement: function(analysis) {
     var div_panel = $("<div></div>", {
       'class': "panel panel-green"
     }).appendTo($("<div></div>", {
-      'class': "existing-analysis col-lg-2 col-md-4"
+      'class': "existing-analysis col-lg-2 col-md-4",
+      'id': "panel_"+analysis.graphID
     }).appendTo($("#browse_box")));
 
     var div_heading = $("<div></div>", {
@@ -167,7 +169,7 @@ app.BrowseBoxView = Backbone.View.extend({
     */
 
     $("<label></label>", {
-      'text': "title",
+      'text': "Title:",
       'style': "margin: 5px 10px"
     }).appendTo($("<div></div>", {
       'class': "row"
@@ -176,7 +178,7 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     $("<label></label>", {
-      'text': "description",
+      'text': "Description:",
       'style': "margin: 5px 10px"
     }).appendTo($("<div></div>", {
       'class': "row"
@@ -185,7 +187,7 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     $("<label></label>", {
-      'text': "date",
+      'text': "Date:",
       'style': "margin: 5px 10px"
     }).appendTo($("<div></div>", {
       'class': "row"
@@ -194,20 +196,29 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     var btn = $("<button></button>", {
-      'class': "pull-right btn btn-outline btn-success btn-export",
+      'class': "pull-right btn btn-sm btn-outline btn-info btn-export",
       'name': "btn_" + analysis.graphID,
-      'text': "Export"
+      'text': "Export",
+      'title': "Export this analysis to file"
     }).appendTo($("<div></div>", {
       'class': "panel-footer"
     }).appendTo(div_panel)).before($("<button></button>", {
-      'class': "pull-left btn btn-outline btn-success btn-view",
+      'class': "pull-left btn btn-sm btn-outline btn-success btn-view",
       'name': "btn_" + analysis.graphID,
-      'text': "View"
+      'text': "View",
+      'title': "View this analysis (read-only)"
     })).before($("<button></button>", {
-      'class': "pull-left btn btn-outline btn-success btn-checkout",
+      'class': "pull-left btn btn-sm btn-outline btn-success btn-checkout",
       'style': "margin-left: 5px",
       'name': "btn_" + analysis.graphID,
-      'text': "Checkout"
+      'text': "Checkout",
+      'title': "Checkout this analysis for editing"
+    })).before($("<button></button>", {
+      'class': "btn btn-sm btn-outline btn-danger btn-delete",
+      'name': "btn_" + analysis.graphID,
+      'style': "margin-left: 5px",
+      'text': "Delete",
+      'title': "Permanently delete this analysis"
     })).after($("<div></div>", {
       'class': "clearfix"
     }));
@@ -476,5 +487,21 @@ app.BrowseBoxView = Backbone.View.extend({
         }, 100);
       }
     });
+  },
+  
+  deleteAnalysis: function(event) {
+      if(confirm("Permanently delete this analysis?")) {
+      var graphID = event.target.attributes.name.value.replace("btn_", "");
+      Backbone.ajax({
+      type: 'DELETE',
+      url: remote_server + '/VC/rest/analysis/' + graphID,
+      success: function(data) {
+          $("#panel_"+graphID).remove();
+      },
+      error: function(xhr) {
+        console.error("Deleting graph failed: " + xhr.statusText);
+      }
+    });
+      }
   }
 });
