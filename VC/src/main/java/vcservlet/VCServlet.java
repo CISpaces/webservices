@@ -74,28 +74,31 @@ public class VCServlet {
         log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET HISTORY REQUEST ***");
         DBQuery dbQuery  = new DBQuery();
         String response = dbQuery.getHistoryOfAnalysis(graphID);
-
         return response;
     }
 
-    /**
-     * @param userID a user id coming from the client
-     * @return either a json representing the latest analysis this user has worked on, or a new graph id for starting a new analysis
-     * URL: http://localhost:8080/VC/rest/getAnalysis
-     */
-    @POST
-    @Path("/getAnalysis")
-    //@JWTTokenNeeded
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getLatestAnalysis(String userID)
-    {
-        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET LATEST ANALYSIS REQUEST ***");
-        log.log(Level.INFO, "user id payload " + userID);
-        DBQuery dbQuery = new DBQuery();
-        String response = dbQuery.getLatestAnalysis(userID);
-
-        return response;
-    }
+    
+//    DEPRECATED - REMOVE SOON
+//    
+//    /**
+//     * @param userID a user id coming from the client
+//     * @return either a json representing the latest analysis this user has worked on, or a new graph id for starting a new analysis
+//     * URL: http://localhost:8080/VC/rest/getAnalysis
+//     */
+//    @POST
+//    @Path("/getAnalysis")
+//    //@JWTTokenNeeded
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String getLatestAnalysis(String userID)
+//    {
+//        log.log(Level.INFO, "*** VERSION CONTROL SERVICE - GET LATEST ANALYSIS REQUEST ***");
+//        log.log(Level.INFO, "user id payload " + userID);
+//        DBQuery dbQuery = new DBQuery();
+//        String response = dbQuery.getLatestAnalysis(userID);
+//
+//        return response;
+//    }
+    
 
     /**
      * Fetch metadata for *all* graphs owned by supplied user

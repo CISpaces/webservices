@@ -401,115 +401,139 @@ public class DBQuery {
         }
     }//getAnalysis      
    
-    
-    /* Retrieves the latest analysis associated with a user upon loading the index page.
-     * Checks if a user has worked on an analysis before.
-     * If the user is new, then a new graph (analysis) is created and linked to them.
-     * If the user has worked on an analysis before, a JSON object is constructed with
-     * the nodes and edges linked to that analysis. The JSON object is turned into a JSON string
-     * and passed to the client to visualize it in the work box.
-     */
-    public String getLatestAnalysis(String userID) {
-        System.out.println("THE USER ID IS " + userID);
-        String sql = "SELECT GRAPHID FROM CISPACES_GRAPH WHERE USERID = " +  "'"  + userID +  "'";
-        System.out.println(sql);
+    //DEPRECATED REMOVE SOON
+//    /* Retrieves the latest analysis associated with a user upon loading the index page.
+//     * Checks if a user has worked on an analysis before.
+//     * If the user is new, then a new graph (analysis) is created and linked to them.
+//     * If the user has worked on an analysis before, a JSON object is constructed with
+//     * the nodes and edges linked to that analysis. The JSON object is turned into a JSON string
+//     * and passed to the client to visualize it in the work box.
+//     */
+//    public String getLatestAnalysis(String userID) {
+//        System.out.println("THE USER ID IS " + userID);
+//        String sql = "SELECT GRAPHID FROM CISPACES_GRAPH WHERE USERID = " +  "'"  + userID +  "'";
+//        System.out.println(sql);
+//        JSONObject jsonGraph = new JSONObject();
+//        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+//        if(rs.isEmpty()){
+//            TimeHelper timeHelper = new TimeHelper();
+//            boolean isShared = false;
+//            String parentID = null;
+//            Date now = new Date();
+//            Timestamp timestamp = timeHelper.formatDateObjectCIS(now);
+//            String graphID = UUID.randomUUID().toString();
+//
+//            //create new analysis and pass graphID to the client
+//            String newGraphQuery = "INSERT INTO CISPACES_GRAPH(graphid, userid, timest, isshared, parentgraphid) VALUES "
+//                    + "( '" + graphID + "' ,"
+//                    + " '" + userID + "' ,"
+//                    + " '" + timestamp + "' ,"
+//                    + " '" + isShared + "' ,"
+//                    + " '" + parentID + "'"
+//                    + " )";
+//            dbcn.updateSQL(newGraphQuery);
+//            jsonGraph.put("graphID",graphID);
+//            jsonGraph.put("nodes", new JSONArray());
+//            jsonGraph.put("edges", new JSONArray());
+//            return jsonGraph.toString();
+//        }else {
+//            String idQuery = "SELECT GRAPHID FROM CISPACES_GRAPH WHERE TIMEST = (SELECT MAX(TIMEST) FROM CISPACES_GRAPH WHERE USERID = " + "'" + userID + "'" + ")";
+//            String resultIDJSON = dbcn.execSQL(idQuery).get(0).toString();
+//            String resultID = resultIDJSON.substring(9, resultIDJSON.length() - 1);
+//            String getNodesSql = "SELECT * FROM CISPACES_NODE WHERE GRAPHID = " + "'" + resultID + "'";
+//            String getEdgesSql = "SELECT * FROM CISPACES_EDGE WHERE GRAPHID = " + "'" + resultID + "'";
+//            System.out.println("THE GRAPH ID FROM THE QUERY IS " + resultID);
+//            ArrayList<HashMap<String, Object>> resultNodes = dbcn.execSQL(getNodesSql);
+//            ArrayList<HashMap<String, Object>> resultEdges = dbcn.execSQL(getEdgesSql);
+//
+//            JSONArray jsonNodesArray = getResultListJSON(resultNodes);
+//            jsonGraph.put("nodes", jsonNodesArray);
+//
+//            JSONArray jsonEdgesArray = getResultListJSON(resultEdges);
+//            jsonGraph.put("edges", jsonEdgesArray);
+//
+//            return jsonGraph.toString();
+//        }
+//
+//    }
+    /*A number of queries used to store an analysis in the database.
+    * Retrieves all nodes and edges connected to a graph by its graph id.
+    * Constructs a json object and populates it with the JSON arrays of the nodes and edges.
+    * Timestamps the event and inserts the data into the database.
+    */
+     public String saveLatestAnalysis(String graphID, String userID, String title) {
+        String getNodesSql = "SELECT * FROM CISPACES_NODE WHERE GRAPHID = " +  "'" + graphID + "'";
+        String getEdgesSql = "SELECT * FROM CISPACES_EDGE WHERE GRAPHID = " +  "'" + graphID + "'";
+
         JSONObject jsonGraph = new JSONObject();
-        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
-        if(rs.isEmpty()){
-            TimeHelper timeHelper = new TimeHelper();
-            boolean isShared = false;
-            String parentID = null;
-            Date now = new Date();
-            Timestamp timestamp = timeHelper.formatDateObjectCIS(now);
-            String graphID = UUID.randomUUID().toString();
+        jsonGraph.put("graphID",graphID);
+        ArrayList<HashMap<String,Object>> resultNodes = dbcn.execSQL(getNodesSql);
+        ArrayList<HashMap<String,Object>> resultEdges = dbcn.execSQL(getEdgesSql);
 
-            //create new analysis and pass graphID to the client
-            String newGraphQuery = "INSERT INTO CISPACES_GRAPH(graphid, userid, timest, isshared, parentgraphid) VALUES "
-                    + "( '" + graphID + "' ,"
-                    + " '" + userID + "' ,"
-                    + " '" + timestamp + "' ,"
-                    + " '" + isShared + "' ,"
-                    + " '" + parentID + "'"
-                    + " )";
-            dbcn.updateSQL(newGraphQuery);
-            jsonGraph.put("graphID",graphID);
-            jsonGraph.put("nodes", new JSONArray());
-            jsonGraph.put("edges", new JSONArray());
-            return jsonGraph.toString();
-        }else {
-            String idQuery = "SELECT GRAPHID FROM CISPACES_GRAPH WHERE TIMEST = (SELECT MAX(TIMEST) FROM CISPACES_GRAPH WHERE USERID = " + "'" + userID + "'" + ")";
-            String resultIDJSON = dbcn.execSQL(idQuery).get(0).toString();
-            String resultID = resultIDJSON.substring(9, resultIDJSON.length() - 1);
-            String getNodesSql = "SELECT * FROM CISPACES_NODE WHERE GRAPHID = " + "'" + resultID + "'";
-            String getEdgesSql = "SELECT * FROM CISPACES_EDGE WHERE GRAPHID = " + "'" + resultID + "'";
-            System.out.println("THE GRAPH ID FROM THE QUERY IS " + resultID);
-            ArrayList<HashMap<String, Object>> resultNodes = dbcn.execSQL(getNodesSql);
-            ArrayList<HashMap<String, Object>> resultEdges = dbcn.execSQL(getEdgesSql);
+        JSONArray jsonNodesArray =  getResultListJSON(resultNodes);
+        jsonGraph.put("nodes",jsonNodesArray);
 
-            JSONArray jsonNodesArray = getResultListJSON(resultNodes);
-            jsonGraph.put("nodes", jsonNodesArray);
 
-            JSONArray jsonEdgesArray = getResultListJSON(resultEdges);
-            jsonGraph.put("edges", jsonEdgesArray);
+        JSONArray jsonEdgesArray = getResultListJSON(resultEdges);
+        jsonGraph.put("edges",jsonEdgesArray);
 
-            return jsonGraph.toString();
-        }
+        Date now = new Date();
+        TimeHelper timeHelper = new TimeHelper();
+        String json =  jsonGraph.toString().replace("nodeid", "nodeID");
+        json = json.replace("N\\/A", "N/A");
+        String snapID = UUID.randomUUID().toString();
+        Timestamp timestamp = timeHelper.formatDateObjectCIS(now);
 
+        String saveGraphQuery = "INSERT INTO CISPACES_GRAPH_HISTORY(snapid, graphid, userid, timest, analysis, title) VALUES "
+                + "( '" + snapID + "' ,"
+                + " '" + graphID + "' ,"
+                + " '" + userID + "' ,"
+                + " '" + timestamp + "' ,"
+                + " '" + json + "' ,"
+                + " '" + title + "'"
+                + " )";
+        boolean isExecuted = dbcn.updateSQL(saveGraphQuery);
+        JSONObject result = new JSONObject();
+        result.put("status",isExecuted);
+
+        return result.toString();
     }
-        /*A number of queries used to store an analysis in the database.
-        * Retrieves all nodes and edges connected to a graph by its graph id.
-        * Constructs a json object and populates it with the JSON arrays of the nodes and edges.
-        * Timestamps the event and inserts the data into the database.
-        */
-         public String saveLatestAnalysis(String graphID, String userID, String title) {
-            String getNodesSql = "SELECT * FROM CISPACES_NODE WHERE GRAPHID = " +  "'" + graphID + "'";
-            String getEdgesSql = "SELECT * FROM CISPACES_EDGE WHERE GRAPHID = " +  "'" + graphID + "'";
 
-            JSONObject jsonGraph = new JSONObject();
-            jsonGraph.put("graphID",graphID);
-            ArrayList<HashMap<String,Object>> resultNodes = dbcn.execSQL(getNodesSql);
-            ArrayList<HashMap<String,Object>> resultEdges = dbcn.execSQL(getEdgesSql);
-
-            JSONArray jsonNodesArray =  getResultListJSON(resultNodes);
-            jsonGraph.put("nodes",jsonNodesArray);
-
-
-            JSONArray jsonEdgesArray = getResultListJSON(resultEdges);
-            jsonGraph.put("edges",jsonEdgesArray);
-
-            Date now = new Date();
-            TimeHelper timeHelper = new TimeHelper();
-            String json =  jsonGraph.toString().replace("nodeid", "nodeID");
-            json = json.replace("N\\/A", "N/A");
-            String snapID = UUID.randomUUID().toString();
-            Timestamp timestamp = timeHelper.formatDateObjectCIS(now);
-
-            String saveGraphQuery = "INSERT INTO CISPACES_GRAPH_HISTORY(snapid, graphid, userid, timest, analysis, title) VALUES "
-                    + "( '" + snapID + "' ,"
-                    + " '" + graphID + "' ,"
-                    + " '" + userID + "' ,"
-                    + " '" + timestamp + "' ,"
-                    + " '" + json + "' ,"
-                    + " '" + title + "'"
-                    + " )";
-            boolean isExecuted = dbcn.updateSQL(saveGraphQuery);
-            JSONObject result = new JSONObject();
-            result.put("status",isExecuted);
-
-            return result.toString();
-        }
-
-        /*helper method to iterate through the result set obtained after executing a query
-        *the result sets are a list of hashmaps which have table column titles as keys and database entries as values
-        */
-        public JSONArray getResultListJSON(ArrayList<HashMap<String,Object>> resultEntities){
-            JSONArray jsonArray = new JSONArray();
-            for(HashMap<String,Object> edgesEntry : resultEntities){
-                Iterator entryIterator = edgesEntry.entrySet().iterator();
-                JSONObject obj = new JSONObject();
-                while (entryIterator.hasNext()) {
-                    Map.Entry pair = (Map.Entry)entryIterator.next();
-                    //these are reserved words in derby!!!
+    /*helper method to iterate through the result set obtained after executing a query
+    *the result sets are a list of hashmaps which have table column titles as keys and database entries as values
+    */
+    public JSONArray getResultListJSON(ArrayList<HashMap<String,Object>> resultEntities){
+        JSONArray jsonArray = new JSONArray();
+        for(HashMap<String,Object> edgesEntry : resultEntities){
+            Iterator entryIterator = edgesEntry.entrySet().iterator();
+            JSONObject obj = new JSONObject(); // the node or edge
+            while (entryIterator.hasNext()) {
+                //Each property of the node or edge
+                Map.Entry pair = (Map.Entry)entryIterator.next();
+                //these are reserved words in derby!!!                    
+                if(pair.getKey().toString().equals("annot")){                        
+                    // Expand the annot and set as a JSONArray                        
+                    String annotString = pair.getValue().toString();
+                    if(annotString.equals("{}")) continue; //don't care
+                    annotString = annotString.replaceAll("\\{", "");
+                    annotString = annotString.replaceAll("\\}", "");
+                    String[] annotations = annotString.split(",");
+                    JSONArray jaAnnots = new JSONArray();
+                    JSONObject joAnnots = new JSONObject();
+                    for(String annotation : annotations) {
+                        //Split into k,v
+                        String[] annotParts = annotation.split("=");
+                        String annotKey = annotParts[0];
+                        String annotValue = annotParts[1];
+                        JSONObject joAnnot = new JSONObject();
+                        joAnnot.put(annotKey, annotValue);
+                        jaAnnots.add(joAnnot);                           
+                    }
+                    //joAnnots.put("annot", jaAnnots);
+                    //jsonArray.add(joAnnots);
+                    obj.put("annot", jaAnnots);
+                } else {                    
+                    //not an annot
                     if(pair.getKey().toString().equals("inp")){
                         obj.put("input", pair.getValue().toString());
                     }else if(pair.getKey().toString().equals("txt")) {
@@ -519,35 +543,34 @@ public class DBQuery {
                     }else if(pair.getKey().toString().equals("edgeid")){
                         obj.put("edgeID", pair.getValue().toString());
                     }else if(pair.getKey().toString().equals("graphid")){
-                        obj.put("graphID", pair.getValue().toString());
+                        obj.put("graphID", pair.getValue().toString());                                  
                     }else {
                         obj.put(pair.getKey(), pair.getValue().toString());
-                    }
+                    }                    
+                }//else                
+            }//while each node property
+            jsonArray.add(obj);
+        }//for each node 
 
-                }
-                jsonArray.add(obj);
-            }
-
-            return jsonArray;
-        }
+        return jsonArray;
+    }
 
         //constructs a json object containing all saved variations of an analysis and returns it in a json string format
     public String getHistoryOfAnalysis(String graphID) {
+        String sql = "SELECT * FROM CISPACES_GRAPH_HISTORY WHERE GRAPHID = " + "'" + graphID + "'" + " ORDER BY TIMEST";
+        System.out.println(sql);
+        ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
+        JSONObject jsonHistory = new JSONObject();
+        if(!rs.isEmpty()){
+            JSONArray jsonHistoryArray = getResultListJSON(rs);
+            jsonHistory.put("history",jsonHistoryArray);
 
-            String sql = "SELECT * FROM CISPACES_GRAPH_HISTORY WHERE GRAPHID = " + "'" + graphID + "'" + " ORDER BY TIMEST";
-            System.out.println(sql);
-            ArrayList<HashMap<String,Object>> rs = dbcn.execSQL(sql);
-            JSONObject jsonHistory = new JSONObject();
-            if(!rs.isEmpty()){
-                JSONArray jsonHistoryArray = getResultListJSON(rs);
-                jsonHistory.put("history",jsonHistoryArray);
+        }else{
+            jsonHistory.put("history", new JSONArray());
 
-            }else{
-                jsonHistory.put("history", new JSONArray());
+        }
 
-            }
-
-            return jsonHistory.toString();
+        return jsonHistory.toString();
     }
 
     public void updateAnalysis(HashMap analysis) {
