@@ -518,20 +518,20 @@ public class DBQuery {
                     annotString = annotString.replaceAll("\\{", "");
                     annotString = annotString.replaceAll("\\}", "");
                     String[] annotations = annotString.split(",");
-                    JSONArray jaAnnots = new JSONArray();
+                    //JSONArray jaAnnots = new JSONArray();
                     JSONObject joAnnots = new JSONObject();
                     for(String annotation : annotations) {
                         //Split into k,v
                         String[] annotParts = annotation.split("=");
                         String annotKey = annotParts[0];
                         String annotValue = annotParts[1];
-                        JSONObject joAnnot = new JSONObject();
-                        joAnnot.put(annotKey, annotValue);
-                        jaAnnots.add(joAnnot);                           
+                        //JSONObject joAnnot = new JSONObject();
+                        joAnnots.put(annotKey, annotValue);
+                        //jaAnnots.add(joAnnot);                           
                     }
                     //joAnnots.put("annot", jaAnnots);
                     //jsonArray.add(joAnnots);
-                    obj.put("annot", jaAnnots);
+                    obj.put("annot", joAnnots);
                 } else {                    
                     //not an annot
                     if(pair.getKey().toString().equals("inp")){
