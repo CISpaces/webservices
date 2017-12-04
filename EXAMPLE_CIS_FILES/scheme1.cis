@@ -28,14 +28,7 @@
          "nodeID":"4a34a9a8-4191-4feb-ba8f-cbdd30e12e4f",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "source":"Miles",
@@ -49,14 +42,7 @@
          "nodeID":"774a14b0-d0c9-40a7-9df1-06fa49965283",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "text":"Con",
@@ -84,14 +70,7 @@
          "nodeID":"44bd7949-55c6-42c4-be47-a47187d49445",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "text":"Con",
@@ -119,14 +98,7 @@
          "nodeID":"3f89dda8-b9cb-448e-ac87-bded859fd0d8",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "text":"Pro",
@@ -164,14 +136,7 @@
          "nodeID":"60375a73-7737-45bc-b1dd-354e19842f28",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "source":"Miles",
@@ -185,14 +150,7 @@
          "nodeID":"33eb911c-238f-4482-90f1-76b4354a384a",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "text":"Con",
@@ -246,14 +204,7 @@
          "nodeID":"feff8b95-290b-47b7-9e1f-2277ec14c57a",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "source":"Miles",
@@ -267,14 +218,7 @@
          "nodeID":"c7d561d4-9a3e-4288-89c5-c3e3143d67fe",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "text":"Pro",
@@ -300,14 +244,7 @@
          "nodeID":"bd2091ec-4fa0-4a8a-8c23-26c0213ab4ae",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       },
       {
          "source":"Miles",
@@ -321,14 +258,7 @@
          "nodeID":"e2d2a53c-a75e-4595-915a-f5667eb88e42",
 		 "graphID":"59a0aadc-2228-4e81-d4f8-3badaeca1847",
 		 "islocked":"false",
-         "annot":{
-            "conc":{
-
-            },
-            "prem_assump":{
-
-            }
-         }
+         "annot":{}
       }
    ],
    "edges":[
