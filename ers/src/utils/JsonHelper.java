@@ -46,6 +46,16 @@ public HashMap convertInputMap(String json) {
 	return  map;
 }
 
+public LinkedTreeMap convertInputMapG(String json) {
+	LinkedTreeMap map=new LinkedTreeMap();
+	 Gson gson = new Gson();
+try{
+	 map = gson.fromJson(json, LinkedTreeMap.class);
+}catch(Exception e){
+	 log.log(Level.SEVERE,"Exception Not a JSON string"); 
+}
+	return  map;
+}
 
 public String convertInputJson(HashMap input) {
 		Gson gson = new GsonBuilder()

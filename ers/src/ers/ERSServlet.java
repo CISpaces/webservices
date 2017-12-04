@@ -20,17 +20,15 @@ package ers; /******************************************************************
 
 
 import com.google.gson.internal.LinkedTreeMap;
-import csnodes.ERSCSBuilder;
-import nlg.TemplateLanguage;
-import org.json.JSONException;
-import org.json.JSONObject;
+ 
+  
 import utils.JsonHelper;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.FileNotFoundException;
+ 
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,13 +66,13 @@ public class ERSServlet {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public String sayJSONtextEvaluate(String input) {
-	  System.out.println(input);
+	 // System.out.println(input);
 	// System.out.println("*** ERS SERVICE - New Request ***"+input);
 	  log.log(Level.INFO,"*** ERS SERVICE - New Request ***");
 	  
-	  PRINT=Boolean.parseBoolean(servletConfig.getInitParameter("print"));  
+	 // PRINT=Boolean.parseBoolean(servletConfig.getInitParameter("print"));  
 
-	  ci_path=System.getenv("CISPACES");
+	  PRINT=true;
 	  if(PRINT){
 			 log.log(Level.INFO,input);
 		 }
@@ -92,26 +90,13 @@ public class ERSServlet {
 					 ERSControl ersWork=new ERSControl(PRINT,ci_path);
 					 LinkedTreeMap mgraph=(LinkedTreeMap) map.get("graph");
 					log.log(Level.INFO,"*** ERS SERVICE - EVALUATING JSON OF GRAPH***");
+					//change the naming of the links to ensure that current CIS format still works
+					AIFDBConverter conv=new AIFDBConverter();
+					mgraph=conv.convertToAIFDB(mgraph);
 					 output= ersWork.evaluateJsonString(mgraph);
+					  
 					log.log(Level.INFO,"*** ERS SERVICE - IF I COME HERE THEN IT'S WORKING***");
-				}else if(action.equals("csanaly")){
-						ERSCSBuilder build=new ERSCSBuilder(map);
-						HashMap res=build.prepareCS();
-						output=jsh.convertInputJson(res);
-				}else if(action.equals("nlg")){
-					String mgraph=map.get("graph").toString();
-					try {
-						JSONObject jsonObject = new JSONObject(input);
-						String jsonIn = jsonObject.get("graph").toString();
-						TemplateLanguage templateLanguage = new TemplateLanguage();
-						output = templateLanguage.createMinimalInfereanceTemplate(jsonIn);
-					} catch (JSONException e) {
-						e.printStackTrace();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                }else{
+				}else{
 					output=setSomethingWrongResponse(PRB3);
 				}
 				
@@ -128,7 +113,7 @@ public class ERSServlet {
 	  if(PRINT){
 			 log.log(Level.INFO,output);
 		 }
-	  System.out.println(output);
+	  //System.out.println(output);
 	  return output;
 	 
   }

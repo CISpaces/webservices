@@ -11,20 +11,26 @@
  * 
  * 
  * @author      Alice Toniolo  
- * @version     1.0  
- * @since 		April 2014           
+ * @version     2.0  
+ * @since 		Nov 2017           
  *   
  */
 
 package ers;
 
-import ersdata.Link;
-import ersdata.Node;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-import java.util.*;
+import ersdata.Link;
+import ersdata.Node;
+
 
 
 public class RuleChecker {
@@ -35,8 +41,10 @@ public class RuleChecker {
 	private static final String ER5="Link has a tail that does not exist";
 	//private static final String ER7="Links not valid, pro/con at the same time";
 	private static final String ER6="Same links";
-	private static final String ER7="A CQ can only have one tail";
+	//private static final String ER7="A CQ can only have one tail";
 	private static final String ER8="Preference is not specified";
+	private static final String ER9="Link has two heads";
+	private static final String ER10="Link does not have a valid tail";
 	//private static final String ER8="Pro links form a cycle";
 	private ArrayList special;
 	private HashMap prohead;
@@ -73,11 +81,11 @@ public class RuleChecker {
 			Node nd=(Node) nodes.get(node);
 			//System.out.println(nd.getPref_left()+"<"+nd.getPref_right());
 			if(nd.getPref_left()==null || nd.getPref_right()==null){
-				ArrayList idprob;
+				HashSet idprob;
 				if(probs.containsKey(nd.getID())){
-					idprob=(ArrayList) probs.get(nd.getID());
+					idprob=(HashSet) probs.get(nd.getID());
 				}else{
-					idprob=new ArrayList();
+					idprob=new HashSet();
 				}
 				idprob.add("ER-08:["+nd.getID()+"] "+ER8);
 				probs.put(nd.getID(), idprob);
@@ -92,7 +100,7 @@ public class RuleChecker {
 		 
 		/*List of Constraints over the rules
 		 * 
-		 * -Only one link our of the Pro: checked at interface level
+		 * -Only one link out of the Pro: V
 		 * -No links between nodes: checked at interface level
 		 * 
 		 * -No repetition on the tail ids (double link) V
@@ -107,7 +115,7 @@ public class RuleChecker {
 		
 		Iterator iter=links.iterator();
 		Link link;
-		ArrayList idprob;
+		HashSet idprob;
 		HashMap headLinks=new HashMap();
 		boolean check=true;
 		ArrayList tails;
@@ -121,51 +129,67 @@ public class RuleChecker {
 			check=true;
 			if(head==null || head.replace(" ", "").length()<1){
 				if(probs.containsKey(id)){
-					idprob=(ArrayList) probs.get(id);
+					idprob=(HashSet) probs.get(id);
 				}else{
-					idprob=new ArrayList();
+					idprob=new HashSet();
 				}
 				idprob.add("ER-01:["+id+"] "+ER1);
 				probs.put(id, idprob);
 				check=false;
+				
 			}else{
 				if(!nodes.containsKey(head)){
 					if(probs.containsKey(id)){
-						idprob=(ArrayList) probs.get(id);
+						idprob=(HashSet) probs.get(id);
 					}else{
-						idprob=new ArrayList();
+						idprob=new HashSet();
 					}
 					idprob.add("ER-02:["+id+"] "+ER2);
 					probs.put(id, idprob);
 					check=false;
 				}
 			}
+			//check double heads
+			
+			if(link.getPotHeads().size()>1){
+			//	System.out.println("do I get here");
+				if(probs.containsKey(id)){
+					idprob=(HashSet) probs.get(id);
+				}else{
+					idprob=new HashSet();
+				}
+				idprob.add("ER-09:["+id+"] "+ER9);
+				probs.put(id, idprob);
+				check=false;
+			}
 			
 			//now check tails
 			tails=link.getTails();
 			if(tails.size()<1){
 				if(probs.containsKey(id)){
-					idprob=(ArrayList) probs.get(id);
+					idprob=(HashSet) probs.get(id);
 				}else{
-					idprob=new ArrayList();
+					idprob=new HashSet();
 				}
 				idprob.add("ER-03:["+id+"] "+ER3);
 				probs.put(id, idprob);
 				check=false;
 				
 			}else{
+				
 				boolean type=link.getCQtype();
-				if(type){
+				if(type){/*
+				//disabled due to the different CQ handling
 					if(tails.size()>1){
 						if(probs.containsKey(id)){
-							idprob=(ArrayList) probs.get(id);
+							idprob=(HashSet) probs.get(id);
 						}else{
-							idprob=new ArrayList();
+							idprob=new HashSet();
 						}
 						idprob.add("ER-07:["+id+"] "+ER7);
 						probs.put(id, idprob);
 						check=false;
-					}
+					}*/
 				}else{
 				
 				
@@ -179,27 +203,40 @@ public class RuleChecker {
 					tail=(String) itt.next();
 					if(test.contains(tail)){
 						if(probs.containsKey(id)){
-							idprob=(ArrayList) probs.get(id);
+							idprob=(HashSet) probs.get(id);
 						}else{
-							idprob=new ArrayList();
+							idprob=new HashSet();
 						}
+						if(!nodes.containsKey(tail)){
+								idprob.add("ER-10:["+id+"] "+ER10);
+								probs.put(id, idprob);
+								check=false;
+
+						}else{
 						etail=((Node)nodes.get(tail)).getID();
-						if(!idprob.contains("ER-04:["+id+"] "+ER4+" ["+etail+"]"))
-						idprob.add("ER-04:["+id+"] "+ER4+" ["+etail+"]");
-						probs.put(id, idprob);
-						check=false;
+							idprob.add("ER-04:["+id+"] "+ER4+" ["+etail+"]");
+							probs.put(id, idprob);
+							check=false;
+						}
 					}else{
 						test.add(tail);
 						if(!nodes.containsKey(tail)){
 							if(probs.containsKey(id)){
-								idprob=(ArrayList) probs.get(id);
+								idprob=(HashSet) probs.get(id);
 							}else{
-								idprob=new ArrayList();
+								idprob=new HashSet();
 							}
+							if(!nodes.containsKey(tail)){
+								idprob.add("ER-10:["+id+"] "+ER10);
+								probs.put(id, idprob);
+								check=false;
+
+							}else{
 							etail=((Node)nodes.get(tail)).getID();
 							idprob.add("ER-05:["+id+"] "+ER5+" ["+etail+"]");
 							probs.put(id, idprob);
 							check=false;
+							}
 						}
 					}
 					
@@ -282,7 +319,8 @@ public class RuleChecker {
 		//System.out.println(headLinks);
 		//Now I check the problems related to many links
 		Iterator iter=headLinks.keySet().iterator();
-		ArrayList samehead,idprob;
+		ArrayList samehead;
+		HashSet idprob;
 		ArrayList tail1;ArrayList tail2;
 		String key;
 		Iterator iti,itj;
@@ -327,14 +365,14 @@ public class RuleChecker {
 										if(probs.containsKey(link1.get("id"))){
 											idprob=(ArrayList) probs.get(link1.get("id"));
 										}else{
-											idprob=new ArrayList();
+											idprob=new HashSet();
 										}
 										idprob.add(prob);
 										probs.put(link1.get("id"), idprob);
 										if(probs.containsKey(link2.get("id"))){
 											idprob=(ArrayList) probs.get(link2.get("id"));
 										}else{
-											idprob=new ArrayList();
+											idprob=new HashSet();
 										}
 										idprob.add(prob);
 										probs.put(link2.get("id"), idprob);*/
@@ -344,16 +382,16 @@ public class RuleChecker {
 											//they are the same 
 											String prob="ER-06: ["+link1.getId()+"-"+link2.getId()+"] "+ER6;
 											if(probs.containsKey(link1.getId())){
-												idprob=(ArrayList) probs.get(link1.getId());
+												idprob=(HashSet) probs.get(link1.getId());
 											}else{
-												idprob=new ArrayList();
+												idprob=new HashSet();
 											}
 											idprob.add(prob);
 											probs.put(link1.getId(), idprob);
 											if(probs.containsKey(link2.getId())){
-												idprob=(ArrayList) probs.get(link2.getId());
+												idprob=(HashSet) probs.get(link2.getId());
 											}else{
-												idprob=new ArrayList();
+												idprob=new HashSet();
 											}
 											idprob.add(prob);
 											probs.put(link2.getId(), idprob);

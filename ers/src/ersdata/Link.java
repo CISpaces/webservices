@@ -18,6 +18,7 @@
 package ersdata;
 
 import java.util.ArrayList;
+import java.util.HashSet;
  
  
  
@@ -36,6 +37,7 @@ public class Link {
 	private String annot;
 	private boolean neg;
 	private boolean cqtype;
+	private HashSet potheads;
 
 	public Link(String name, String pc,String t){
 		this.ID=name;//ID of the link
@@ -50,6 +52,7 @@ public class Link {
 		//pro link true; con link false
 		this.text=t;//free text field
 		tails=new ArrayList();
+		potheads=new HashSet();
 		neg=false;
 		cqtype=false;
 	}
@@ -92,6 +95,9 @@ public class Link {
 		this.tails.add(tail);
 	}
 
+	public void setPotHead(String head) {
+		this.potheads.add(head);
+	}
 	public void setHead(String head) {
 		this.head = head;
 	}
@@ -121,7 +127,10 @@ public class Link {
 		return tails;
 	}
 
-
+	public HashSet getPotHeads() {
+		// TODO Auto-generated method stub
+		return potheads;
+	}
 	public boolean getCQtype() {
 		// TODO Auto-generated method stub
 		return cqtype;

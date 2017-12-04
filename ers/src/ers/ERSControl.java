@@ -1,4 +1,4 @@
-package ers; /******************************************************************************
+/******************************************************************************
  * This research was sponsored by the U.S. Army Research Laboratory and the
  * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
  * Project 6, Task 3: Collaborative Intelligence Analysis.
@@ -12,23 +12,27 @@ package ers; /******************************************************************
  * 
  * 
  * @author      Alice Toniolo  
- * @version     1.0  
- * @since 		April 2014           
+ * @version     2.0  
+ * @since 		July 2017         
  *   
  */
 
-import askpapipref.ASPHelper;
+package ers;
+
+ 
+
+ 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import utils.JsonHelper;
 import com.google.gson.internal.LinkedTreeMap;
 import ersdata.Link;
 import ersdata.Node;
 import ersdata.Schemes;
-import nlg.NLGBrancher;
-import praf.PrafRun;
-import utils.JsonHelper;
 
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class ERSControl {
@@ -40,21 +44,17 @@ public class ERSControl {
 	private ASPHelper aspic;
 	private RuleChecker ruler;
 	private final String PRB0="Sorry, you must have at least one node for evaluation, please try again.";
-
 	private final String PRB2="Sorry, the reasoner has given no response, please try again.";
 	private final String PRB3="Sorry, the result was corrupted, please try again.";
 	private final String PRB4="Sorry, there are problems with the structure of the links, please fix them and try again.";
 	private final String PRB5="Sorry, there are nodes with the same id, please delete and try again.";
-	
 	private final String WARN1="Warning: There is a cycle among the Pro Links";
 	private final String WARN2="Warning: The preference is not justified";
-	private final String WARN3="Warning: With uncertainty preferences are not considered";
+
 	private HashMap nodes;
 	private HashMap mapINDs;
 	private ArrayList links;
-	private int maxChoice; //counts how many evaluation score where given by the user
 	private boolean PRINT;
-	private static Logger log;
 
 	private HashSet infonodes;//list of id
 	private HashSet prefnodes;//list of id
@@ -63,27 +63,23 @@ public class ERSControl {
 	private HashSet unprefs;
 	private Schemes schemes;
 	private ERSEval ersev;
-	private int uncServ;
+
 	
 
-	public ERSControl(boolean PR, String ci_path) {
+	public ERSControl(boolean PR, String scheme_str) {
 		 PRINT=PR;
 		 jsh=new JsonHelper();
-	
 		 aspic=new ASPHelper(PRINT);
 		 ruler=new RuleChecker();
 		 nodes=new HashMap();
 		 links=new ArrayList();
-		 maxChoice=0;
 		 infonodes=new HashSet();
 		 prefnodes=new HashSet();
 		 cispprefnodes=new HashSet();
-		 schemes=new Schemes(ci_path);
+		 schemes=new Schemes(scheme_str);
 		 mapINDs=new HashMap();
 		 unprefs=new HashSet();
 		 prefids=new HashMap();
-		 log=Logger.getLogger(getClass().getName());
-
 		
 	}
  	/* private   void print(String st) {
@@ -98,50 +94,34 @@ public class ERSControl {
 	} */ 
 	public String evaluateJsonString(LinkedTreeMap mgraph) {
 		//first Convert Json to maps
-
-		log.log(Level.INFO,"*** ERS SERVICE - CALLING METHOD TO PARSE JSON***");
-	 	String ersResponse;
+ 
+		   
+	 
+	 String ersResponse;
  
 		ArrayList list=new ArrayList();
 		
 		//Then create lists of Nodes/Links
 		ArrayList rnd=(ArrayList)mgraph.get("nodes");
-		log.log(Level.INFO,"*** !!!! NUMBER OF NODES IS " + rnd.size());
-
 		 if(rnd.isEmpty()){
 			  return setSomethingWrongResponse(PRB0);
 		 }
-		 String uncert=(String)mgraph.get("uncert");
-		 uncServ=0;
-		 if(uncert.equals("PrAf")){
-			 uncServ=1;
-			 
-		 } else if(uncert.equals("HyperArg")){
-			 uncServ=2;
-			
-		 }
+		 
 		boolean testnodes=createNodesFrom(rnd);
-
 		
-		if(uncServ!=0 && !prefnodes.isEmpty()){
-			 list.add(WARN3);
-		}
 		if(!testnodes){
 			return setSomethingWrongResponse(PRB5);
 		}
-        log.log(Level.INFO,"*** ERS SERVICE - NODES SUCCESSFULLY PARSED FROM JSON***");
-        log.log(Level.INFO,"*** ERS SERVICE - PARSING LINKS FROM JSON***");
+		
 		getLinksFrom(rnd,(ArrayList) mgraph.get("edges"));
-
+		
 		//System.out.println(nodes+"\n"+links);
-        log.log(Level.INFO,"*** ERS SERVICE - TESTING RULES ***");
 		HashMap Probs=ruler.testRules(nodes,links,prefnodes);
 		
 		if(!Probs.isEmpty()){
 			//prepare problems string to return with empty evaluation 
 				HashMap ErsResponse=setProbsErsResponse(Probs);
 				ersResponse=jsh.convertInputJson(ErsResponse);
-                log.log(Level.INFO,"*** ERS SERVICE - PROBLEMS IS EMPTY!***");
 				return ersResponse;
 		}else{
 		/*for TOAST I need:
@@ -159,29 +139,23 @@ public class ERSControl {
 		HashMap Input=writeRules(special,samehead,st);
 		aspic.prepareInputAspApi(Input);
 		HashMap resmap=aspic.evaluate();
-
-
-
-        log.log(Level.INFO,"*** ERS SERVICE - ALMOST THERE***");
+		
+		
+		
+		
 		if(resmap==null){
-                log.log(Level.INFO,"*** ERS SERVICE - SOMETHING WENT WRONG - PRB2***");
 				return setSomethingWrongResponse(PRB2);
 		}
 		
 		if(resmap.isEmpty() || resmap.get("wellformed").equals(false)){
-                log.log(Level.INFO,"*** ERS SERVICE - SOMETHING WENT WRONT - PRB3***");
 				return setSomethingWrongResponse(PRB3);
 		}else{
-            log.log(Level.INFO,"*** ERS SERVICE - PREPARING TO GET A RESPONSE BACK!***");
+			
 			//this sets the evaluation on the nodes
 			 //now prepare a string to send back 
 			 //labelling list IN/OUT/UNDEC for each node and a list of Probs
-			 ersev=new ERSEval(nodes,maxChoice,uncServ,prefids);
+			 ersev=new ERSEval(nodes,prefids);
 			 HashMap ErsResponse= ersev.elaborateResponse(resmap);
-			//HERE ALSO CONSIDER THE UNCERT VALUE (I need it for the PrAF, not the HyperArg)
-				if(uncServ!=0){
-					ErsResponse=runPraf(Input,ErsResponse);
-				} 
 				
 			 if(st!=null){
 				 
@@ -191,11 +165,6 @@ public class ERSControl {
 			 if(!list.isEmpty()){
 				 ErsResponse.put("warnings", list);
 			 }
-			 //here get chuncks!!!
-			 NLGBrancher nlg=new NLGBrancher();
-            log.log(Level.INFO,"*** ERS SERVICE - NLG BRANCHER RUNNING***");
-			 HashMap chuncks=nlg.branchNLGgraph(mgraph, ErsResponse, ruler.getGraph());
-			 ErsResponse.put("chunks",chuncks);
 			 ersResponse=jsh.convertInputJson(ErsResponse);
 		}
 		}
@@ -257,7 +226,6 @@ public class ERSControl {
 					// I have set this now remove 
 					removals.add(id);
 					if(!pref.isJustified()){
-						if(uncServ==0)
 						warns.add("["+pref.getID()+"] "+WARN2);
 						unprefs.add(pref.getIID());
 					}
@@ -272,24 +240,8 @@ public class ERSControl {
 		//System.out.println(nodes);
 		return warns;
 	}
-	private HashMap runPraf(HashMap input,HashMap ErsResponse) {
-		
-		PrafRun praf=new PrafRun(nodes,PRINT);
-		HashMap colors=(HashMap) ErsResponse.get("colors");
-		HashMap listh=ersev.getHList();
-		//convertInputToASKPAPI(input, colors,listh,ErsResponse);
-		praf.setService(input);
- 
-		
-		colors=praf.prafrun(colors,listh);
-		  ErsResponse.put("colors", colors);
-		
-		HashMap conv=praf.convert(ErsResponse);
-		//System.out.println(conv);
-		return conv; 
-	 
-	}
 	
+	//testing method
 	private void convertInputToASKPAPI(HashMap input,HashMap colors,HashMap listh, HashMap ErsResponse) {
 		JsonHelper jsh=new JsonHelper();
 		HashMap map= new HashMap();
@@ -326,10 +278,9 @@ public class ERSControl {
 		  //Here I create a node hashmap + map the ids to their internal id 
 		  //(from now onwards only internal ids are used)
 		   Iterator iter=arrayList.iterator();
-		   maxChoice=0;
-		   String eval;
 		   LinkedTreeMap mapNode;
 		   String type;
+		   String eval;
 		   Node nd;
 		 	while(iter.hasNext()){
 		 		mapNode=(LinkedTreeMap)iter.next();
@@ -337,19 +288,17 @@ public class ERSControl {
 		 		if(mapNode.get("type").equals("I") || mapNode.get("type").equals("P")){
 		 			
 		 			//System.out.println(mapNode);	
-		 		eval=((String) mapNode.get("eval")).toUpperCase();
+		 		//eval=((String) mapNode.get("eval")).toUpperCase();
 		 		type=(String) mapNode.get("input");
-		 		while(eval.contains(" ")){
-		 			eval=eval.replace(" ", "");
-		 		}
+		 	//	while(eval.contains(" ")){
+		 	//		eval=eval.replace(" ", "");
+		 	//	}
+		 		
 		 		nd=new Node(countid++);
+		 	//	nd.setEval(eval);
 		 		nd.setID((String) mapNode.get("nodeID"));
 		 		nd.setText((String) mapNode.get("text"));
-		 		if(eval.equals("X") || eval.equals("?") || eval.equals("V")){//// evaluation given by the user
-		 			maxChoice++;
-		 			nd.setEval(eval);
-		 		} 
-		 		nd.setUncert((String) mapNode.get("uncert"));
+		 		
 		 		while(type.contains(" ")){
 			 			type=type.replace(" ", "");
 			 		}
@@ -385,30 +334,28 @@ public class ERSControl {
 		HashMap linksp=new HashMap();
 	    Iterator iter=nodes.iterator();
 	    Link link;
-	    HashSet cqs=schemes.getCQs();
+	 //   HashSet cqs=schemes.getCQs();
 	    while(iter.hasNext()){
 	    	LinkedTreeMap nd=(LinkedTreeMap) iter.next();
 	    	if(nd.get("type").equals("CA") || nd.get("type").equals("RA")){
 	    		link=new Link((String)nd.get("nodeID"),(String)nd.get("type"),(String)nd.get("text")); 
 	    		//here if the node underminer or a rebuttal specify contradictory negation
-	    		if(((String)nd.get("type")).equals("CA")){
+	    		//This was the old check for Critical questions, removed for logic consistency
+	    		/*if(((String)nd.get("type")).equals("CA")){
 	    			//this is a con link
-                    if(!nd.get("annot").equals("{}")) {
-                        //LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
-                    	HashMap annot=jsh.convertInputMap((String)nd.get("annot"));
-                        if(annot.containsKey("cq_id")){
-                            String cq=(String)annot.get("cq_id");
-                            if(cq!=null){
-                                //this is a cq link 
-                                link.setCqType();
-                                //if its annotation is not one of the undercut then it is a contradictory negation
-                                if(!cqs.contains(cq)){
-                                    link.setContradictory();
-                                }
-                             }
-                         }
-                    }
-	    		 }
+	    			LinkedTreeMap annot=(LinkedTreeMap) nd.get("annot");
+	    			if(annot.containsKey("cq_id")){
+	    				String cq=(String)annot.get("cq_id");
+	    				if(cq!=null){
+	    					//this is a cq link 
+	    					link.setCqType();
+	    					//if its annotation is not one of the undercut then it is a contradictory negation
+	    					if(!cqs.contains(cq)){
+	    						link.setContradictory();
+	    					}
+	    				 }
+	    			 }
+	    		 }*/
 	    		linksp.put(nd.get("nodeID"), link);
 	    		
 	    		
@@ -421,8 +368,8 @@ public class ERSControl {
 	    //linksp is indexed by the id of the link round node
 	    while(iter.hasNext()){
 	    	LinkedTreeMap ed=(LinkedTreeMap) iter.next();
-	    	from=(String) ed.get("source");
-	    	to=(String) ed.get("target");
+	    	from=(String) ed.get("fromID");
+	    	to=(String) ed.get("toID");
 	    	
 	    	
 	    	if(linksp.containsKey(to)){
@@ -431,6 +378,12 @@ public class ERSControl {
 	    		link=(Link) linksp.get(to);
 	    		id=(String) mapINDs.get(from);
 	    		link.setTails(id);
+	    		//if this is a tail but the head is a link
+	    		//
+	    		if(linksp.containsKey(from)){
+	    			link=(Link) linksp.get(from);
+	    			link.setPotHead(to);
+	    		}
 	    		
 	    	}
 	    	else{if (linksp.containsKey(from)){
@@ -438,6 +391,10 @@ public class ERSControl {
 	    		link=(Link) linksp.get(from);
 	    		id=(String) mapINDs.get(to);
 	    		link.setHead(id);
+	    		//collect all heads for a check later
+	    		link.setPotHead(to);
+	    		
+	    	
 	    	//	System.out.println(to);
 	    		if(link.isPro() && cispprefnodes.contains(to)){
 	    			String toid=(String) mapINDs.get(to);
@@ -537,7 +494,7 @@ private HashMap writeRules(ArrayList special, HashMap samehead, Set st) {
 		String prem;
 		while(iter.hasNext()){
 			prem=(String) iter.next();
-			if(unprefs.contains(prem)  && uncServ==0){
+			if(unprefs.contains(prem)){
 				counter++;
 				artefact++;
 				String ahead="H"+artefact;
@@ -664,7 +621,7 @@ private HashMap writeRules(ArrayList special, HashMap samehead, Set st) {
 
 	 
 	private String getPred(String node) {
-		if(prefnodes.contains(node) && uncServ==0){
+		if(prefnodes.contains(node)){
 			//System.out.println(node);
 			Node nd=(Node) nodes.get(node);
 			return nd.getPref_pred();
@@ -698,7 +655,6 @@ private String setSomethingWrongResponse(String string){
 	map.put("fail",true);
 	map.put("cause",string);
 	map.put("probs", "");
-
 	map.put("assign-found",false);
 	map.put("colors",setAllUndecided());
 	String ersResponse=jsh.convertInputJson(map);

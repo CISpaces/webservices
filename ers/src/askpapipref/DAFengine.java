@@ -18,12 +18,12 @@
 
 
 package askpapipref;
+ 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import net.sf.jargsemsat.datastructures.DungAF;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class DAFengine implements AFengine{
 private   DungAF dunaf;
 	public DAFengine(ArrayList args, ArrayList atks) {

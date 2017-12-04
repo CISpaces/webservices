@@ -1,4 +1,4 @@
-package ers; /******************************************************************************
+/******************************************************************************
  * This research was sponsored by the U.S. Army Research Laboratory and the
  * U.K. Ministry of Defence under the Biennial Program Plane 2013 (BPP13),
  * Project 6, Task 3: Collaborative Intelligence Analysis.
@@ -11,27 +11,29 @@ package ers; /******************************************************************
  * Easier to manage in 2 classes 
  * 
  * @author      Alice Toniolo  
- * @version     1.0  
- * @since 		July 2014           
+ * @version     2.0  
+ * @since 		July 2017           
  *   
  */
 
+package ers;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import ersdata.Node;
 
-import java.util.*;
-
 public class ERSEval {
-	private int maxChoice;
  	private HashMap nodes;
  	private HashMap listh;
-	private int uncServ;
 	private HashMap prefids;
-	public ERSEval(HashMap nds, int mc,int unc, HashMap pids){
-		maxChoice=mc;
+	public ERSEval(HashMap nds,HashMap pids){
 		nodes=nds;
 		listh=new HashMap();
-		uncServ=unc;
 		prefids=pids;
 	}
 
@@ -152,7 +154,7 @@ private HashMap setColorsErsResponse(ArrayList exts, HashMap args, HashSet skpre
 	//NODE In assigned has the priority
 	//so if there is a node that has two arguments for it, if there is at least one that 
 	//is in the extension it will be assigned to true
-	//System.out.println(args);
+
 	
 //	System.out.println("MAX"+maxChoice);
 	
@@ -233,37 +235,6 @@ private HashMap setColorsErsResponse(ArrayList exts, HashMap args, HashSet skpre
 			}
 			}
 			count=0;
-			if(maxChoice!=0){
-			Iterator itu=colext.keySet().iterator();
-			String choice,assign;
-			
-			while(itu.hasNext()){
-		    	key=(String) itu.next();
-		    	assign=(String) colext.get(key);
-		    	nd=(Node)nodes.get(key);
-		    	choice=nd.getEval();
-		    	if(choice!=null){
-		    		if(choice.equals("?")){
-		    			count++;
-		    		}else{
-		    			if(!assign.equals("?")){
-		    				if(assign.equals(choice)){
-		    					count++;
-		    				}
-		    			}
-		    		}
-		    		}else{
-			    		count++;
-			    	}
-				}
-			}
-			/*TABLE 
-			 User / Ass X 	V 	?
-			 X		|	+1	0	0
-			 V		|	0	+1	0
-			 ?		|	+1	+1	+1
-			
-			*/
 		//	System.out.println(colext);
 			//add seth into the list for PRAF
 			listh.put("Skeptical Opt-"+j,seth);
@@ -325,37 +296,7 @@ private HashMap setColorsErsResponse(ArrayList exts, HashMap args, HashSet skpre
 			}
 			}
 			count=0;
-			if(maxChoice!=0){
-			Iterator itu=colext.keySet().iterator();
-			String choice,assign;
-			
-			while(itu.hasNext()){
-		    	key=(String) itu.next();
-		    	assign=(String) colext.get(key);
-		    	nd=(Node)nodes.get(key);
-		    	choice=nd.getEval();
-		    	if(choice!=null){
-		    		if(choice.equals("?")){
-		    			count++;
-		    		}else{
-		    			if(!assign.equals("?")){
-		    				if(assign.equals(choice)){
-		    					count++;
-		    				}
-		    			}
-		    		}
-		    		}else{
-			    		count++;
-			    	}
-				}
-			}
-			/*TABLE 
-			 User / Ass X 	V 	?
-			 X		|	+1	0	0
-			 V		|	0	+1	0
-			 ?		|	+1	+1	+1
-			
-			*/
+		
 			
 			 
 			//add seth into the list for PRAF
@@ -380,26 +321,10 @@ private HashMap setColorsErsResponse(ArrayList exts, HashMap args, HashSet skpre
 	 
 	
 	//set colors 
-		 if(maxChoice==0){
-			 if(uncServ!=0){
-			 colors.put("Clear all", naext);
-			 }
-			 map.put("colors",colors);
-			 map.put("assign-found",true);
-		 }else{
-			 if(maxChoice==max){
-				 map.put("assign-found",true);
-			 }else{
-				 map.put("assign-found",false);
-			 }
-			 iter=maxMatch.iterator();
-			 while(iter.hasNext()){
-				 key=(String) iter.next();
-				 colorResp.put(key,colors.get(key));
-			 }
-			 colorResp.put("Clear all", naext);
-			 map.put("colors",colorResp);
-		 }
+ 
+	map.put("colors",colors);
+	map.put("assign-found",true);	 
+		  
 		
 		
 	//set results on the response map

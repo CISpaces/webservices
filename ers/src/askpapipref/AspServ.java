@@ -10,23 +10,23 @@
  * 
  * 
  * @author      Alice Toniolo  
- * @version     1.0  
- * @since 		November 2014           
+ * @version     2.0  
+ * @since 		July 2017          
  *   
  */
 
 
 package askpapipref;
 
-import utils.JsonHelper;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import utils.JsonHelper;
 
-public class AspServ {
+
+public class AspServ implements AskpapiInterf{
 
 	private int count;
 	private JsonHelper jsh;
@@ -57,8 +57,10 @@ public class AspServ {
 	protected boolean wlf;
 	protected HashSet<String> cycle;
 	protected int contid;
+	private boolean test;
+	private boolean test1;
  
-	public AspServ(){
+	public AspServ() {
 	 jsh=new JsonHelper();
 	 rbuild=new RuleBuilder();
 	 arbc=new HashMap();
@@ -71,9 +73,12 @@ public class AspServ {
 	 
  
 	}
+	
+	
 
-	public String AspRunFromJson(String json) {
-		//covert map
+	@Override
+	public void setKBFromJson(String json) {
+		test=true;
 		HashMap map=jsh.convertInputMap(json);
 		//parse knowledge base and create tree of arguments
 	
@@ -101,35 +106,75 @@ public class AspServ {
 		wlf=rbuild.isWellFormulated();
 		cycle=rbuild.testGraphStructure(prems);
 		contid=rbuild.getContId();
-		map=AspRun();
-		return jsh.convertInputJson(map);
-	}	
-	
-	
-
-	public HashMap AspRunFromInput(String r,String fc,  String pr){
-		//parse knowledge base and create tree of arguments
 		
-		 
-		rulbc=rbuild.getRules(r);
-		rulbi=rbuild.getRulesBI();
-		rprefs=rbuild.getRulePref();
-		
-		prems=rbuild.getPremises(pr);
-		kbpref=rbuild.getKPref();
-		kbpref_rev=rbuild.getKPrefRev();
-		rbuild.getContrary(fc);
-		fopp=rbuild.getFOpp();
-		symb=rbuild.getSymb();
-		wlf=rbuild.isWellFormulated();
-		cycle=rbuild.testGraphStructure(prems);
-		
-		contid=rbuild.getContId();
-		return AspRun();
 	}
+	
+	
+	@Override
+	public void setKBFromInput(String r,String fc, String pr){
+		//parse knowledge base and create tree of arguments
+		test=true;
+		 
+				rulbc=rbuild.getRules(r);
+				rulbi=rbuild.getRulesBI();
+				rprefs=rbuild.getRulePref();
+				
+				prems=rbuild.getPremises(pr);
+				kbpref=rbuild.getKPref();
+				kbpref_rev=rbuild.getKPrefRev();
+				rbuild.getContrary(fc);
+				fopp=rbuild.getFOpp();
+				symb=rbuild.getSymb();
+				wlf=rbuild.isWellFormulated();
+				cycle=rbuild.testGraphStructure(prems);
+				
+				contid=rbuild.getContId();
+		
+	}
+
  
 	
-	protected HashMap AspRun() {
+
+	@Override
+	public ArrayList[] getAbstract() {
+		if(test==false){
+			 System.out.println("No input");
+			 return null;
+		 }
+		return AspRun();
+	}
+	
+	
+	@Override
+	public HashMap elaborateAbstract() {
+		HashMap map=new HashMap();
+		if(test && test1){
+		map.put("arguments", args);
+		ArrayList list=new ArrayList();
+		 Iterator iter=defs.iterator();
+		 String couple[];
+		 while(iter.hasNext()){
+			 couple=(String[]) iter.next();
+			 list.add(couple[0]+">"+couple[1]);
+		 }
+		map.put("defeats", list);
+		
+		ArrayList lts=new ArrayList();
+		 iter=atons.iterator();
+		 while(iter.hasNext()){
+			 couple=(String[]) iter.next();
+			 lts.add(couple[0]+">("+couple[1]+">"+couple[2]+")");
+		 }
+		 map.put("attonatt", lts);
+		}
+		return map;
+	}
+	
+	
+	
+	
+	private ArrayList[] AspRun() {
+		test1=true;
 	 	//printArguments();
 		//Create arguments!!!!\
 		boolean cond=false;
@@ -146,7 +191,7 @@ public class AspServ {
 		//	 System.out.println(fopp);
 			argbuild.findArguments(conc,cycle);
 			argbuild.findAtks(conc, fopp);
-			
+		
 			Object[] obj=argbuild.test();
 			HashSet newruleset=(HashSet) obj[0];
 			HashMap newkbpref=(HashMap) obj[1];
@@ -170,18 +215,7 @@ public class AspServ {
 			}else{
 				cond=true;
 			}
-		//	System.out.println("NEXT ROUND");
-		//	 printX();
-		/*	Iterator iter;
-			 System.out.println("PREFERENCES - KB");
-			 iter=kbpref.keySet().iterator();
-			
-			 while(iter.hasNext()){
-				 String tol = (String) iter.next();
-				 Pref list = (Pref)kbpref.get(tol);
-				 System.out.println(list.toString());
-			 }
-			 */
+		 
 			
 		}while(!cond);
 		
@@ -200,8 +234,28 @@ public class AspServ {
 	 	atons=list[2];
 		//contains all the arguments for Engine as Strings[2] (head, tail) in a ArrayList 
 		// and two-element String-arrays ([attacker, attacked])
+	 	return list;
+	}
+	 	
+	 	
+	@Override
+	public String getJsonEvaluateExt() {
+		
+		HashMap map=getEvaluateExt();
+		return jsh.convertInputJson(map);
+	}
+	
 
-		//evaluate arguments
+	@Override
+	public HashMap getEvaluateExt() {
+	//evaluate arguments
+		if(test==false){
+			 System.out.println("No input");
+			 return null;
+		 }
+		if(test1==false){
+			AspRun();
+		}
 		AFengine engine;
 		if(atons.isEmpty()){
 		//System.out.println("here");
@@ -212,8 +266,8 @@ public class AspServ {
 		}
 		extensions=engine.evaluatePreferred();
 	
-	//	printArguments();
-		return elaborateResults();
+		HashMap map=elaborateResults();
+		return map;
 		
 	}
 	
@@ -261,7 +315,12 @@ public class AspServ {
 		return map;
 	}
 
-	public void printArguments() {
+	@Override
+	public void printFullKBArgs() {
+		 if(test==false){
+			 System.out.println("No input");
+			 return;
+		 }
 		 Iterator iter=prems.iterator();
 		 System.out.println("PREMISES");
 		 while(iter.hasNext()){
@@ -333,42 +392,17 @@ public class AspServ {
 		
 	}
 
+
+
+ 
+
+
+
 	
-	private void printX(){
-		 Iterator iter=prems.iterator();
-		 System.out.println("PREMISES");
-		 while(iter.hasNext()){
-			 System.out.println(iter.next());
-		 }
-	
-		 Pref list;String tol;
-		 System.out.println("PREFERENCES - KB");
-		 iter=kbpref.keySet().iterator();
-		
-		 while(iter.hasNext()){
-			 tol=(String) iter.next();
-			 list=(Pref)kbpref.get(tol);
-			 System.out.println(list.toString());
-		 }
-		 
-		 
-		 
-		 System.out.println("RULES");
-		 Rule rule; 
-		
-		 String conc;
-		 iter=rulbi.keySet().iterator();
-		// System.out.println(rulbc);
-		 while(iter.hasNext()){
-			 conc=(String) iter.next();
-			// System.out.println(conc);
-			 rule=(Rule) rulbi.get(conc);
-		    System.out.println(rule.toString());
-		 }
-	}
-	
-	
-	
+	 
+
+
+
 	
 	
 }
