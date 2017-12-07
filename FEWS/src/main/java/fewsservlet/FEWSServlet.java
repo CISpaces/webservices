@@ -129,16 +129,19 @@ public class FEWSServlet {
     @GET
     @Path("/topics")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Topic> listTopics(@Context HttpServletResponse response) {
+    public Response listTopics(@Context HttpServletResponse response) {
         log.info("#### Getting Topics");
 
         List<Topic> topicList = postgreSQLDB.listTopics();
-        ListIterator<Topic> topicListIterator = topicList.listIterator();
-        while (topicListIterator.hasNext()) {
-            response.setHeader("topic-" + topicListIterator.nextIndex(),
-                    topicListIterator.next().toString());
+        if(topicList != null) {
+            ListIterator<Topic> topicListIterator = topicList.listIterator();
+            while (topicListIterator.hasNext()) {
+                response.setHeader("topic-" + topicListIterator.nextIndex(),
+                        topicListIterator.next().toString());
+            }
+            return Response.status(Response.Status.OK).entity(topicList).build();
         }
-        return topicList;
+        else return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @JWTTokenNeeded
@@ -149,7 +152,10 @@ public class FEWSServlet {
         log.info("#### Getting vocabulary");
 
         List<VocabularyTopic> vocabularyTopicList =  postgreSQLDB.getVocab();
-        return Response.status(Response.Status.OK).entity(vocabularyTopicList).build();
+        if(vocabularyTopicList != null) {
+            return Response.status(Response.Status.OK).entity(vocabularyTopicList).build();
+        }
+        else return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); 
     }
 
     @JWTTokenNeeded

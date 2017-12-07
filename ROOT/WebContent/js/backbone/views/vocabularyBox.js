@@ -26,8 +26,8 @@ app.VocabularyBoxView = Backbone.View.extend({
         }
       },
       error: function(response) {
-        alert("Could not fetch Vocabulary. Please refer to the system administrator.");
-        console.error("Could not get vocabulary");
+        console.error("An error occurred fetching the vocabulary from the Fact Extraction service. Please contact the system administrator.");
+        alert("An error occurred fetching the vocabulary from the Fact Extraction service. Please contact the system administrator.");
         console.error(response);
       }
     });
