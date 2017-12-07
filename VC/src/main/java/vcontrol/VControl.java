@@ -141,14 +141,16 @@ public class VControl {
         String graphID = map.get("graphID").toString();
         String userID = map.get("userID").toString();
         String title = map.get("title").toString();
-        String description = map.get("description").toString();
+        String description = "";
+        if(null != map.get("description")) {
+            description = map.get("description").toString();
+        }
         Timestamp timestamp = timeHelper.formatDateCIS(map.get("timest").toString());
         boolean isShared = Boolean.parseBoolean(map.get("isshared").toString());
         String parentGraphID = null;
         if(map.get("parentgraphid") != null){
             parentGraphID = map.get("parentgraphid").toString();
         }
-
 
         DBQuery dbQuery = new DBQuery();
         dbQuery.insertGraph(graphID, userID, timestamp, title, description, isShared, parentGraphID);
