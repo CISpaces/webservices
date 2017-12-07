@@ -26,7 +26,7 @@ app.VocabularyBoxView = Backbone.View.extend({
         }
       },
       error: function(response) {
-        alert("Your credentials have expired, please log out and back in");
+        alert("Could not fetch Vocabulary. Please refer to the system administrator.");
         console.error("Could not get vocabulary");
         console.error(response);
       }

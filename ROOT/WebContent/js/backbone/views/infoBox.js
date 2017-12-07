@@ -37,7 +37,7 @@ app.InfoBoxView = Backbone.View.extend({
         }
       },
       error: function(response) {
-        console.error("Could not get Topics");
+        console.error("Could not fetch Topics. Please refer to the system administrator.");
         console.error(response);
       }
     });
