@@ -8,7 +8,7 @@ source ~/.profile
 
 echo "# - Stopping Apache Derby..."
 cd ${CISPACES}/tools/derby
-${GAIAN}/bin/stopNetworkServer
+bin/stopNetworkServer
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 
 sleep 2

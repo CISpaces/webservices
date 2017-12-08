@@ -44,51 +44,47 @@ echo "export JAVA_HOME=/usr/lib/jvm/default-java" >> ~/.profile
 echo 
 
 echo "# - Creating tools directory.."
-mkdir -p $CISPACES/tools/
+mkdir -p ${CISPACES}/tools/
 echo
 
 echo "# - Install Apache Derby...? (Y/n)" 
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-if [ ! -e "$CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz" ]; then
-        mkdir -p $CISPACES/tools/derby/ \
-	&& wget -O $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz ${DERBY_URL} 
+if [ ! -e "${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz" ]; then
+	wget -O ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz ${DERBY_URL} 
 fi	
-tar xf $CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin.tar.gz -C $CISPACES/tools/derby
+tar xf ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz -C ${CISPACES}/tools \
+	&& ln -s ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin ${CISPACES}/tools/derby
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
-echo "# - Updating environment..."
-echo "export GAIAN=$CISPACES/tools/derby/db-derby-${DERBY_VERSION}-bin" >> ~/.profile
-source ~/.profile
-echo
-
 echo "# - Install Apache Tomcat...? (Y/n)" 
-if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-mkdir -p $CISPACES/tools/tomcat
-if [ ! -e "$CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
-	wget -O $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz ${TOMCAT_URL}
+if [ "${yes}" != 'true' ]; then read stopgo; if [ "${stopgo}" == "n" ]; then exit 0; fi; fi
+
+if [ ! -e "${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
+	wget -O ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz ${TOMCAT_URL}
 fi
-tar xf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools/tomcat/ \
-	&& rm -rf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/ROOT.war \
-	&& rm -rf $CISPACES/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/ROOT 
+tar xf ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools \
+	&& ln -s ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}  ${CISPACES}/tools/tomcat \
+	&& rm -rf ${CISPACES}/tools/tomcat/webapps/*
+
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo 
 
 echo "# - Updating environment..."
-echo "export CATALINA_HOME=${CISPACES}/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}" >> ~/.profile
+echo "export CATALINA_HOME=${CISPACES}/tools/tomcat" >> ~/.profile
 source ~/.profile
 echo
 
 echo "# - Copying Derby library..."
-cp ${GAIAN}/lib/derbyclient.jar ${CATALINA_HOME}/lib/ \
-&& cp ${GAIAN}/lib/derbyLocale* ${CATALINA_HOME}/lib/
+cp  ${CISPACES}/tools/derby/lib/derbyclient.jar ${CATALINA_HOME}/lib/ \
+	&& cp  ${CISPACES}/tools/derby/lib/derbyLocale* ${CATALINA_HOME}/lib/
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo 
 
 echo "# - Configure Tomcat...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-sed -i 's:</Context>::g' ${CISPACES}/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/context.xml
-cat << 'EOF' >> ${CISPACES}/tools/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/context.xml
+sed -i 's:</Context>::g' ${CISPACES}/tools/tomcat/conf/context.xml
+cat << 'EOF' >> ${CISPACES}/tools/tomcat/conf/context.xml
 <Resource name="jdbc/myDB"
         auth="Container"
         type="javax.sql.DataSource"

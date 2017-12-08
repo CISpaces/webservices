@@ -8,7 +8,7 @@ source ~/.profile
 
 echo "# - Starting Apache Derby in the background..."
 cd ${CISPACES}/tools/derby
-${GAIAN}/bin/startNetworkServer &
+bin/startNetworkServer &
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 sleep 2
 cd -
