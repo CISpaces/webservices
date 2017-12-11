@@ -26,6 +26,13 @@
     <button type="submit" class="btn_login" id="login">Login</button>
   </div>
 </form>
+    <script type="text/javascript">
+        //Alert user that, currently, browsers other than chrome are unsupported
+        var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+        if(!is_chrome){
+            alert("This version of CISpaces requires Google Chrome to function correctly");
+        }
+    </script>
 <script type="text/javascript" src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="js/login.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
