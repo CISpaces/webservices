@@ -16,7 +16,7 @@ cd -
 
 echo
 echo "# - Stopping Apache Tomcat..."
-$CATALINA_HOME/bin/shutdown.sh
+${CATALINA_HOME}/bin/shutdown.sh
 if [ $? -eq 0 ]; then 
 	echo "[OK]"
 	echo

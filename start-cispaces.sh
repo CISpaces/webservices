@@ -15,7 +15,7 @@ cd -
 
 echo
 echo "# - Starting Apache Tomcat in the background..."
-$CATALINA_HOME/bin/startup.sh
+${CATALINA_HOME}/bin/startup.sh
 if [ $? -eq 0 ]; then
 	echo "[OK]"
 	echo
@@ -29,10 +29,19 @@ if [ $? -eq 0 ]; then
 	echo
 	echo "# CISpaces started listening at the following URLs:"
 	echo
-	ifconfig | grep "inet addr" | cut -d: -f2 | cut -d" " -f1 | while read -r host_ip
+	for host_ip in $(hostname -I)
 	do
 		echo "http://${host_ip}:8080"
 	done
 	echo
-	echo "Do not close this terminal"
+	echo "# Please ensure port 8080 is accessible."
+	echo
+	echo "# RHEL / CentOS:"
+	echo "    $ sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent"
+	echo "    $ sudo firewall-cmd --reload"
+	echo 
+	echo "# Ubuntu:"
+	echo "    $ sudo ufw allow 8080"
+	echo
+	echo "# Do not close this terminal"
 else echo "[Failed]"; exit; fi

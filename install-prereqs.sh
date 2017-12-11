@@ -45,27 +45,28 @@ echo
 
 echo "# - Creating tools directory.."
 mkdir -p ${CISPACES}/tools/
+cd ${CISPACES}/tools/
 echo
 
 echo "# - Install Apache Derby...? (Y/n)" 
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-if [ ! -e "${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz" ]; then
-	wget -O ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz ${DERBY_URL} 
+if [ ! -e "db-derby-${DERBY_VERSION}-bin.tar.gz" ]; then
+	wget -O db-derby-${DERBY_VERSION}-bin.tar.gz ${DERBY_URL} 
 fi	
-tar xf ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin.tar.gz -C ${CISPACES}/tools \
-	&& ln -s ${CISPACES}/tools/db-derby-${DERBY_VERSION}-bin ${CISPACES}/tools/derby
+tar xf db-derby-${DERBY_VERSION}-bin.tar.gz \
+	&& ln -s db-derby-${DERBY_VERSION}-bin derby
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo
 
 echo "# - Install Apache Tomcat...? (Y/n)" 
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "${stopgo}" == "n" ]; then exit 0; fi; fi
 
-if [ ! -e "${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
-	wget -O ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz ${TOMCAT_URL}
+if [ ! -e "apache-tomcat-${TOMCAT_VERSION}.tar.gz" ]; then
+	wget -O apache-tomcat-${TOMCAT_VERSION}.tar.gz ${TOMCAT_URL}
 fi
-tar xf ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C ${CISPACES}/tools \
-	&& ln -s ${CISPACES}/tools/apache-tomcat-${TOMCAT_VERSION}  ${CISPACES}/tools/tomcat \
-	&& rm -rf ${CISPACES}/tools/tomcat/webapps/*
+tar xf apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+	&& ln -s apache-tomcat-${TOMCAT_VERSION} tomcat \
+	&& rm -rf tomcat/webapps/*
 
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo 
@@ -76,14 +77,14 @@ source ~/.profile
 echo
 
 echo "# - Copying Derby library..."
-cp  ${CISPACES}/tools/derby/lib/derbyclient.jar ${CATALINA_HOME}/lib/ \
-	&& cp  ${CISPACES}/tools/derby/lib/derbyLocale* ${CATALINA_HOME}/lib/
+cp  derby/lib/derbyclient.jar tomcat/lib/ \
+	&& cp derby/lib/derbyLocale* tomcat/lib/
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo 
 
 echo "# - Configure Tomcat...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
-sed -i 's:</Context>::g' ${CISPACES}/tools/tomcat/conf/context.xml
+sed -i 's:</Context>::g' tomcat/conf/context.xml
 cat << 'EOF' >> ${CISPACES}/tools/tomcat/conf/context.xml
 <Resource name="jdbc/myDB"
         auth="Container"
@@ -100,6 +101,7 @@ cat << 'EOF' >> ${CISPACES}/tools/tomcat/conf/context.xml
 </Context>
 EOF
 echo
+cd -
 
 echo "# - Create database tables...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
