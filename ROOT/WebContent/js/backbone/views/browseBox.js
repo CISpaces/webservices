@@ -196,25 +196,25 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     var btn = $("<button></button>", {
-      'class': "pull-right btn btn-sm btn-outline btn-info btn-export",
+      'class': "pull-right btn btn-xs btn-outline btn-info btn-export",
       'name': "btn_" + analysis.graphID,
       'text': "Export",
       'title': "Export this analysis to file"
     }).appendTo($("<div></div>", {
       'class': "panel-footer"
     }).appendTo(div_panel)).before($("<button></button>", {
-      'class': "pull-left btn btn-sm btn-outline btn-success btn-view",
+      'class': "pull-left btn btn-xs btn-outline btn-success btn-view",
       'name': "btn_" + analysis.graphID,
       'text': "View",
       'title': "View this analysis (read-only)"
     })).before($("<button></button>", {
-      'class': "pull-left btn btn-sm btn-outline btn-success btn-checkout",
+      'class': "pull-left btn btn-xs btn-outline btn-success btn-checkout",
       'style': "margin-left: 5px",
       'name': "btn_" + analysis.graphID,
       'text': "Checkout",
       'title': "Checkout this analysis for editing"
     })).before($("<button></button>", {
-      'class': "btn btn-sm btn-outline btn-danger btn-delete",
+      'class': "btn btn-xs btn-outline btn-danger btn-delete",
       'name': "btn_" + analysis.graphID,
       'style': "margin-left: 5px",
       'text': "Delete",
