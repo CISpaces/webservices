@@ -94,8 +94,9 @@ app.ToolBoxView = Backbone.View.extend({
 
     $("#graph_info .modal-footer .btn-create")
     .text("Save")
-    .on("click", function(event){
-
+    .one("click", function(event){
+        //We need to use one(), rather than on(), else the click event is associated multiple times.
+      event.preventDefault();
       var title = $("#graph_info .modal-body input").val();
       var description = $("#graph_info .modal-body textarea").val();
 
