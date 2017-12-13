@@ -9,7 +9,7 @@ source ~/.profile
 echo "# - Stopping Apache Derby..."
 cd ${CISPACES}/tools/derby
 bin/stopNetworkServer
-if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
+if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; fi
 
 sleep 2
 cd -
