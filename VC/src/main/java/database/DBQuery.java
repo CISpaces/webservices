@@ -534,7 +534,19 @@ public class DBQuery {
                     obj.put("annot", joAnnots);
                 } else {                    
                     //not an annot
-                    if(pair.getKey().toString().equals("inp")){
+                    if(pair.getKey().toString().equals("dtg")){
+                        // Abuse of the Derby Timestamp field elsewhere can result in dates being stored as strings which are
+                        // unparsable by getTimestamp().  So, getString() is used in in DBConnect.convertResultSetToList()
+                        // The output can have a trailing .0 which ERS is not expecting and complains. Loudly.
+                        // Here we remove the trailing badness.  This is a nasty cludge and does not make me proud.
+                        if(pair.getValue().toString().endsWith(".0")) {
+                            String badDate = pair.getValue().toString();
+                            String goodDate = badDate.substring(0, badDate.length()-2);
+                            obj.put("dtg", goodDate);
+                        }
+                        else obj.put("dtg", pair.getValue().toString());
+                    }
+                    else if(pair.getKey().toString().equals("inp")){
                         obj.put("input", pair.getValue().toString());
                     }else if(pair.getKey().toString().equals("txt")) {
                         obj.put("text", pair.getValue().toString());
