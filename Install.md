@@ -40,7 +40,6 @@ $ ./install-prereqs.sh
 
 ```$ mvn initialize```
 
-
 - Build and deploy the project using Maven
 
 ```$ mvn install```
@@ -76,3 +75,9 @@ these dependencies are distributed here, but are fetched during the build
 process.  Details of the dependencies and their licenses can be aggregated by running:
 
 ```$  mvn license:add-third-party license:aggregate-download-licenses```
+
+## Packaging for redistribution
+To build a distributable zip file containing CISpaces, Tomcat and Derby and all dependencies, 
+following the Installation instructions above with an additional step:
+
+```$ ./package-cispaces-linux.sh```
