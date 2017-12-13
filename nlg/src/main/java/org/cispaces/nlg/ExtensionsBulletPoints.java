@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 import java.util.HashSet;
 
 import org.apache.jena.ontology.DatatypeProperty;
@@ -603,7 +604,7 @@ public class ExtensionsBulletPoints extends URIs {
 		 * aCredulousLabIN.size()) inIndividuals = aCredulousLabIN; } } }
 		 */
 
-		if (inIndividuals != null) {
+		if (inIndividuals != null && !inIndividuals.isEmpty()) {
 			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
 			out.append(
@@ -628,12 +629,8 @@ public class ExtensionsBulletPoints extends URIs {
 
 		// credulous hypotheses
 		Set<Individual> credulousLabellings = this.getCredulousLabellings();
+		Vector<String> credulousStrings = new Vector<String>();
 		if (!credulousLabellings.isEmpty()) {
-			out.append("<p>Moreover, we also have the following "
-					+ credulousLabellings.size() + " hypotheses.</p>"
-					+ newline);
-
-			int counter = 1;
 			for (Iterator<Individual> cred = credulousLabellings
 					.iterator(); cred.hasNext();) {
 
@@ -660,13 +657,41 @@ public class ExtensionsBulletPoints extends URIs {
 					}
 					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
 				}
+				
+				String credulousExt = this.individualsToString(credulousNoSkeptical, this.getIn(this.getSkepticalLabelling()), outputted);
+				
+				if (!credulousExt.isEmpty()){
+					StringBuilder credout = new StringBuilder();
+					credout.append("<ul>" + newline);
+					credout.append(credulousExt);
+					credout.append("</ul>" + newline);
+					
+					if (debug){
+						NLG.log.log(Level.INFO, "**Credulous extension string");
+						NLG.log.log(Level.INFO, credout.toString());
+						NLG.log.log(Level.INFO, "**End credulous extension string");
+					}
+					
+					credulousStrings.add(credout.toString());
+				}
+			}
+		}
+		
+		if (!credulousStrings.isEmpty()){
+			if (inIndividuals != null && !inIndividuals.isEmpty()){
+				out.append("<p>Moreover, we also");
+			}
+			else{
+				out.append("<p>We");
+			}
+			out.append(" have the following "
+					+ credulousStrings.size() + " hypotheses.</p>"
+					+ newline);
 
+			for (int counter = 0; counter < credulousStrings.size(); counter++){
 				out.append(
-						"<p>Hypothesis number " + counter++ + "</p>" + newline);
-				out.append("<ul>" + newline);
-				out.append(this.individualsToString(credulousNoSkeptical,
-						this.getIn(this.getSkepticalLabelling()), outputted));
-				out.append("</ul>" + newline);
+						"<p>Hypothesis number " + (counter + 1) + "</p>" + newline);
+				out.append(credulousStrings.get(counter));
 			}
 		}
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
