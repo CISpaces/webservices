@@ -105,7 +105,7 @@ public class VCServlet {
      * @param userID The owner
      * @return A JSON formatted string comprising an array of graph metadata items. e.g.
      * {[{
-        "timest": "2017-11-15 14:27:12.0",
+        "timest": "2017-11-15 14:27:12",
         "isshared": "false",
         "parentgraphid": "null",
         "description": "Desc. 1",
@@ -138,7 +138,7 @@ public class VCServlet {
      * @param graphID The graph
      * @return A JSON formatted string comprising metadata items. e.g.
      * {
-        "timest": "2017-11-15 14:27:12.0",
+        "timest": "2017-11-15 14:27:12",
         "isshared": "false",
         "parentgraphid": "null",
         "description": "Desc. 1",

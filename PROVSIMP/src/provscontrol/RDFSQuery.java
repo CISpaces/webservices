@@ -145,6 +145,10 @@ public Model createNewCISpacesNode(String nodeID, String source, String info, St
 	//System.out.println(info);
 	String[] ij=new String[]{nodeID,info};//String[0:id,1:text,2:cispid]  
 	String pid=UUID.randomUUID().toString();
+    
+    //Workaround some buggy cis files that were exported before https://redmine.rsgsoton.net/issues/202 was fixed
+    if(time.endsWith(".0")) time = time.substring(0, time.length()-2);                        
+    
 	prov.makeSimpleGenerationPattern(ij, "CreateNode"+pid, source, timeh.getDateCIS(time));
 	Model me=prov.getModel();
 	StringWriter out = new StringWriter();
