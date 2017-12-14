@@ -34,6 +34,11 @@ fi
 echo "[OK]"
 
 echo
+echo "Removing downloaded dependency archives.."
+rm -f cispaces/tools/*.tar.gz
+echo "[OK]"
+
+echo
 echo "Copying in start / stop scripts..."
 cp start-cispaces.sh stop-cispaces.sh cispaces/
 echo "Modifying start / stop scripts..."
@@ -41,6 +46,16 @@ sed -i 's/source \~\/\.profile//' cispaces/start-cispaces.sh cispaces/stop-cispa
 	&& sed -i 's/\${CISPACES}\///' cispaces/start-cispaces.sh cispaces/stop-cispaces.sh \
 	&& sed -i 's/\${CATALINA_HOME}\//tools\/tomcat\//' cispaces/start-cispaces.sh cispaces/stop-cispaces.sh
 if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
+
+echo
+echo "Copying example_cis_files/..."
+cp -a example_cis_files/ cispaces
+echo "[OK]"
+
+echo
+echo "Copying README.dist.md"
+cp README.dist.md cispaces/
+echo "[OK]"
 
 echo
 packagename="cispaces-linux-$(date '+%Y%m%d-%H%M%S').zip"
