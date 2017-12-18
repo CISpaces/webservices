@@ -17,6 +17,8 @@ As root, run:
 
 ### Usage
 
+As a non-root user run:
+
 $ ./start-cispaces
 
 Access to the web interface from client machines will require firewall access:

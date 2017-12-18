@@ -15,8 +15,8 @@ start_dir=$(pwd)
 cd fact-extraction/
 source install.sh
 
-cd ${start_dir}
-
 echo
 if [ $? -eq 0 ]; then echo "[OK] - Your system is now ready to run CISpaces. - ./start-cispaces.sh "; else echo "[Failed]"; exit; fi
+
+cd ${start_dir}
 

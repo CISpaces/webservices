@@ -9,6 +9,7 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 start_dir=$(pwd)
+export JAVA_HOME=${start_dir}/fact-extraction/third-party/jdk1.8.0_151
 
 echo "### - Starting CISPaces "
 

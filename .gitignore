@@ -31,4 +31,5 @@ tools/*
 # Python venv
 **/env/
 
-
+# Fact extraction
+fact-extraction/
