@@ -18,8 +18,8 @@ if [ -d fact-extraction ]; then
 	cd fact-extraction/
 	./startup-fe.sh &
 	sleep 3
-	cd ${start_dir}
 fi
+cd ${start_dir}/cispaces
 
 echo
 echo "# - Starting Apache Derby in the background..."
