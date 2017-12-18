@@ -3,8 +3,9 @@
 # J.Robinson@software.ac.uk
 # J.Graham@software.ac.uk
 
-TOMCAT_VERSION="8.0.47"
-TOMCAT_URL="http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
+TOMCAT_VERSION="8.0.48"
+TOMCAT_URL="https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
+
 
 DERBY_VERSION="10.12.1.1"
 DERBY_URL="http://archive.apache.org/dist/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz"
