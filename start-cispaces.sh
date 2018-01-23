@@ -3,6 +3,8 @@
 # Start Services for CISpaces
 # J.Robinson@software.ac.uk
 
+source ~/.profile
+
 if [[ $EUID -eq 0 ]]; then
    echo "This script must NOT be run as root" 
    exit 1
