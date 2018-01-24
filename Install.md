@@ -19,12 +19,12 @@ http://tomcat.apache.org/download-80.cgi
 
 - Clone CISpaces repository
 
-```$ git clone https://gitlab.it-innovation.soton.ac.uk/IntelAnalysisDSTL/cispaces-web-services.git```
+```$ git clone https://github.org/CISpsaces/webservices.git```
 
 - Run the pre-requisites installation script from the cispaces directory
 
 ```
-$ cd cispaces-web-services
+$ cd webservices
 $ ./install-prereqs.sh
 ```
 
