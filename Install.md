@@ -19,7 +19,7 @@ http://tomcat.apache.org/download-80.cgi
 
 - Clone CISpaces repository
 
-```$ git clone https://github.org/CISpsaces/webservices.git```
+```$ git clone https://github.com/CISpsaces/webservices.git```
 
 - Run the pre-requisites installation script from the cispaces directory
 
