@@ -1,0 +1,10 @@
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (18, 'unrest', 'unrest');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (19, 'blocked', 'blocked');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (20, 'mentioned_media', 'mentioned_media');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (21, 'nyse', 'nyse');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (22, 'fdr', 'fdr');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (23, 'virus', 'virus');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (24, 'report', 'report');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (25, 'wall_street', 'wall_street');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (26, 'nyu_hospital', 'nyu_hospital');
+INSERT INTO factextract.vocab_topic (topic_id, topic, schema) VALUES (27, 'rumour', 'rumour');

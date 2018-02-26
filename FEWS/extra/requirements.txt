@@ -1,4 +1,9 @@
+nltk
+psycopg2
+requests
+
 numpy
 scipy==0.19.1
 pika==0.9.14
 gensim
+psutil
