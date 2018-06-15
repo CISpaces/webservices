@@ -1,0 +1,3 @@
+create all the wars
+prefix each war file with 'cispaces#'
+the files in ROOT must end up in 'cispaces/'
