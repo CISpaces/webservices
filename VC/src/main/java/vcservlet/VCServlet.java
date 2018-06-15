@@ -274,7 +274,10 @@ public class VCServlet {
             //return Response.status(Response.Status.OK).entity(userInfo).build();
         }    
         else
+        {
+        	log.log(Level.INFO, "User forbidden");
             return Response.status(Response.Status.FORBIDDEN).build();
+        }
     }
     
     /**

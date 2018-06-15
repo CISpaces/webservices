@@ -233,7 +233,7 @@ app.InfoBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: "POST",
-      url: remote_server + "/fewsservlet/tweets",
+      url: "fewsservlet/tweets",
       data: JSON.stringify(topic_list),
       dataType: 'json',
       contentType: "application/json",

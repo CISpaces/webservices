@@ -2,29 +2,31 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="web interface for cispaces">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="web interface for cispaces">
 
-	<title>CISpaces</title>
+<title>CISpaces</title>
 
-	<!-- Bootstrap Core CSS -->
-	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="vendor/bootstrap/css/bootstrap-slider.min.css" rel="stylesheet">
-	<link href="vendor/css-loader/css-loader.css" rel="stylesheet">
+<!-- Bootstrap Core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="vendor/bootstrap/css/bootstrap-slider.min.css"
+	rel="stylesheet">
+<link href="vendor/css-loader/css-loader.css" rel="stylesheet">
 
-	<!-- Custom CSS -->
-	<link href="dist/css/sb-admin-2.css" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="dist/css/sb-admin-2.css" rel="stylesheet">
 
-	<!-- Custom Fonts -->
-	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!-- Custom Fonts -->
+<link href="vendor/font-awesome/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
 
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 
-	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
@@ -32,29 +34,33 @@
 
 <body>
 	<div id="wrapper">
-		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="index.html">CISpaces</a>
 			</div>
 			<ul class="nav navbar-top-links navbar-right">
-				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-						class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+				<li class="dropdown"><a class="dropdown-toggle"
+					data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
+						<i class="fa fa-caret-down"></i>
 				</a>
 					<ul class="dropdown-menu dropdown-user">
-						<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+						<li><a href="#"><i class="fa fa-user fa-fw"></i> User
+								Profile</a></li>
 						<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
 						<li><a href="#"><i class="fa fa-gear fa-fw"></i> Help</a></li>
 						<li class="divider"></li>
-						<li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
-					</ul>
-				</li>
+						<li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i>
+								Logout</a></li>
+					</ul></li>
 			</ul>
 		</nav>
 
 		<!--
 			************************************* Tool Box *************************************
 		-->
-		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;z-index: 0;" id="nav-toolbox">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0; z-index: 0;" id="nav-toolbox">
 			<div class="navbar-header">
 				<div class="navbar-brand" style="padding: 9px 9px">
 					<!-- <a class="btn btn-default" id="newWorkBox">New</a> -->
@@ -63,16 +69,18 @@
 					<a class="btn btn-default" id="simulation">Relocate</a>
 
 					<!-- buttons for creating a node -->
-					<a class="btn btn-info btn-sm" style="margin-left: 20px;" id="info" draggable="true">Info</a>
-					<a class="btn btn-claim btn-sm" id="claim" draggable="true">Claim</a>
+					<a class="btn btn-info btn-sm" style="margin-left: 20px;" id="info"
+						draggable="true">Info</a> <a class="btn btn-claim btn-sm"
+						id="claim" draggable="true">Claim</a>
 					<!-- <a class="btn btn-warning btn-sm" id="pref" draggable="true">Pref</a> -->
 					<a class="btn btn-danger btn-sm" id="con" draggable="true">Con</a>
 					<a class="btn btn-success btn-sm" id="pro" draggable="true">Pro</a>
 
 					<!-- buttons for commit/checkout a graph -->
-					<a class="btn btn-default" style="margin-left: 20px;" id="browseAnalyses">Browse</a>
-					<a class="btn btn-default" id="commitGraph">Commit</a>
-					<a class="btn btn-default" id="checkoutGraph">Check-out</a>
+					<a class="btn btn-default" style="margin-left: 20px;"
+						id="browseAnalyses">Browse</a> <a class="btn btn-default"
+						id="commitGraph">Commit</a> <a class="btn btn-default"
+						id="checkoutGraph">Check-out</a>
 				</div>
 			</div>
 
@@ -88,7 +96,8 @@
 			-->
 
 			<div class="navbar-right" style="padding: 9px 50px 9px">
-				<a class="btn btn-default disabled" id="copy_selection">Copy Selection</a>
+				<a class="btn btn-default disabled" id="copy_selection">Copy
+					Selection</a>
 			</div>
 		</nav>
 
@@ -100,18 +109,25 @@
 					-->
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<i class="fa fa-codepen fa-fw"></i> Work Box <span id="span-graphTitle"></span><span id="span-viewMode"></span>
+							<i class="fa fa-codepen fa-fw"></i> Work Box <span
+								id="span-graphTitle"></span><span id="span-viewMode"></span>
 						</div>
 						<div class="panel-body" id="d3-area-chart">
 							<svg>
 									<defs>
-										<marker id="pref-triangle" viewBox="-0 -5 10 10" refX="25" refY="0" markerWidth="5" markerHeight="5" orient="auto" xoverflow="visible">
+										<marker id="pref-triangle" viewBox="-0 -5 10 10" refX="25"
+									refY="0" markerWidth="5" markerHeight="5" orient="auto"
+									xoverflow="visible">
 											<path d="M0,-5L10,0L0,5" class="pref-arrow-head"></path>
 										</marker>
-										<marker id="con-triangle" viewBox="-0 -5 10 10" refX="25" refY="0" markerWidth="5" markerHeight="5" orient="auto" xoverflow="visible">
+										<marker id="con-triangle" viewBox="-0 -5 10 10" refX="25"
+									refY="0" markerWidth="5" markerHeight="5" orient="auto"
+									xoverflow="visible">
 											<path d="M0,-5L10,0L0,5" class="con-arrow-head"></path>
 										</marker>
-										<marker id="pro-triangle" viewBox="-0 -5 10 10" refX="25" refY="0" markerWidth="5" markerHeight="5" orient="auto" xoverflow="visible">
+										<marker id="pro-triangle" viewBox="-0 -5 10 10" refX="25"
+									refY="0" markerWidth="5" markerHeight="5" orient="auto"
+									xoverflow="visible">
 											<path d="M0,-5L10,0L0,5" class="pro-arrow-head"></path>
 										</marker>
 									</defs>
@@ -119,7 +135,9 @@
 						</div>
 						<div class="panel-footer">
 							<div class="input-group">
-								<input id="slider-wb" data-slider-id="slider-workbox" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="15" style="width: 100%" />
+								<input id="slider-wb" data-slider-id="slider-workbox"
+									type="text" data-slider-min="0" data-slider-max="50"
+									data-slider-step="1" data-slider-value="15" style="width: 100%" />
 							</div>
 						</div>
 					</div>
@@ -133,21 +151,25 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title" style="font-size: 14px">
-								<i class="fa fa-tasks fa-fw"></i> <a data-toggle="collapse" href="#div-evalbox">Eval Box</a>
+								<i class="fa fa-tasks fa-fw"></i> <a data-toggle="collapse"
+									href="#div-evalbox">Eval Box</a>
 							</h4>
 						</div>
 						<div id="div-evalbox" class="panel-collapse collapse in">
 							<div class="panel-body" id="eval_box">
 								<div class="list-group" id="eval_fail" style="display: none;">
-									<a href="#" class="list-group-item"> <i class="glyphicon glyphicon-warning-sign"></i> <span id="eval_fail_msg"></span></a>
+									<a href="#" class="list-group-item"> <i
+										class="glyphicon glyphicon-warning-sign"></i> <span
+										id="eval_fail_msg"></span></a>
 								</div>
-								<div class="list-group" id="eval_colors">
-								</div>
-								<div class="list-group" id="eval_chunks">
-								</div>
-								<a href="#" class="btn btn-default btn-sm" style="width: 49%;" id="evaluate">Evaluate</a>
-								<a href="#" class="btn btn-default btn-sm" style="width: 49%;" id="clear">Clear</a>
-								<a href="#" class="btn btn-default btn-sm" style="width: 99%;margin-top: 5px;" id="nlg">Generate Reports</a>
+								<div class="list-group" id="eval_colors"></div>
+								<div class="list-group" id="eval_chunks"></div>
+								<a href="#" class="btn btn-default btn-sm" style="width: 49%;"
+									id="evaluate">Evaluate</a> <a href="#"
+									class="btn btn-default btn-sm" style="width: 49%;" id="clear">Clear</a>
+								<a href="#" class="btn btn-default btn-sm"
+									style="width: 99%; margin-top: 5px;" id="nlg">Generate
+									Reports</a>
 							</div>
 						</div>
 					</div>
@@ -158,19 +180,22 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title" style="font-size: 14px">
-								<i class="fa fa-inbox fa-fw"></i> <a data-toggle="collapse" href="#div-vocabularybox">Vocabulary Box</a>
+								<i class="fa fa-inbox fa-fw"></i> <a data-toggle="collapse"
+									href="#div-vocabularybox">Vocabulary Box</a>
 							</h4>
 						</div>
 						<div id="div-vocabularybox" class="panel-collapse collapse in">
 							<div class="panel-body" id="vocabulary_box">
 								<div class="form-group input-group">
-									<input type="text" class="form-control" placeholder="Enter topics...">
-									<span class="input-group-btn">
-											<button class="btn btn-default" type="button"><i class="fa fa-plus"></i></button>
-										</span>
+									<input type="text" class="form-control"
+										placeholder="Enter topics..."> <span
+										class="input-group-btn">
+										<button class="btn btn-default" type="button">
+											<i class="fa fa-plus"></i>
+										</button>
+									</span>
 								</div>
-								<div class="form-group topic-form">
-								</div>
+								<div class="form-group topic-form"></div>
 							</div>
 						</div>
 					</div>
@@ -181,22 +206,25 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title" style="font-size: 14px">
-								<i class="fa fa-inbox fa-fw"></i> <a data-toggle="collapse" href="#div-infobox">Info Box</a>
+								<i class="fa fa-inbox fa-fw"></i> <a data-toggle="collapse"
+									href="#div-infobox">Info Box</a>
 							</h4>
 						</div>
 						<div id="div-infobox" class="panel-collapse collapse">
 							<div class="panel-body" id="info_box">
 								<div class="form-group input-group float_left">
-									<input type="text" class="form-control" placeholder="Enter topics...">
-									<span class="input-group-btn">
-								        <button class="btn btn-default" type="button"><i class="fa fa-plus"></i></button>
-								    </span>
+									<input type="text" class="form-control"
+										placeholder="Enter topics..."> <span
+										class="input-group-btn">
+										<button class="btn btn-default" type="button">
+											<i class="fa fa-plus"></i>
+										</button>
+									</span>
 								</div>
 								<div class="form-group float_right">
 									<button class="btn btn-default btn-clear">Clear</button>
 								</div>
-								<div class="form-group topic-form">
-								</div>
+								<div class="form-group topic-form"></div>
 								<hr>
 								<button class="btn btn-default btn-xs btn-submit">Search</button>
 								<button class="btn btn-default btn-xs btn-refresh">Refresh</button>
@@ -216,7 +244,7 @@
 						</div>
 					</div>
 
-								
+
 					<!-- /.col-lg-4 -->
 					<!-- /.row -->
 				</div>
@@ -229,7 +257,8 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title" style="font-size: 14px">
-								<i class="fa fa-pencil-square-o fa-fw"></i> <a data-toggle="collapse" href="#div-details">Details</a>
+								<i class="fa fa-pencil-square-o fa-fw"></i> <a
+									data-toggle="collapse" href="#div-details">Details</a>
 							</h4>
 						</div>
 						<div id="div-details" class="panel-collapse collapse in">
@@ -237,19 +266,27 @@
 								<div id="details-node" style="display: none;">
 									<div class="form-group">
 										<label>NodeID</label>
-										<p class="form-control-static"><span class="details-nodeID"></span></p>
+										<p class="form-control-static">
+											<span class="details-nodeID"></span>
+										</p>
 									</div>
 									<div class="form-group">
 										<label>DTG</label>
-										<p class="form-control-static"><span class="details-dtg"></span></p>
+										<p class="form-control-static">
+											<span class="details-dtg"></span>
+										</p>
 									</div>
 									<div class="form-group">
 										<label>Source</label>
-										<p class="form-control-static"><span class="details-source"></span></p>
+										<p class="form-control-static">
+											<span class="details-source"></span>
+										</p>
 									</div>
 									<div class="form-group">
 										<label>Text</label>
-										<p class="form-control-static"><span class="details-text"></span></p>
+										<p class="form-control-static">
+											<span class="details-text"></span>
+										</p>
 										<!--
 											<label>Text <a class="btn btn-outline btn-primary btn-xs" style="margin-left: 10px">Update</a></label>
 											<textarea id="details-text" class="form-control" rows="3"><%= text %></textarea>
@@ -257,15 +294,21 @@
 									</div>
 									<div class="form-group">
 										<label>Eval</label>
-										<p class="form-control-static"><span class="details-eval"></span></p>
+										<p class="form-control-static">
+											<span class="details-eval"></span>
+										</p>
 									</div>
 									<div class="form-group">
 										<label>Commit</label>
-										<p class="form-control-static"><span class="details-commit"></span></p>
+										<p class="form-control-static">
+											<span class="details-commit"></span>
+										</p>
 									</div>
 									<div class="form-group">
 										<label>Accuracy</label>
-										<p class="form-control-static"><span class="details-uncert"></span></p>
+										<p class="form-control-static">
+											<span class="details-uncert"></span>
+										</p>
 									</div>
 								</div>
 								<div id="details-tweet" style="display: none;">
@@ -303,18 +346,20 @@
 						</div>
 						<div class="panel-body" id="browse_box">
 							<div class="col-lg-2 col-md-4">
-								<div class="btn btn-primary btn-lg btn-block" id="new_analysis" title="Create a new analysis">
+								<div class="btn btn-primary btn-lg btn-block" id="new_analysis"
+									title="Create a new analysis">
 									<div class="panel-heading">
 										<div class="row text-center">
 											<div class="huge">New</div>
 										</div>
 									</div>
 								</div>
-								<div class="btn btn-info btn-lg btn-block" title="Import an analysis from file">
+								<div class="btn btn-info btn-lg btn-block"
+									title="Import an analysis from file">
 									<div class="panel-heading">
 										<div class="row text-center">
 											<div id="importFromFile" class="huge">Import</div>
-											<input type="file" id="myFile" style="display:none;" />
+											<input type="file" id="myFile" style="display: none;" />
 										</div>
 									</div>
 								</div>
@@ -329,14 +374,19 @@
 		<!--
 			************************************* ContextMenu for deleting a node / linking / prove graph *************************************
 		-->
-		<ul id="contextMenu" class="dropdown-menu" role="menu" style="display: none">
+		<ul id="contextMenu" class="dropdown-menu" role="menu"
+			style="display: none">
 			<li><a class="btn btn-link" tabindex="-1" id="delete-node">Delete</a></li>
 			<li class="divider"></li>
-			<li><a class="btn btn-link" tabindex="-1" id="link-from">Link From</a></li>
-			<li><a class="btn btn-link disabled" tabindex="-1" id="link-to">Link To</a></li>
-			<li><a class="btn btn-link" tabindex="-1" id="cancel-link">Cancel Link</a></li>
+			<li><a class="btn btn-link" tabindex="-1" id="link-from">Link
+					From</a></li>
+			<li><a class="btn btn-link disabled" tabindex="-1" id="link-to">Link
+					To</a></li>
+			<li><a class="btn btn-link" tabindex="-1" id="cancel-link">Cancel
+					Link</a></li>
 			<li class="divider"></li>
-			<li><a class="btn btn-link" tabindex="-1" id="provgraph">Prov Graph</a></li>
+			<li><a class="btn btn-link" tabindex="-1" id="provgraph">Prov
+					Graph</a></li>
 			<li class="divider"></li>
 			<li><a class="btn btn-link" tabindex="-1">Close</a></li>
 		</ul>
@@ -394,11 +444,15 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title"><em>Report</em></h4>
+						<h4 class="modal-title">
+							<em>Report</em>
+						</h4>
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<div class="col-md-8"><em><span id="nlg_result_fail"></span></em></div>
+							<div class="col-md-8">
+								<em><span id="nlg_result_fail"></span></em>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12">
@@ -421,14 +475,17 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title"><em>History of Analysis</em></h4>
+						<h4 class="modal-title">
+							<em>History of Analysis</em>
+						</h4>
 					</div>
 					<div class="modal-body">
 						<div class="list-group" id="history_list"></div>
 						<div id="selectedAnalysis" style="display: none;"></div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" onclick="app.toolBoxView.importAnalysis()">Import</button>
+						<button type="button" class="btn btn-default"
+							onclick="app.toolBoxView.importAnalysis()">Import</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
@@ -444,7 +501,9 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title"><em>Provenance Graph</em></h4>
+						<h4 class="modal-title">
+							<em>Provenance Graph</em>
+						</h4>
 					</div>
 					<div class="modal-body">
 						<img id="img_prov_graph" src="">
@@ -462,16 +521,27 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title"><em><span></span></em></h4>
+						<h4 class="modal-title">
+							<em><span></span></em>
+						</h4>
 					</div>
 					<div class="modal-body">
 						<div class="row form-group">
-							<div class="col-md-2"><label>Title</label></div>
-							<div class="col-md-10"><input type="text" class="form-control" placeholder="Enter a title" /></div>
+							<div class="col-md-2">
+								<label>Title</label>
+							</div>
+							<div class="col-md-10">
+								<input type="text" class="form-control"
+									placeholder="Enter a title" />
+							</div>
 						</div>
 						<div class="row form-group">
-							<div class="col-md-2"><label>Description</label></div>
-							<div class="col-md-10"><textarea class="form-control" rows="3"></textarea></div>
+							<div class="col-md-2">
+								<label>Description</label>
+							</div>
+							<div class="col-md-10">
+								<textarea class="form-control" rows="3"></textarea>
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -491,11 +561,14 @@
 		<script type="text/javascript" src="vendor/d3/d3.min.js"></script>
 
 		<!-- loads for bootstrap -->
-		<script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="vendor/bootstrap/js/bootstrap-slider.min.js"></script>
+		<script type="text/javascript"
+			src="vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript"
+			src="vendor/bootstrap/js/bootstrap-slider.min.js"></script>
 
 		<!-- loads for json-validation -->
-		<script type="text/javascript" src="vendor/node_modules/json-validation/lib/json-validation.js"></script>
+		<script type="text/javascript"
+			src="vendor/node_modules/json-validation/lib/json-validation.js"></script>
 
 		<script type="text/javascript" src="js/variables.js"></script>
 
@@ -506,7 +579,8 @@
 		<script type="text/javascript" src="js/backbone/collections/nodes.js"></script>
 		<script type="text/javascript" src="js/backbone/collections/edges.js"></script>
 		<script type="text/javascript" src="js/backbone/collections/topics.js"></script>
-		<script type="text/javascript" src="js/backbone/collections/vocabularies.js"></script>
+		<script type="text/javascript"
+			src="js/backbone/collections/vocabularies.js"></script>
 
 		<script type="text/javascript" src="js/backbone/views/nodes.js"></script>
 		<script type="text/javascript" src="js/backbone/views/toolBox.js"></script>
@@ -514,7 +588,8 @@
 		<script type="text/javascript" src="js/backbone/views/workBox.js"></script>
 		<script type="text/javascript" src="js/backbone/views/browseBox.js"></script>
 		<script type="text/javascript" src="js/backbone/views/evalBox.js"></script>
-		<script type="text/javascript" src="js/backbone/views/vocabularyBox.js"></script>
+		<script type="text/javascript"
+			src="js/backbone/views/vocabularyBox.js"></script>
 
 		<!--
 		<script type="text/javascript" src="js/backbone/views/reqBox.js"></script>

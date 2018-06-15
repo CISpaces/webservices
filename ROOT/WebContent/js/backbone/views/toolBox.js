@@ -112,7 +112,7 @@ app.ToolBoxView = Backbone.View.extend({
 
         Backbone.ajax({
           type: 'POST',
-          url: remote_server + '/VC/rest/save',
+          url: 'VC/rest/save',
           //dataType: 'text',
           contentType: 'application/json',
           data: JSON.stringify(object),
@@ -138,7 +138,7 @@ app.ToolBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/VC/rest/history',
+      url: 'VC/rest/history',
       contentType: 'application/json',
       data: JSON.parse(object),
       success: function(result) {
@@ -190,7 +190,7 @@ app.ToolBoxView = Backbone.View.extend({
       };
       Backbone.ajax({
         type: 'POST',
-        url: remote_server + '/VC/rest/updateAnalysis',
+        url: 'VC/rest/updateAnalysis',
         contentType: 'application/json',
         data: JSON.stringify(object),
         success: function(result) {

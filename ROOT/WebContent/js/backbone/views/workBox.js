@@ -49,7 +49,7 @@ app.WorkBoxView = Backbone.View
         Backbone.ajax({
           type: "POST",
           contentType: "application/json",
-          url: remote_server + "/PROVSIMP/rest/ProcProv",
+          url: "PROVSIMP/rest/ProcProv",
           data: JSON.stringify(param),
           success: function(data) {
             console.log(data);

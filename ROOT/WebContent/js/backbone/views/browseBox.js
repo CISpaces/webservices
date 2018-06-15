@@ -62,7 +62,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
         Backbone.ajax({
           type: 'POST',
-          url: remote_server + '/VC/rest/new',
+          url: 'VC/rest/new',
           //dataType: 'text',
           contentType: 'application/json', //Supply the JWT auth token
           data: JSON.stringify(object),
@@ -105,7 +105,7 @@ app.BrowseBoxView = Backbone.View.extend({
   getAnalysis: function(graphID, callback) {
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/VC/rest/analysis/' + graphID,
+      url: 'VC/rest/analysis/' + graphID,
       success: function(response, status, xhr) {
         // change the type of annot
         if(response.nodes){
@@ -132,7 +132,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
     Backbone.ajax({
       type: 'GET',
-      url: remote_server + '/VC/rest/analyses/user/' + userID + '/meta',
+      url: 'VC/rest/analyses/user/' + userID + '/meta',
       success: function(data) {
         $(".existing-analysis").remove();
         data.forEach(function(analysis) {
@@ -332,7 +332,7 @@ app.BrowseBoxView = Backbone.View.extend({
       // 1. Check this graph belongs to the user or not
       Backbone.ajax({
         type: 'GET',
-        url: remote_server + "/VC/rest/analyses/user/" + userID + "/meta",
+        url: "VC/rest/analyses/user/" + userID + "/meta",
         success: function(data) {
           if (data) {
             existing = data.find(function(d) {
@@ -354,7 +354,7 @@ app.BrowseBoxView = Backbone.View.extend({
             // 2. Check this graph is saved in database
             Backbone.ajax({
               type: 'GET',
-              url: remote_server + "/VC/rest/analysis/" + graphID + "/meta",
+              url: "VC/rest/analysis/" + graphID + "/meta",
               success: function(data) {
                 if (data) {
                   alert("A graph exists with this id in database.");
@@ -381,7 +381,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
                   Backbone.ajax({
                     type: 'POST',
-                    url: remote_server + '/VC/rest/new',
+                    url: 'VC/rest/new',
                     contentType: 'application/json',
                     data: JSON.stringify(object),
                     success: function(result) {
@@ -410,7 +410,7 @@ app.BrowseBoxView = Backbone.View.extend({
                   // 5. Saves the graph in database
                   Backbone.ajax({
                     type: 'POST',
-                    url: remote_server + '/VC/rest/save',
+                    url: 'VC/rest/save',
                     //dataType: 'text',
                     contentType: 'application/json',
                     data: JSON.stringify(object),
@@ -494,7 +494,7 @@ app.BrowseBoxView = Backbone.View.extend({
       var graphID = event.target.attributes.name.value.replace("btn_", "");
       Backbone.ajax({
       type: 'DELETE',
-      url: remote_server + '/VC/rest/analysis/' + graphID,
+      url: 'VC/rest/analysis/' + graphID,
       success: function(data) {
           $("#panel_"+graphID).remove();
       },

@@ -9,7 +9,7 @@ var EdgeList = Backbone.Collection.extend({
   model: app.Edge,
 
   // localStorage: new Backbone.LocalStorage('edges-backbone'),
-  url: remote_server + '/VC/rest/edge'
+  url: 'VC/rest/edge'
   
 });
 
