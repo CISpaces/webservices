@@ -293,7 +293,8 @@ public class ExtensionsBulletPoints extends URIs {
 		 */
 		
 		String rules =  "[rule1: (?ra " + hasPremise.toString() + " ?p) (?ra " + hasConclusion.toString() +" ?c) -> (?c " + basedOn.toString() + " ?p)]"
-				+ "[rule2: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + claimStatement.toString() + ") ->  (?c " + basedOnReason.toString() + " ?p)]";
+				+ "[rule2: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + claimStatement.toString() + ") ->  (?c " + basedOnReason.toString() + " ?p)]"
+				+ "[rule3: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + inStatement.toString() + ") (?p rdf:type " + inStatement.toString() + ") ->  (?c " + basedOnReason2.toString() + " ?p)]";
 
 
 
@@ -512,7 +513,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		//Keeping the old rule to allow some more tests
 		
-		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOn.toString() + "> ?p }",
+		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason2.toString() + "> ?p }",
 				inf);
 		while (r.hasNext()) {
 			premises.add(m.getIndividual(r.nextSolution().getResource("p").toString()));
@@ -566,17 +567,23 @@ public class ExtensionsBulletPoints extends URIs {
 
 		if (expanded.contains(conclusion)
 				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
+			
 			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 		} else {
 			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
 			NLG.log.log(Level.INFO, "Text output : " + out); 
-			outputted.add(conclusion);
-
+			outputted.add(conclusion); 
+			
+			//Line added to add the conclusion to the expansion, allowing to know further on if it has been already expanded
+			expanded.add(conclusion);
+			
+			
 			Set<Individual> premises = this.getPremises(conclusion);
 			Stack<Individual> orderedPremises = new Stack<Individual>();
 
 			boolean firstPremise = true;
 
+			
 			for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
 				Individual prem = itp.next();
 				if (firstPremise) {
@@ -660,7 +667,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 
 		}
-
+		
 		if (this.getSkepticalLabelling() != null) {
 			inIndividuals = this.getIn(this.getSkepticalLabelling());
 			if (inIndividuals.isEmpty()) {
@@ -787,7 +794,8 @@ public class ExtensionsBulletPoints extends URIs {
 
 		JSONObject ret = new JSONObject();
 		ret.put("fail", false);
-		ret.put("text", out.toString());
+		ret.put("text", "Hello World" + out.toString());
+		
 		return ret.toString();
 	}
 

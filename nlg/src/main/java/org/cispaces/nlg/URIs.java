@@ -146,6 +146,7 @@ public abstract class URIs {
 	
 	protected ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
 	protected ObjectProperty basedOnReason = m.createObjectProperty(URI + "baseOnReason");
+	protected ObjectProperty basedOnReason2 = m.createObjectProperty(URI + "baseOnReason2");
 	
 	
 	public URIs(){

@@ -1,0 +1,6 @@
+@include <OWL>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix cis: <http://cispaces.org/> .
+@prefix dund: <http://arg.dundee.ac.uk/aif#>.
+[rule1: (?ra dund:hasPremise ?p) (?ra dund:hasConclusion ?c) -> (?c cis:basedOn ?p)]
+[rule2: (?c cis:basedOn ?p) (?c rdfs:subClassOf cis:claimStatement) -> (?c cis:reasonTo ?p)]
