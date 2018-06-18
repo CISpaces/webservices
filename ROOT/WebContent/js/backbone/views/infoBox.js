@@ -38,7 +38,7 @@ app.InfoBoxView = Backbone.View.extend({
       },
       error: function(response) {
         console.error("An error occurred fetching topics from the Fact Extraction service. Please contact the system administrator.");
-        alert("An error occurred fetching topics from the Fact Extraction service. Please contact the system administrator.");
+        //alert("An error occurred fetching topics from the Fact Extraction service. Please contact the system administrator.");
         console.error(response);
       }
     });
