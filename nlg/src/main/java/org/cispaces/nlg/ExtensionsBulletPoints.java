@@ -513,7 +513,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		//Keeping the old rule to allow some more tests
 		
-		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason2.toString() + "> ?p }",
+		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason.toString() + "> ?p }",
 				inf);
 		while (r.hasNext()) {
 			premises.add(m.getIndividual(r.nextSolution().getResource("p").toString()));
@@ -794,7 +794,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		JSONObject ret = new JSONObject();
 		ret.put("fail", false);
-		ret.put("text", "Hello World" + out.toString());
+		ret.put("text", out.toString());
 		
 		return ret.toString();
 	}
