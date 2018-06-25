@@ -95,13 +95,14 @@ public class ExtensionsBulletPoints extends URIs {
 
 	}
 
-	
+
 	/**
 	 * 
 	 * @param json
 	 * 
-	 * Converts the JSON graph into an ontology
+	 * Converts the JSON graph into RDF data
 	 */
+
 	private void parseJSONGraph(String json) {
 		JSONObject obj = new JSONObject(json);
 
@@ -112,7 +113,7 @@ public class ExtensionsBulletPoints extends URIs {
 			JSONObject t = (JSONObject) it.next();
 			Individual node = null;
 
-			//  Looking if it's an RA type node ; inference ? (Seems like a pro node)
+			//  Creates RA/Pro Nodes
 			if (((String) t.get("type")).equalsIgnoreCase("RA")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"), inference);
 
@@ -127,10 +128,10 @@ public class ExtensionsBulletPoints extends URIs {
 				 */
 
 
-				// Looking if it's an CA type node; conflict ? con node
+				// Creates CA/Con Nodes
 			} else if (((String) t.get("type")).equalsIgnoreCase("CA")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"), conflict);
-				// todo link with critical questions
+
 			} else if (((String) t.get("type")).equalsIgnoreCase("I")) {
 
 				if (t.keySet().contains("input")) {
@@ -287,25 +288,22 @@ public class ExtensionsBulletPoints extends URIs {
 
 		/**
 		 * @author Gael
-		 * rule2: Added a rule to make sure that the basedOn comes from a claimStatement
+		 * rule2: Added a rule to make sure our conclusion is a claim statement
 		 * 
-		 *
 		 */
-		
+
 		String rules =  "[rule1: (?ra " + hasPremise.toString() + " ?p) (?ra " + hasConclusion.toString() +" ?c) -> (?c " + basedOn.toString() + " ?p)]"
-				+ "[rule2: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + claimStatement.toString() + ") ->  (?c " + basedOnReason.toString() + " ?p)]"
-				+ "[rule3: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + inStatement.toString() + ") (?p rdf:type " + inStatement.toString() + ") ->  (?c " + basedOnReason2.toString() + " ?p)]";
+				+ "[rule2: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + claimStatement.toString() + ") ->  (?c " + basedOnReason.toString() + " ?p)]";
 
 
 
-		
+
 		GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
-		reasoner.setOWLTranslation(true);               // not needed in RDFS case
 		reasoner.setTransitiveClosureCaching(true);
 		reasoner.setDerivationLogging(true);
 		inf = ModelFactory.createInfModel(reasoner, m);
 
-		
+
 		if (debug) {
 			StringWriter outInf = new StringWriter();
 			inf.write(outInf, "TURTLE");
@@ -320,12 +318,13 @@ public class ExtensionsBulletPoints extends URIs {
 	}
 
 	/**
-	 * Added function to retrieve the ontology model statements. We will be able to see where there might be an error
+	 * Added function to retrieve the RDF model statements. We will be able to see where there might be an error
 	 * @param m
 	 * @param s
 	 * @param p
 	 * @param o
 	 */
+	
 	private void printStatements(Model m, Resource s, ObjectProperty p, Resource o) {
 		String listStmts = "";
 		for (StmtIterator i = m.listStatements(s,p,o); i.hasNext(); ) {
@@ -333,15 +332,16 @@ public class ExtensionsBulletPoints extends URIs {
 			listStmts += newline + PrintUtil.print(stmt);
 
 		}
-		NLG.log.log(Level.INFO, "Kiwi Ontology" + listStmts);
+		NLG.log.log(Level.INFO, "List of Statements" + listStmts);
 	}
 
 	/**
 	 * 
 	 * @param labelling
 	 */
+	
 	private void instancesRetriever(OntClass labelling ) {
-		// Print each of its instance
+		// Print each of its instances
 		String labelS = "";
 		for ( final ExtendedIterator<? extends OntResource> labellings = labelling.listInstances(); labellings.hasNext(); ) {
 			labelS += newline + labellings.next() ;
@@ -349,7 +349,7 @@ public class ExtensionsBulletPoints extends URIs {
 		NLG.log.log(Level.INFO, labelS);
 	}
 
-	
+
 
 	private Individual getSkepticalLabelling() {
 		ExtendedIterator<Individual> labIter = m.listIndividuals(labelling);
@@ -363,8 +363,8 @@ public class ExtensionsBulletPoints extends URIs {
 		return null;
 	}
 
-	
-	
+
+
 	private Set<Individual> getCredulousLabellings() {
 		Set<Individual> credulousLabellings = new HashSet<Individual>();
 
@@ -418,7 +418,7 @@ public class ExtensionsBulletPoints extends URIs {
 		return toRet;
 	}
 
-	
+
 	/**
 	 * Allows to do SPARQL queries on a model
 	 * @param szQuery
@@ -430,23 +430,23 @@ public class ExtensionsBulletPoints extends URIs {
 		return QueryExecutionFactory.create(query, m).execSelect();
 	}
 
-	
-	
+
+
 	private Set<Individual> rootBasedOn(Set<Individual> individuals) {
 		Set<Individual> roots = new HashSet<Individual>();
 
 
 		/**
-		 * Loops gets a hold
+		 * Loops gets a hold of the conclusions
 		 */
 		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
 			Set<Individual> intersection = new HashSet<Individual>(individuals);
 
 			NLG.log.log(Level.INFO, "Intersections before : " + iInd.getPropertyValue(claimText).toString());
-			
-			
-			
+
+
+
 			Set<Individual> conclusions = this.getConclusions(iInd);
 			intersection.retainAll(conclusions);
 
@@ -461,7 +461,7 @@ public class ExtensionsBulletPoints extends URIs {
 				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
 			}
 
-			//If the intersection is not empty, we can add the conclusion to our "roots"
+			//If the intersection is not empty, we can add the conclusion to our current conclusions
 			if (!intersection.isEmpty()) {
 				for (Iterator<Individual> conclusion = conclusions.iterator(); conclusion.hasNext();) {
 					roots.add(conclusion.next());
@@ -486,7 +486,7 @@ public class ExtensionsBulletPoints extends URIs {
 	private Set<Individual> getConclusions(Individual p) {
 		Set<Individual> conclusions = new HashSet<Individual>();
 
-		//Changed the query so we can retrieve only Claim Statements as Conclusions
+		//The query retrieves Claim Statements as Conclusions
 		ResultSet r = this.selectSparqlQuery(" SELECT ?c  WHERE {?c <" + basedOnReason.toString() + "> <" + p.toString() + ">} ", inf);
 
 		while (r.hasNext()) {
@@ -495,24 +495,11 @@ public class ExtensionsBulletPoints extends URIs {
 		return conclusions;
 	}
 
-	/**
-	private Set<Individual> getConclusions(Individual p) {
-		Set<Individual> conclusions = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?c {?c <" + basedOn.toString() + "> <" + p.toString() + ">}", inf);
-
-		while (r.hasNext()) {
-			conclusions.add(m.getIndividual(r.nextSolution().getResource("c").toString()));
-		}
-		return conclusions;
-	}
-	 */
-	
 	private Set<Individual> getPremises(Individual c) {
 		Set<Individual> premises = new HashSet<Individual>();
 
-		//Keeping the old rule to allow some more tests
-		
+
 		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason.toString() + "> ?p }",
 				inf);
 		while (r.hasNext()) {
@@ -567,23 +554,23 @@ public class ExtensionsBulletPoints extends URIs {
 
 		if (expanded.contains(conclusion)
 				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
-			
+
 			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 		} else {
 			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
 			NLG.log.log(Level.INFO, "Text output : " + out); 
 			outputted.add(conclusion); 
-			
-			//Line added to add the conclusion to the expansion, allowing to know further on if it has been already expanded
+
+			//Line added to add the conclusion to the expansion, allowing to know further on if it has already been expanded
 			expanded.add(conclusion);
-			
-			
+
+
 			Set<Individual> premises = this.getPremises(conclusion);
 			Stack<Individual> orderedPremises = new Stack<Individual>();
 
 			boolean firstPremise = true;
 
-			
+
 			for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
 				Individual prem = itp.next();
 				if (firstPremise) {
@@ -640,7 +627,7 @@ public class ExtensionsBulletPoints extends URIs {
 			NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
 		}
 
-		//out = text to be outputted, toExpand = roots; expanded =  
+		//out = text to be outputted, toExpand = conclusions to be expanded; expanded : what we have already used; outputted : what has been outputted as text;
 		this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 
 		return out.toString();
@@ -667,7 +654,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 
 		}
-		
+
 		if (this.getSkepticalLabelling() != null) {
 			inIndividuals = this.getIn(this.getSkepticalLabelling());
 			if (inIndividuals.isEmpty()) {
@@ -694,18 +681,27 @@ public class ExtensionsBulletPoints extends URIs {
 
 		/************************************************************/
 
+		//This is is where we retrieve the skepticalLabelling
+		//Output even if InIndividuals is Empty ? Minor issue
 		if (inIndividuals != null && !inIndividuals.isEmpty()) {
 			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
 			out.append(this.individualsToString(inIndividuals, null, outputted));
 			out.append("</ul>" + newline);
 
+			//TO be removed if necessary
+			outputted.addAll(inIndividuals);
+
+
+
 		}
 
 		/**
 		 * We avoid to re-output the skeptical
+		 * Put it in the iff clause so we don't add null
+		 * outputted.addAll(inIndividuals);
 		 */
-		outputted.addAll(inIndividuals);
+
 
 		if (debug) {
 			NLG.log.log(Level.INFO, "Outputted including skeptical");
@@ -718,7 +714,7 @@ public class ExtensionsBulletPoints extends URIs {
 		/*************************************************************/
 
 
-		
+
 		Set<Individual> credulousLabellings = this.getCredulousLabellings();
 		Vector<String> credulousStrings = new Vector<String>();
 		if (!credulousLabellings.isEmpty()) {
@@ -734,6 +730,7 @@ public class ExtensionsBulletPoints extends URIs {
 					NLG.log.log(Level.INFO, "END Credulous including skeptical");
 				}
 
+				//Removes all InStatements from the sketicalLabellibng
 				credulousNoSkeptical.removeAll(this.getIn(this.getSkepticalLabelling()));
 
 				if (debug) {
@@ -744,6 +741,21 @@ public class ExtensionsBulletPoints extends URIs {
 					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
 				}
 
+				//No errors in the RDF structure
+
+				/**
+				 * THe conclusions are not extracted the same way in the following part
+				 * 2 main issues are currently going on
+				 * We have to retrieve Claim Statements even if they have no premises. 
+				 * We can't have a Claim statement with an out premise
+				 * 
+				 * How to rework it, change parts of codes or make a completely new part.
+				 * 
+				 * We should manipulate a credulous opt without skeptical
+				 * We should use the credulous opt with the skeptical
+				 * 
+				 * 
+				 */
 				String credulousExt = this.individualsToString(credulousNoSkeptical,
 						this.getIn(this.getSkepticalLabelling()), outputted);
 
@@ -779,7 +791,7 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
-		
+
 
 		Set<Individual> infos = this.getInfoStatements();
 
@@ -795,7 +807,7 @@ public class ExtensionsBulletPoints extends URIs {
 		JSONObject ret = new JSONObject();
 		ret.put("fail", false);
 		ret.put("text", out.toString());
-		
+
 		return ret.toString();
 	}
 

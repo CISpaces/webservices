@@ -145,8 +145,7 @@ public abstract class URIs {
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasConclusion");
 	
 	protected ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
-	protected ObjectProperty basedOnReason = m.createObjectProperty(URI + "baseOnReason");
-	protected ObjectProperty basedOnReason2 = m.createObjectProperty(URI + "baseOnReason2");
+	protected ObjectProperty basedOnReason = m.createObjectProperty(URI + "basedOnReason");
 	
 	
 	public URIs(){
