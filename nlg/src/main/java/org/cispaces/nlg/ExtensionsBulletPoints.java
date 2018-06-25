@@ -324,7 +324,7 @@ public class ExtensionsBulletPoints extends URIs {
 	 * @param p
 	 * @param o
 	 */
-	
+
 	private void printStatements(Model m, Resource s, ObjectProperty p, Resource o) {
 		String listStmts = "";
 		for (StmtIterator i = m.listStatements(s,p,o); i.hasNext(); ) {
@@ -339,7 +339,7 @@ public class ExtensionsBulletPoints extends URIs {
 	 * 
 	 * @param labelling
 	 */
-	
+
 	private void instancesRetriever(OntClass labelling ) {
 		// Print each of its instances
 		String labelS = "";
@@ -633,6 +633,142 @@ public class ExtensionsBulletPoints extends URIs {
 		return out.toString();
 	}
 
+	/**
+	 * String credulousExt = this.individualsToString(credulousNoSkeptical,this.getIn(this.getSkepticalLabelling()), outputted);
+	 */
+
+	/**
+	 * A function that will allow us to build the hypotheses in the report
+	 * 
+	 * @param credulousNoSkeptical
+	 * @param inSkeptical
+	 * @param outputted
+	 * @return the different hypotheses in natural language as a String
+	 */
+	private String retrieveHypotheses(Set<Individual> credulousNoSkeptical, Set<Individual> inSkeptical, Set <Individual> outputted) {
+
+		if (inSkeptical == null) {
+			inSkeptical = new HashSet<Individual>();
+		}
+		StringBuilder out = new StringBuilder();
+
+
+		//Retrieves all claim statements that are in the credulousNoSkeptical
+		Set<Individual> claims = new HashSet<Individual>();
+
+		/**
+		 * Loops gets a hold of the conclusions
+		 */
+		for (Iterator<Individual> it = credulousNoSkeptical.iterator(); it.hasNext();) {
+			Individual iInd = it.next();
+			if(iInd.hasOntClass(claimStatement)) {
+				claims.add(iInd);
+
+			}
+		}
+
+
+		Stack<Individual> toExpand = new Stack<Individual>();
+
+		for (Iterator<Individual> r =  claims.iterator(); r.hasNext();) {
+			toExpand.push(r.next());
+		}
+		//to check what is to be extracted
+
+		NLG.log.log(Level.INFO, "Expand : ");
+		for (Iterator<Individual> r = toExpand.iterator(); r.hasNext();) {
+			NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+		}
+
+		//An alternative to recursiveNavigationIndividuals, where we extracted the different premises from each claim statements, if it doesn't have any premise, it will remain as it is
+		this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, inSkeptical, outputted);
+
+		return out.toString();
+	}
+
+	/**
+	 * An alternative to recursiveNavigationIndividuals, where we extracted the different premises from each claim statements, if it doesn't have any premise, it will remain as it is
+	 * @param out
+	 * @param toExpand
+	 * @param expanded
+	 * @param outputted
+	 * @param credulousNoSkeptical 
+	 */
+	private void recursivePremiseRetriever(StringBuilder out, Stack<Individual> toExpand, Set<Individual> credulousNoSkeptical, Set<Individual> expanded,
+			Set<Individual> outputted ) {
+		if (toExpand.isEmpty()) {
+			return;
+		}
+
+		Individual conclusion = toExpand.pop();
+
+		NLG.log.log(Level.INFO, "Conclusion : " + conclusion.getPropertyValue(claimText).toString()); 
+
+		if (expanded.contains(conclusion)
+				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
+
+			this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, expanded, outputted);
+		} else {
+			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
+			NLG.log.log(Level.INFO, "Text output : " + out); 
+			outputted.add(conclusion); 
+
+			//We are adding the added claim to allow us to know if it's been expanded already
+			expanded.add(conclusion);
+
+
+			Set<Individual> premises = this.getPremises(conclusion);
+
+			if(!premises.isEmpty()) {
+				Stack<Individual> orderedPremises = new Stack<Individual>();
+
+				boolean firstPremise = true;
+
+
+				for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
+					Individual prem = itp.next();
+					if(credulousNoSkeptical.contains(prem) || expanded.contains(prem)) {
+						if (firstPremise) {
+							out.append(this.sBecause);
+							firstPremise = false;
+						} else {
+							out.append(this.sAnd);
+						}
+
+						if (prem.getOntClass().equals(infoStatement)) {
+							out.append("[info received] ");
+						}
+
+						out.append(prem.getPropertyValue(claimText).toString());
+
+						outputted.add(prem);
+						orderedPremises.push(prem);
+
+					}
+
+
+				}
+
+
+				while (!orderedPremises.empty()) {
+					toExpand.push(orderedPremises.pop());
+				}
+
+			}
+
+
+			out.append("</li>" + newline);
+
+			if (debug) {
+				NLG.log.log(Level.INFO, "Hypotheses output beginning");
+				NLG.log.log(Level.INFO, out.toString());
+				NLG.log.log(Level.INFO, "Hypotheses output ending");
+			}
+
+			this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, expanded, outputted);
+		}
+	}
+
 	public String getText() {
 
 		StringBuilder out = new StringBuilder();
@@ -741,22 +877,8 @@ public class ExtensionsBulletPoints extends URIs {
 					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
 				}
 
-				//No errors in the RDF structure
 
-				/**
-				 * THe conclusions are not extracted the same way in the following part
-				 * 2 main issues are currently going on
-				 * We have to retrieve Claim Statements even if they have no premises. 
-				 * We can't have a Claim statement with an out premise
-				 * 
-				 * How to rework it, change parts of codes or make a completely new part.
-				 * 
-				 * We should manipulate a credulous opt without skeptical
-				 * We should use the credulous opt with the skeptical
-				 * 
-				 * 
-				 */
-				String credulousExt = this.individualsToString(credulousNoSkeptical,
+				String credulousExt = this.retrieveHypotheses(credulousNoSkeptical,
 						this.getIn(this.getSkepticalLabelling()), outputted);
 
 				if (!credulousExt.isEmpty()) {
