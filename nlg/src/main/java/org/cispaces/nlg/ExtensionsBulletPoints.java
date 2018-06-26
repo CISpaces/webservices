@@ -97,10 +97,10 @@ public class ExtensionsBulletPoints extends URIs {
 
 
 	/**
+	 * Generates the JSON graph into RDF data
 	 * 
-	 * @param json
+	 * @param json : the retrieved JSON graph.
 	 * 
-	 * Converts the JSON graph into RDF data
 	 */
 
 	private void parseJSONGraph(String json) {
@@ -108,12 +108,10 @@ public class ExtensionsBulletPoints extends URIs {
 
 		JSONObject graph = obj.getJSONObject("graph");
 
-		// loop to Create all nodes by parsing all objects of type node
 		for (Iterator<Object> it = graph.getJSONArray("nodes").iterator(); it.hasNext();) {
 			JSONObject t = (JSONObject) it.next();
 			Individual node = null;
 
-			//  Creates RA/Pro Nodes
 			if (((String) t.get("type")).equalsIgnoreCase("RA")) {
 				node = m.createIndividual(URI + (String) t.get("nodeID"), inference);
 
@@ -288,7 +286,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		/**
 		 * @author Gael
-		 * rule2: Added a rule to make sure our conclusion is a claim statement
+		 * rule2: Added a rule to make sure a conclusion is a claim statement
 		 * 
 		 */
 
@@ -311,42 +309,6 @@ public class ExtensionsBulletPoints extends URIs {
 			NLG.log.log(Level.INFO, outInf.toString());
 			NLG.log.log(Level.INFO, "***Inferred model ends.");
 		}
-
-		printStatements(m, null, null, null);
-		instancesRetriever(labelling);
-
-	}
-
-	/**
-	 * Added function to retrieve the RDF model statements. We will be able to see where there might be an error
-	 * @param m
-	 * @param s
-	 * @param p
-	 * @param o
-	 */
-
-	private void printStatements(Model m, Resource s, ObjectProperty p, Resource o) {
-		String listStmts = "";
-		for (StmtIterator i = m.listStatements(s,p,o); i.hasNext(); ) {
-			Statement stmt = i.nextStatement();
-			listStmts += newline + PrintUtil.print(stmt);
-
-		}
-		NLG.log.log(Level.INFO, "List of Statements" + listStmts);
-	}
-
-	/**
-	 * 
-	 * @param labelling
-	 */
-
-	private void instancesRetriever(OntClass labelling ) {
-		// Print each of its instances
-		String labelS = "";
-		for ( final ExtendedIterator<? extends OntResource> labellings = labelling.listInstances(); labellings.hasNext(); ) {
-			labelS += newline + labellings.next() ;
-		}
-		NLG.log.log(Level.INFO, labelS);
 	}
 
 
@@ -420,48 +382,49 @@ public class ExtensionsBulletPoints extends URIs {
 
 
 	/**
-	 * Allows to do SPARQL queries on a model
-	 * @param szQuery
-	 * @param m
-	 * @return
+	 * Allows to do SPARQL queries on a model.
+	 * @param szQuery : The query written in SPARQL format
+	 * @param m : The model on which the query will be done.
+	 * @return the result of the query.
 	 */
+
 	private ResultSet selectSparqlQuery(String szQuery, Model m) {
 		Query query = QueryFactory.create(szQuery);
 		return QueryExecutionFactory.create(query, m).execSelect();
 	}
 
 
-
+	/**
+	 * Retrieves all conclusions from a set of individuals. These conclusions retrieved can only be claimStatements.
+	 * @param individuals
+	 * @return
+	 */
 	private Set<Individual> rootBasedOn(Set<Individual> individuals) {
+
 		Set<Individual> roots = new HashSet<Individual>();
 
 
-		/**
-		 * Loops gets a hold of the conclusions
-		 */
 		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
 			Set<Individual> intersection = new HashSet<Individual>(individuals);
 
-			NLG.log.log(Level.INFO, "Intersections before : " + iInd.getPropertyValue(claimText).toString());
+			//NLG.log.log(Level.INFO, "Intersections before : " + iInd.getPropertyValue(claimText).toString());
 
 
 
 			Set<Individual> conclusions = this.getConclusions(iInd);
 			intersection.retainAll(conclusions);
-
-			NLG.log.log(Level.INFO, "Conclusions Found : ");
-			for (Iterator<Individual> r = conclusions.iterator(); r.hasNext();) {
-				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+			if(debug) {
+				NLG.log.log(Level.INFO, "Conclusions Found : ");
+				for (Iterator<Individual> r = conclusions.iterator(); r.hasNext();) {
+					NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+				}
+				NLG.log.log(Level.INFO, "Intersections after : ");
+				for (Iterator<Individual> r = intersection.iterator(); r.hasNext();) {
+					NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+				}
 			}
 
-
-			NLG.log.log(Level.INFO, "Intersections after : ");
-			for (Iterator<Individual> r = intersection.iterator(); r.hasNext();) {
-				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
-			}
-
-			//If the intersection is not empty, we can add the conclusion to our current conclusions
 			if (!intersection.isEmpty()) {
 				for (Iterator<Individual> conclusion = conclusions.iterator(); conclusion.hasNext();) {
 					roots.add(conclusion.next());
@@ -469,7 +432,6 @@ public class ExtensionsBulletPoints extends URIs {
 			}
 
 		}
-		NLG.log.log(Level.INFO, "roots" + roots.toString());
 
 		if (debug) {
 			NLG.log.log(Level.INFO, "***Roots list begins:");
@@ -486,7 +448,7 @@ public class ExtensionsBulletPoints extends URIs {
 	private Set<Individual> getConclusions(Individual p) {
 		Set<Individual> conclusions = new HashSet<Individual>();
 
-		//The query retrieves Claim Statements as Conclusions
+		//The following query retrieves Claim Statements as Conclusions
 		ResultSet r = this.selectSparqlQuery(" SELECT ?c  WHERE {?c <" + basedOnReason.toString() + "> <" + p.toString() + ">} ", inf);
 
 		while (r.hasNext()) {
@@ -498,7 +460,6 @@ public class ExtensionsBulletPoints extends URIs {
 
 	private Set<Individual> getPremises(Individual c) {
 		Set<Individual> premises = new HashSet<Individual>();
-
 
 		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason.toString() + "> ?p }",
 				inf);
@@ -520,7 +481,7 @@ public class ExtensionsBulletPoints extends URIs {
 	}
 
 	/**
-	 * 
+	 * Gets the premises from the claimStatements to expand and outputs them in the text. Recursive call continues, until the claimStatements have all been expanded.
 	 * @param out
 	 *            String to construct
 	 * @param toExpand
@@ -634,11 +595,7 @@ public class ExtensionsBulletPoints extends URIs {
 	}
 
 	/**
-	 * String credulousExt = this.individualsToString(credulousNoSkeptical,this.getIn(this.getSkepticalLabelling()), outputted);
-	 */
-
-	/**
-	 * A function that will allow us to build the hypotheses in the report
+	 * A function that will allow us to build the hypotheses in the report.
 	 * 
 	 * @param credulousNoSkeptical
 	 * @param inSkeptical
@@ -652,13 +609,9 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		StringBuilder out = new StringBuilder();
 
-
-		//Retrieves all claim statements that are in the credulousNoSkeptical
 		Set<Individual> claims = new HashSet<Individual>();
 
-		/**
-		 * Loops gets a hold of the conclusions
-		 */
+		//Retrieves all claim statements that are in the credulousNoSkeptical
 		for (Iterator<Individual> it = credulousNoSkeptical.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
 			if(iInd.hasOntClass(claimStatement)) {
@@ -667,31 +620,32 @@ public class ExtensionsBulletPoints extends URIs {
 			}
 		}
 
-
 		Stack<Individual> toExpand = new Stack<Individual>();
 
 		for (Iterator<Individual> r =  claims.iterator(); r.hasNext();) {
 			toExpand.push(r.next());
 		}
-		//to check what is to be extracted
 
-		NLG.log.log(Level.INFO, "Expand : ");
-		for (Iterator<Individual> r = toExpand.iterator(); r.hasNext();) {
-			NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+		if(debug) {
+			NLG.log.log(Level.INFO, "Expand : ");
+			for (Iterator<Individual> r = toExpand.iterator(); r.hasNext();) {
+				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+			}
 		}
 
-		//An alternative to recursiveNavigationIndividuals, where we extracted the different premises from each claim statements, if it doesn't have any premise, it will remain as it is
 		this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, inSkeptical, outputted);
 
 		return out.toString();
 	}
 
 	/**
-	 * An alternative to recursiveNavigationIndividuals, where we extracted the different premises from each claim statements, if it doesn't have any premise, it will remain as it is
-	 * @param out
-	 * @param toExpand
-	 * @param expanded
-	 * @param outputted
+	 * An alternative to recursiveNavigationIndividuals, where we build the hypotheses. In this recursive function, we look for premises for each claimStatement in our current Credulous labelling.
+	 * Claim statements with no premises but in the current labelling will still be outputted.
+	 * 
+	 * @param out : The text to be generated
+	 * @param toExpand : Arguments to expand
+	 * @param expanded : Arguments already expanded
+	 * @param outputted : Arguments outputted in the text.
 	 * @param credulousNoSkeptical 
 	 */
 	private void recursivePremiseRetriever(StringBuilder out, Stack<Individual> toExpand, Set<Individual> credulousNoSkeptical, Set<Individual> expanded,
@@ -701,8 +655,6 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 
 		Individual conclusion = toExpand.pop();
-
-		NLG.log.log(Level.INFO, "Conclusion : " + conclusion.getPropertyValue(claimText).toString()); 
 
 		if (expanded.contains(conclusion)
 				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
@@ -738,25 +690,18 @@ public class ExtensionsBulletPoints extends URIs {
 						if (prem.getOntClass().equals(infoStatement)) {
 							out.append("[info received] ");
 						}
-
 						out.append(prem.getPropertyValue(claimText).toString());
-
 						outputted.add(prem);
 						orderedPremises.push(prem);
-
 					}
 
 
 				}
-
-
 				while (!orderedPremises.empty()) {
 					toExpand.push(orderedPremises.pop());
 				}
 
 			}
-
-
 			out.append("</li>" + newline);
 
 			if (debug) {
@@ -775,9 +720,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		Set<Individual> inIndividuals = new HashSet<Individual>();
 
-		/**
-		 * We will output info statements at the end
-		 */
+		//We will admit that the infoStatements have already been outputted.
 		Set<Individual> outputted = this.getInfoStatements();
 
 		NLG.log.log(Level.INFO, "InfoStatements : " + outputted.toString());
@@ -801,43 +744,22 @@ public class ExtensionsBulletPoints extends URIs {
 
 
 
-		/*
-		 * if (inIndividuals.isEmpty()) { // fallback to use credulous options
-		 * Set<Individual> credulousLabellings = this.getCredulousLabellings();
-		 * 
-		 * if (credulousLabellings.isEmpty()) { NLG.log.log(Level.SEVERE,
-		 * "Credulous Labelling Not Found!"); } else { for (Iterator<Individual>
-		 * aCredulousLab = credulousLabellings .iterator(); aCredulousLab.hasNext();) {
-		 * Set<Individual> aCredulousLabIN = this .getIn(aCredulousLab.next());
-		 * 
-		 * if (inIndividuals == null || inIndividuals.size() < aCredulousLabIN.size())
-		 * inIndividuals = aCredulousLabIN; } } }
-		 */
-
-
 		/************************************************************/
-
-		//This is is where we retrieve the skepticalLabelling
-		//Output even if InIndividuals is Empty ? Minor issue
-		if (inIndividuals != null && !inIndividuals.isEmpty()) {
+		//"We have reasons to" text output
+		
+		//toCheck will allow  us to know if we need to output a "we have reasons to" part or not.
+		Set<Individual> toCheck = inIndividuals;
+		if(inIndividuals !=null) {
+			toCheck.removeAll(outputted);
+		}
+		
+		if (inIndividuals != null && !toCheck.isEmpty() ) {
 			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
 			out.append(this.individualsToString(inIndividuals, null, outputted));
 			out.append("</ul>" + newline);
-
-			//TO be removed if necessary
 			outputted.addAll(inIndividuals);
-
-
-
 		}
-
-		/**
-		 * We avoid to re-output the skeptical
-		 * Put it in the iff clause so we don't add null
-		 * outputted.addAll(inIndividuals);
-		 */
-
 
 		if (debug) {
 			NLG.log.log(Level.INFO, "Outputted including skeptical");
@@ -848,7 +770,7 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 
 		/*************************************************************/
-
+		//Hypotheses text output
 
 
 		Set<Individual> credulousLabellings = this.getCredulousLabellings();
@@ -866,7 +788,7 @@ public class ExtensionsBulletPoints extends URIs {
 					NLG.log.log(Level.INFO, "END Credulous including skeptical");
 				}
 
-				//Removes all InStatements from the sketicalLabellibng
+				//Removes all InStatements from the sketicalLabelling
 				credulousNoSkeptical.removeAll(this.getIn(this.getSkepticalLabelling()));
 
 				if (debug) {
@@ -876,7 +798,6 @@ public class ExtensionsBulletPoints extends URIs {
 					}
 					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
 				}
-
 
 				String credulousExt = this.retrieveHypotheses(credulousNoSkeptical,
 						this.getIn(this.getSkepticalLabelling()), outputted);
@@ -913,8 +834,8 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
-
-
+		/*************************************************************/
+		//Info text output
 		Set<Individual> infos = this.getInfoStatements();
 
 		if (!infos.isEmpty()) {
