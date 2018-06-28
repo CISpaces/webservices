@@ -91,7 +91,7 @@ if [ $? -eq 0 ]; then echo "[OK]"; else echo "[Failed]"; exit; fi
 echo "# - Download fact-extraction dependencies...? (Y/n)"
 if [ "${yes}" != 'true' ]; then read stopgo; if [ "$stopgo" == "n" ]; then exit 0; fi; fi
 mkdir -p ${FACT_EXTRACTION_DIR}/third-party/download &&
-    wget -r -np -k -A whl -nd -nc -P ${FACT_EXTRACTION_DIR}/third-party http://users.ecs.soton.ac.uk/sem/intelanalysis-dstl/ &&
+    wget -r -np -k -A whl -nd -nc -P ${FACT_EXTRACTION_DIR}/third-party http://southampton.ac.uk/~sem03/intelanalysis-dstl/ &&
     wget -nc -P ${FACT_EXTRACTION_DIR}/third-party/download https://nlp.stanford.edu/software/stanford-postagger-full-2016-10-31.zip &&
     wget -nc -P ${FACT_EXTRACTION_DIR}/third-party/download https://nlp.stanford.edu/software/stanford-parser-full-2016-10-31.zip &&
     wget -nc -P ${FACT_EXTRACTION_DIR}/third-party/download https://nlp.stanford.edu/software/stanford-english-corenlp-2016-10-31-models.jar
