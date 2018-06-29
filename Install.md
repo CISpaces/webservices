@@ -21,14 +21,14 @@ http://tomcat.apache.org/download-80.cgi
 
 ```$ git clone https://github.com/CISpaces/webservices.git```
 
-- Run the pre-requisites installation script from the cispaces directory
+- Run the pre-requisites installation script from the webservices directory
 
 ```
 $ cd webservices
 $ ./install-prereqs.sh
 ```
 
-- Run the fact-extraction installation script (currently requires GitLab access or a deployment key and usually takes ~15 minutes)
+- Run the fact-extraction installation script - usually takes ~15 minutes
 
 ```$ FEWS/extra/install-fact-extraction.sh```
 
