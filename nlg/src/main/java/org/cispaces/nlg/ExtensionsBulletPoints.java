@@ -35,6 +35,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.HashSet;
 
+import org.apache.jena.graph.compose.Intersection;
 import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
@@ -49,6 +50,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Selector;
@@ -58,7 +60,10 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.util.PrintUtil;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -79,178 +84,161 @@ public class ExtensionsBulletPoints extends URIs {
 
 	private InfModel inf = null;
 
-	private boolean debug = false;
+	private boolean debug = true;
 
 	public ExtensionsBulletPoints(String request) {
 		NLG.log = Logger.getLogger(getClass().getName());
 
 		this.parseJSONGraph(request);
 
+
+
 	}
+
+
+	/**
+	 * Generates the JSON graph into RDF data
+	 * 
+	 * @param json : the retrieved JSON graph.
+	 * 
+	 */
 
 	private void parseJSONGraph(String json) {
 		JSONObject obj = new JSONObject(json);
 
 		JSONObject graph = obj.getJSONObject("graph");
 
-		for (Iterator<Object> it = graph.getJSONArray("nodes").iterator(); it
-				.hasNext();) {
+		for (Iterator<Object> it = graph.getJSONArray("nodes").iterator(); it.hasNext();) {
 			JSONObject t = (JSONObject) it.next();
 			Individual node = null;
+
 			if (((String) t.get("type")).equalsIgnoreCase("RA")) {
-				node = m.createIndividual(URI + (String) t.get("nodeID"),
-						inference);
+				node = m.createIndividual(URI + (String) t.get("nodeID"), inference);
 
 				/*
 				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
-				 * .equalsIgnoreCase("LEO")) { m.add(node, fulfils, leo); } else
-				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
-				 * .equalsIgnoreCase("LPK")) { m.add(node, fulfils, lpk); } else
-				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
-				 * .equalsIgnoreCase("LAN")) { m.add(node, fulfils, lan); } else
-				 * if (((String) ((JSONObject) t.get("annot")).get("id"))
+				 * .equalsIgnoreCase("LEO")) { m.add(node, fulfils, leo); } else if (((String)
+				 * ((JSONObject) t.get("annot")).get("id")) .equalsIgnoreCase("LPK")) {
+				 * m.add(node, fulfils, lpk); } else if (((String) ((JSONObject)
+				 * t.get("annot")).get("id")) .equalsIgnoreCase("LAN")) { m.add(node, fulfils,
+				 * lan); } else if (((String) ((JSONObject) t.get("annot")).get("id"))
 				 * .equalsIgnoreCase("LCE")) { m.add(node, fulfils, lce); }
 				 */
 
+
+				// Creates CA/Con Nodes
 			} else if (((String) t.get("type")).equalsIgnoreCase("CA")) {
-				node = m.createIndividual(URI + (String) t.get("nodeID"),
-						conflict);
-				// todo link with critical questions
+				node = m.createIndividual(URI + (String) t.get("nodeID"), conflict);
+
 			} else if (((String) t.get("type")).equalsIgnoreCase("I")) {
 
 				if (t.keySet().contains("input")) {
 					if (((String) t.get("input")).equalsIgnoreCase("INFO")) {
 
-						node = m.createIndividual(
-								URI + (String) t.get("nodeID"), infoStatement);
-						m.add(node, claimText,
-								m.createLiteral((String) t.get("text")));
-					} else if (((String) t.get("input"))
-							.equalsIgnoreCase("CLAIM")) {
-						node = m.createIndividual(
-								URI + (String) t.get("nodeID"), claimStatement);
-						m.add(node, claimText,
-								m.createLiteral((String) t.get("text")));
+						node = m.createIndividual(URI + (String) t.get("nodeID"), infoStatement);
+						m.add(node, claimText, m.createLiteral((String) t.get("text")));
+					} else if (((String) t.get("input")).equalsIgnoreCase("CLAIM")) {
+						node = m.createIndividual(URI + (String) t.get("nodeID"), claimStatement);
+						m.add(node, claimText, m.createLiteral((String) t.get("text")));
 					} else {
-						node = m.createIndividual(
-								URI + (String) t.get("nodeID"), statement);
-						m.add(node, claimText,
-								m.createLiteral((String) t.get("text")));
+						node = m.createIndividual(URI + (String) t.get("nodeID"), statement);
+						m.add(node, claimText, m.createLiteral((String) t.get("text")));
 					}
 				} else {
-					node = m.createIndividual(URI + (String) t.get("nodeID"),
-							statement);
-					m.add(node, claimText,
-							m.createLiteral((String) t.get("text")));
+					node = m.createIndividual(URI + (String) t.get("nodeID"), statement);
+					m.add(node, claimText, m.createLiteral((String) t.get("text")));
 				}
 			}
 
 			/*
 			 * for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
-			 * .getJSONObject("prem_assump").names() .iterator();
-			 * ranodesIt.hasNext();) { String ranodename = (String)
-			 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
-			 * ranodename);
+			 * .getJSONObject("prem_assump").names() .iterator(); ranodesIt.hasNext();) {
+			 * String ranodename = (String) ranodesIt.next(); Individual ranode =
+			 * m.getIndividual(URI + ranodename);
 			 * 
-			 * if (t.getJSONObject("annot").getJSONObject("prem_assump")
-			 * .names() != null) { for (Iterator<Object> ranodesIt =
-			 * t.getJSONObject("annot") .getJSONObject("prem_assump").names()
-			 * .iterator(); ranodesIt.hasNext();) { String ranodename = (String)
-			 * ranodesIt.next(); Individual ranode = m.getIndividual(URI +
-			 * ranodename);
+			 * if (t.getJSONObject("annot").getJSONObject("prem_assump") .names() != null) {
+			 * for (Iterator<Object> ranodesIt = t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump").names() .iterator(); ranodesIt.hasNext();) {
+			 * String ranodename = (String) ranodesIt.next(); Individual ranode =
+			 * m.getIndividual(URI + ranodename);
 			 * 
 			 * // LCE if (t.getJSONObject("annot") .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename).getString("id")
-			 * .equalsIgnoreCase("LCE")) { for (int i = 0; i <
-			 * t.getJSONObject("annot") .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) {
-			 * // assuming tha PCE1 means causal desc if
-			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-			 * .equalsIgnoreCase("PCE1")) { m.add(ranode, hasCausalPremise,
-			 * node); m.add(node, fulfils, causalDesc); // probably // useless,
-			 * // we // can // write // a RL // rule // for // this } //
-			 * assuming tha PCE2 means causal desc else if
-			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-			 * .equalsIgnoreCase("PCE2")) { m.add(ranode, hasOccurrenceAPremise,
-			 * node); m.add(node, fulfils, occurrenceADesc); // probably //
-			 * useless, // we // can // write // a // RL // rule // for // this
+			 * .getJSONObject(ranodename).getString("id") .equalsIgnoreCase("LCE")) { for
+			 * (int i = 0; i < t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) { // assuming
+			 * tha PCE1 means causal desc if (t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump") .getJSONObject(ranodename)
+			 * .getJSONArray("prem").getString(i) .equalsIgnoreCase("PCE1")) { m.add(ranode,
+			 * hasCausalPremise, node); m.add(node, fulfils, causalDesc); // probably //
+			 * useless, // we // can // write // a RL // rule // for // this } // assuming
+			 * tha PCE2 means causal desc else if (t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump") .getJSONObject(ranodename)
+			 * .getJSONArray("prem").getString(i) .equalsIgnoreCase("PCE2")) { m.add(ranode,
+			 * hasOccurrenceAPremise, node); m.add(node, fulfils, occurrenceADesc); //
+			 * probably // useless, // we // can // write // a // RL // rule // for // this
 			 * }
 			 * 
-			 * } } // LEO else if (t.getJSONObject("annot")
-			 * .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename).getString("id")
-			 * .equalsIgnoreCase("LEO")) { for (int i = 0; i <
-			 * t.getJSONObject("annot") .getJSONObject("prem_assump")
-			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) {
-			 * // assuming tha PEO1 means field expertise if
+			 * } } // LEO else if (t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename).getString("id") .equalsIgnoreCase("LEO")) { for
+			 * (int i = 0; i < t.getJSONObject("annot") .getJSONObject("prem_assump")
+			 * .getJSONObject(ranodename) .getJSONArray("prem").length(); i++) { // assuming
+			 * tha PEO1 means field expertise if (t.getJSONObject("annot")
+			 * .getJSONObject("prem_assump") .getJSONObject(ranodename)
+			 * .getJSONArray("prem").getString(i) .equalsIgnoreCase("PEO1")) { m.add(ranode,
+			 * hasFieldExpertisePremise, node); m.add(node, fulfils, fieldExpertiseDesc); //
+			 * probably // useless, // we // can // write // a // RL // rule // for // this
+			 * } // assuming tha PEO2 means knowledge assertion else if
 			 * (t.getJSONObject("annot") .getJSONObject("prem_assump")
 			 * .getJSONObject(ranodename) .getJSONArray("prem").getString(i)
-			 * .equalsIgnoreCase("PEO1")) { m.add(ranode,
-			 * hasFieldExpertisePremise, node); m.add(node, fulfils,
-			 * fieldExpertiseDesc); // probably // useless, // we // can //
-			 * write // a // RL // rule // for // this } // assuming tha PEO2
-			 * means knowledge assertion else if (t.getJSONObject("annot")
-			 * .getJSONObject("prem_assump") .getJSONObject(ranodename)
-			 * .getJSONArray("prem").getString(i) .equalsIgnoreCase("PEO2")) {
-			 * m.add(ranode, hasKnowledgeAssertionPremise, node); m.add(node,
-			 * fulfils, knowledgeAssertionDesc); // probably // useless, // we
-			 * // can // write // a RL // rule // for // this }
+			 * .equalsIgnoreCase("PEO2")) { m.add(ranode, hasKnowledgeAssertionPremise,
+			 * node); m.add(node, fulfils, knowledgeAssertionDesc); // probably // useless,
+			 * // we // can // write // a RL // rule // for // this }
 			 * 
 			 * } } }
 			 */
 
 			/*
-			 * if (t.getJSONObject("annot").getJSONObject("conc") .names() !=
-			 * null) { for (Iterator<Object> ranodesIt =
-			 * t.getJSONObject("annot")
-			 * .getJSONObject("conc").names().iterator(); ranodesIt .hasNext();)
-			 * { String ranodename = (String) ranodesIt.next(); Individual
-			 * ranode = m.getIndividual(URI + ranodename);
+			 * if (t.getJSONObject("annot").getJSONObject("conc") .names() != null) { for
+			 * (Iterator<Object> ranodesIt = t.getJSONObject("annot")
+			 * .getJSONObject("conc").names().iterator(); ranodesIt .hasNext();) { String
+			 * ranodename = (String) ranodesIt.next(); Individual ranode =
+			 * m.getIndividual(URI + ranodename);
 			 * 
 			 * // LCE if (t.getJSONObject("annot").getJSONObject("conc")
-			 * .getJSONObject(ranodename).getString("id")
-			 * .equalsIgnoreCase("LCE")) { for (int i = 0; i <
-			 * t.getJSONObject("annot") .getJSONObject("conc")
-			 * .getJSONObject(ranodename) .getJSONArray("conc").length(); i++) {
-			 * // assuming tha CCE1 means causal conclusion if
-			 * (t.getJSONObject("annot") .getJSONObject("conc")
-			 * .getJSONObject(ranodename) .getJSONArray("conc").getString(i)
-			 * .equalsIgnoreCase("CCE1")) { m.add(ranode, hasConclusion, node);
-			 * m.add(node, fulfils, occurrenceBDesc); // probably // useless, //
-			 * we // can // write // a // RL // rule // for // this } } } // LEO
+			 * .getJSONObject(ranodename).getString("id") .equalsIgnoreCase("LCE")) { for
+			 * (int i = 0; i < t.getJSONObject("annot") .getJSONObject("conc")
+			 * .getJSONObject(ranodename) .getJSONArray("conc").length(); i++) { // assuming
+			 * tha CCE1 means causal conclusion if (t.getJSONObject("annot")
+			 * .getJSONObject("conc") .getJSONObject(ranodename)
+			 * .getJSONArray("conc").getString(i) .equalsIgnoreCase("CCE1")) { m.add(ranode,
+			 * hasConclusion, node); m.add(node, fulfils, occurrenceBDesc); // probably //
+			 * useless, // we // can // write // a // RL // rule // for // this } } } // LEO
 			 * else if (t.getJSONObject("annot").getJSONObject("conc")
-			 * .getJSONObject(ranodename).getString("id")
-			 * .equalsIgnoreCase("LEO")) { for (int i = 0; i <
-			 * t.getJSONObject("annot") .getJSONObject("conc")
-			 * .getJSONObject(ranodename) .getJSONArray("conc").length(); i++) {
-			 * // assuming tha CEO1 means conclusion if
-			 * (t.getJSONObject("annot") .getJSONObject("conc")
+			 * .getJSONObject(ranodename).getString("id") .equalsIgnoreCase("LEO")) { for
+			 * (int i = 0; i < t.getJSONObject("annot") .getJSONObject("conc")
+			 * .getJSONObject(ranodename) .getJSONArray("conc").length(); i++) { // assuming
+			 * tha CEO1 means conclusion if (t.getJSONObject("annot") .getJSONObject("conc")
 			 * .getJSONObject(ranodename) .getJSONArray("conc").getString(i)
-			 * .equalsIgnoreCase("CEO1")) { m.add(ranode, hasConclusion, node);
-			 * m.add(node, fulfils, knowledgePositionDesc); // probably //
-			 * useless, // we // can // write // a // RL // rule // for // this
-			 * } } } } } }
+			 * .equalsIgnoreCase("CEO1")) { m.add(ranode, hasConclusion, node); m.add(node,
+			 * fulfils, knowledgePositionDesc); // probably // useless, // we // can //
+			 * write // a // RL // rule // for // this } } } } } }
 			 */
 
 			if (node != null) {
-				m.add(node, creationDate,
-						m.createLiteral((String) t.get("dtg")));
-				m.add(node, createdBy,
-						m.createLiteral((String) t.get("source")));
+				m.add(node, creationDate, m.createLiteral((String) t.get("dtg")));
+				m.add(node, createdBy, m.createLiteral((String) t.get("source")));
 			}
 
-			// System.out.println(t);
+
+			NLG.log.log(Level.INFO, "KiwiTest " + t.toString()); // :" + t.getJsonString());
 		}
 
-		for (Iterator<Object> it = graph.getJSONArray("edges").iterator(); it
-				.hasNext();) {
+
+		for (Iterator<Object> it = graph.getJSONArray("edges").iterator(); it.hasNext();) {
 			JSONObject t = (JSONObject) it.next();
 
 			Individual destnode = m.getIndividual(URI + t.getString("target"));
-			Individual sourcenode = m
-					.getIndividual(URI + t.getString("source"));
+			Individual sourcenode = m.getIndividual(URI + t.getString("source"));
 
 			if (sourcenode.getOntClass().equals(conflict)) {
 				m.add(sourcenode, hasConflictedElement, destnode);
@@ -268,7 +256,6 @@ public class ExtensionsBulletPoints extends URIs {
 
 		}
 
-		
 		JSONObject colors = obj.getJSONObject("eval").getJSONObject("colors");
 
 		Iterator<?> exts = colors.keys();
@@ -282,16 +269,12 @@ public class ExtensionsBulletPoints extends URIs {
 			// System.out.println("Ext: " + ext);
 			if (colors.get(ext) instanceof JSONObject) {
 
-				for (String key : JSONObject
-						.getNames((JSONObject) colors.get(ext))) {
-					if (((JSONObject) colors.get(ext)).get(key).toString()
-							.equalsIgnoreCase("V")) {
+				for (String key : JSONObject.getNames((JSONObject) colors.get(ext))) {
+					if (((JSONObject) colors.get(ext)).get(key).toString().equalsIgnoreCase("V")) {
 						m.add(lab, inStatement, m.getIndividual(URI + key));
-					} else if (((JSONObject) colors.get(ext)).get(key)
-							.toString().equalsIgnoreCase("X")) {
+					} else if (((JSONObject) colors.get(ext)).get(key).toString().equalsIgnoreCase("X")) {
 						m.add(lab, outStatement, m.getIndividual(URI + key));
-					} else if (((JSONObject) colors.get(ext)).get(key)
-							.toString().equalsIgnoreCase("?")) {
+					} else if (((JSONObject) colors.get(ext)).get(key).toString().equalsIgnoreCase("?")) {
 						m.add(lab, undecStatement, m.getIndividual(URI + key));
 					}
 					// System.out.println(key + " -> " +
@@ -301,12 +284,23 @@ public class ExtensionsBulletPoints extends URIs {
 			}
 		}
 
-		String rules = "[rule1: (?ra " + hasPremise.toString() + " ?p) (?ra "
-				+ hasConclusion.toString() + " ?c) -> (?c " + basedOn.toString()
-				+ " ?p)]";
-		Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+		/**
+		 * @author Gael
+		 * rule2: Added a rule to make sure a conclusion is a claim statement
+		 * 
+		 */
+
+		String rules =  "[rule1: (?ra " + hasPremise.toString() + " ?p) (?ra " + hasConclusion.toString() +" ?c) -> (?c " + basedOn.toString() + " ?p)]"
+				+ "[rule2: (?c " + basedOn.toString() + " ?p) (?c rdf:type " + claimStatement.toString() + ") ->  (?c " + basedOnReason.toString() + " ?p)]";
+
+
+
+
+		GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+		reasoner.setTransitiveClosureCaching(true);
 		reasoner.setDerivationLogging(true);
 		inf = ModelFactory.createInfModel(reasoner, m);
+
 
 		if (debug) {
 			StringWriter outInf = new StringWriter();
@@ -315,21 +309,23 @@ public class ExtensionsBulletPoints extends URIs {
 			NLG.log.log(Level.INFO, outInf.toString());
 			NLG.log.log(Level.INFO, "***Inferred model ends.");
 		}
-
 	}
+
+
 
 	private Individual getSkepticalLabelling() {
 		ExtendedIterator<Individual> labIter = m.listIndividuals(labelling);
 
 		while (labIter.hasNext()) {
 			Individual lab = labIter.next();
-			if (lab.getPropertyValue(labName).toString()
-					.contains("Skeptical")) {
+			if (lab.getPropertyValue(labName).toString().contains("Skeptical")) {
 				return lab;
 			}
 		}
 		return null;
 	}
+
+
 
 	private Set<Individual> getCredulousLabellings() {
 		Set<Individual> credulousLabellings = new HashSet<Individual>();
@@ -338,8 +334,7 @@ public class ExtensionsBulletPoints extends URIs {
 
 		while (labIter.hasNext()) {
 			Individual lab = labIter.next();
-			if (lab.getPropertyValue(labName).toString()
-					.contains("Credulous")) {
+			if (lab.getPropertyValue(labName).toString().contains("Credulous")) {
 				credulousLabellings.add(lab);
 			}
 		}
@@ -352,10 +347,8 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
-			for (StmtIterator undecIter = lab
-					.listProperties(undecStatement); undecIter.hasNext();) {
-				toRet.add(m.getIndividual(
-						undecIter.next().getObject().toString()));
+			for (StmtIterator undecIter = lab.listProperties(undecStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(undecIter.next().getObject().toString()));
 			}
 		}
 		return toRet;
@@ -367,10 +360,8 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
-			for (StmtIterator undecIter = lab
-					.listProperties(inStatement); undecIter.hasNext();) {
-				toRet.add(m.getIndividual(
-						undecIter.next().getObject().toString()));
+			for (StmtIterator undecIter = lab.listProperties(inStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(undecIter.next().getObject().toString()));
 			}
 		}
 		return toRet;
@@ -382,37 +373,70 @@ public class ExtensionsBulletPoints extends URIs {
 		}
 		Set<Individual> toRet = new HashSet<Individual>();
 		if (lab != null) {
-			for (StmtIterator undecIter = lab
-					.listProperties(outStatement); undecIter.hasNext();) {
-				toRet.add(m.getIndividual(
-						undecIter.next().getObject().toString()));
+			for (StmtIterator undecIter = lab.listProperties(outStatement); undecIter.hasNext();) {
+				toRet.add(m.getIndividual(undecIter.next().getObject().toString()));
 			}
 		}
 		return toRet;
 	}
+
+
+	/**
+	 * Allows to do SPARQL queries on a model.
+	 * @param szQuery : The query written in SPARQL format
+	 * @param m : The model on which the query will be done.
+	 * @return the result of the query.
+	 */
 
 	private ResultSet selectSparqlQuery(String szQuery, Model m) {
 		Query query = QueryFactory.create(szQuery);
 		return QueryExecutionFactory.create(query, m).execSelect();
 	}
 
+
+	/**
+	 * Retrieves all conclusions from a set of individuals. These conclusions retrieved can only be claimStatements.
+	 * @param individuals
+	 * @return
+	 */
 	private Set<Individual> rootBasedOn(Set<Individual> individuals) {
+
 		Set<Individual> roots = new HashSet<Individual>();
+
 
 		for (Iterator<Individual> it = individuals.iterator(); it.hasNext();) {
 			Individual iInd = it.next();
 			Set<Individual> intersection = new HashSet<Individual>(individuals);
-			intersection.retainAll(this.getConclusions(iInd));
-			if (intersection.isEmpty()) {
-				roots.add(iInd);
+
+			//NLG.log.log(Level.INFO, "Intersections before : " + iInd.getPropertyValue(claimText).toString());
+
+
+
+			Set<Individual> conclusions = this.getConclusions(iInd);
+			intersection.retainAll(conclusions);
+			if(debug) {
+				NLG.log.log(Level.INFO, "Conclusions Found : ");
+				for (Iterator<Individual> r = conclusions.iterator(); r.hasNext();) {
+					NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+				}
+				NLG.log.log(Level.INFO, "Intersections after : ");
+				for (Iterator<Individual> r = intersection.iterator(); r.hasNext();) {
+					NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+				}
 			}
+
+			if (!intersection.isEmpty()) {
+				for (Iterator<Individual> conclusion = conclusions.iterator(); conclusion.hasNext();) {
+					roots.add(conclusion.next());
+				}
+			}
+
 		}
 
 		if (debug) {
 			NLG.log.log(Level.INFO, "***Roots list begins:");
 			for (Iterator<Individual> r = roots.iterator(); r.hasNext();) {
-				NLG.log.log(Level.INFO,
-						r.next().getPropertyValue(claimText).toString());
+				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
 			}
 			NLG.log.log(Level.INFO, "***Roots list ends.");
 		}
@@ -420,27 +444,27 @@ public class ExtensionsBulletPoints extends URIs {
 		return roots;
 	}
 
+
 	private Set<Individual> getConclusions(Individual p) {
 		Set<Individual> conclusions = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?c {?c <"
-				+ basedOn.toString() + "> <" + p.toString() + ">}", inf);
+		//The following query retrieves Claim Statements as Conclusions
+		ResultSet r = this.selectSparqlQuery(" SELECT ?c  WHERE {?c <" + basedOnReason.toString() + "> <" + p.toString() + ">} ", inf);
 
 		while (r.hasNext()) {
-			conclusions.add(m.getIndividual(
-					r.nextSolution().getResource("c").toString()));
+			conclusions.add(m.getIndividual(r.nextSolution().getResource("c").toString()));
 		}
 		return conclusions;
 	}
 
+
 	private Set<Individual> getPremises(Individual c) {
 		Set<Individual> premises = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString()
-				+ "> <" + basedOn.toString() + "> ?p }", inf);
+		ResultSet r = this.selectSparqlQuery("SELECT ?p {<" + c.toString() + "> <" + basedOnReason.toString() + "> ?p }",
+				inf);
 		while (r.hasNext()) {
-			premises.add(m.getIndividual(
-					r.nextSolution().getResource("p").toString()));
+			premises.add(m.getIndividual(r.nextSolution().getResource("p").toString()));
 		}
 		return premises;
 	}
@@ -448,29 +472,27 @@ public class ExtensionsBulletPoints extends URIs {
 	private Set<Individual> getInfoStatements() {
 		Set<Individual> infos = new HashSet<Individual>();
 
-		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i <" + RDF.TYPE
-				+ "> <" + infoStatement.toString() + "> }", inf);
+		ResultSet r = this.selectSparqlQuery("SELECT ?i {?i <" + RDF.TYPE + "> <" + infoStatement.toString() + "> }",
+				inf);
 		while (r.hasNext()) {
-			infos.add(m.getIndividual(
-					r.nextSolution().getResource("i").toString()));
+			infos.add(m.getIndividual(r.nextSolution().getResource("i").toString()));
 		}
 		return infos;
 	}
 
 	/**
-	 * 
+	 * Gets the premises from the claimStatements to expand and outputs them in the text. Recursive call continues, until the claimStatements have all been expanded.
 	 * @param out
 	 *            String to construct
 	 * @param toExpand
-	 *            Stack with the elements to expand: this should be filled in
-	 *            with the roots at the first call
+	 *            Stack with the elements to expand: this should be filled in with
+	 *            the roots at the first call
 	 * @param expanded
 	 *            Elements expanded
 	 * @param outputted
 	 *            Elements added to the String
 	 */
-	private void recursiveNavigationIndividuals(StringBuilder out,
-			Stack<Individual> toExpand, Set<Individual> expanded,
+	private void recursiveNavigationIndividuals(StringBuilder out, Stack<Individual> toExpand, Set<Individual> expanded,
 			Set<Individual> outputted) {
 		if (toExpand.isEmpty()) {
 			return;
@@ -478,35 +500,39 @@ public class ExtensionsBulletPoints extends URIs {
 
 		Individual conclusion = toExpand.pop();
 
+		NLG.log.log(Level.INFO, "Conclusion : " + conclusion.getPropertyValue(claimText).toString()); 
 		/**
-		 * We do not expand further if we already expanded, or if this is a
-		 * piece of information with no premises and we already mentioned such a
-		 * piece of information.
+		 * We do not expand further if we already expanded, or if this is a piece of
+		 * information with no premises and we already mentioned such a piece of
+		 * information.
 		 * 
-		 * Please note that this might look logically inaccurate because we
-		 * might have outputted a rule a -> b, but without adding the
-		 * information a, modus ponens would not happen.
+		 * Please note that this might look logically inaccurate because we might have
+		 * outputted a rule a -> b, but without adding the information a, modus ponens
+		 * would not happen.
 		 * 
-		 * However, my claim is that individuals would see that as a pedantic
-		 * exercise.
+		 * However, my claim is that individuals would see that as a pedantic exercise.
 		 */
+
 		if (expanded.contains(conclusion)
-				|| (this.getPremises(conclusion).isEmpty()
-						&& outputted.contains(conclusion))) {
-			this.recursiveNavigationIndividuals(out, toExpand, expanded,
-					outputted);
+				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
+
+			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 		} else {
-			out.append(
-					"<li>" + conclusion.getPropertyValue(claimText).toString());
-			outputted.add(conclusion);
+			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
+			NLG.log.log(Level.INFO, "Text output : " + out); 
+			outputted.add(conclusion); 
+
+			//Line added to add the conclusion to the expansion, allowing to know further on if it has already been expanded
+			expanded.add(conclusion);
+
 
 			Set<Individual> premises = this.getPremises(conclusion);
 			Stack<Individual> orderedPremises = new Stack<Individual>();
 
 			boolean firstPremise = true;
 
-			for (Iterator<Individual> itp = premises.iterator(); itp
-					.hasNext();) {
+
+			for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
 				Individual prem = itp.next();
 				if (firstPremise) {
 					out.append(this.sBecause);
@@ -527,6 +553,7 @@ public class ExtensionsBulletPoints extends URIs {
 			}
 			out.append("</li>" + newline);
 
+
 			while (!orderedPremises.empty()) {
 				toExpand.push(orderedPremises.pop());
 			}
@@ -534,17 +561,15 @@ public class ExtensionsBulletPoints extends URIs {
 			if (debug) {
 				NLG.log.log(Level.INFO, "Within the recursive exploration");
 				NLG.log.log(Level.INFO, out.toString());
-				NLG.log.log(Level.INFO,
-						"End of this call to the recursive exploration");
+				NLG.log.log(Level.INFO, "End of this call to the recursive exploration");
 			}
 
-			this.recursiveNavigationIndividuals(out, toExpand, expanded,
-					outputted);
+			this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 		}
 	}
 
-	private String individualsToString(Set<Individual> inIndividuals,
-			Set<Individual> expanded, Set<Individual> outputted) {
+	private String individualsToString(Set<Individual> inIndividuals, Set<Individual> expanded,
+			Set<Individual> outputted) {
 
 		if (expanded == null) {
 			expanded = new HashSet<Individual>();
@@ -558,10 +583,135 @@ public class ExtensionsBulletPoints extends URIs {
 		for (Iterator<Individual> r = roots.iterator(); r.hasNext();) {
 			toExpand.push(r.next());
 		}
+		NLG.log.log(Level.INFO, "Expand : ");
+		for (Iterator<Individual> r = toExpand.iterator(); r.hasNext();) {
+			NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+		}
 
+		//out = text to be outputted, toExpand = conclusions to be expanded; expanded : what we have already used; outputted : what has been outputted as text;
 		this.recursiveNavigationIndividuals(out, toExpand, expanded, outputted);
 
 		return out.toString();
+	}
+
+	/**
+	 * A function that will allow us to build the hypotheses in the report.
+	 * 
+	 * @param credulousNoSkeptical
+	 * @param inSkeptical
+	 * @param outputted
+	 * @return the different hypotheses in natural language as a String
+	 */
+	private String retrieveHypotheses(Set<Individual> credulousNoSkeptical, Set<Individual> inSkeptical, Set <Individual> outputted) {
+
+		if (inSkeptical == null) {
+			inSkeptical = new HashSet<Individual>();
+		}
+		StringBuilder out = new StringBuilder();
+
+		Set<Individual> claims = new HashSet<Individual>();
+
+		//Retrieves all claim statements that are in the credulousNoSkeptical
+		for (Iterator<Individual> it = credulousNoSkeptical.iterator(); it.hasNext();) {
+			Individual iInd = it.next();
+			if(iInd.hasOntClass(claimStatement)) {
+				claims.add(iInd);
+
+			}
+		}
+
+		Stack<Individual> toExpand = new Stack<Individual>();
+
+		for (Iterator<Individual> r =  claims.iterator(); r.hasNext();) {
+			toExpand.push(r.next());
+		}
+
+		if(debug) {
+			NLG.log.log(Level.INFO, "Expand : ");
+			for (Iterator<Individual> r = toExpand.iterator(); r.hasNext();) {
+				NLG.log.log(Level.INFO, r.next().getPropertyValue(claimText).toString());
+			}
+		}
+
+		this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, inSkeptical, outputted);
+
+		return out.toString();
+	}
+
+	/**
+	 * An alternative to recursiveNavigationIndividuals, where we build the hypotheses. In this recursive function, we look for premises for each claimStatement in our current Credulous labelling.
+	 * Claim statements with no premises but in the current labelling will still be outputted.
+	 * 
+	 * @param out : The text to be generated
+	 * @param toExpand : Arguments to expand
+	 * @param expanded : Arguments already expanded
+	 * @param outputted : Arguments outputted in the text.
+	 * @param credulousNoSkeptical 
+	 */
+	private void recursivePremiseRetriever(StringBuilder out, Stack<Individual> toExpand, Set<Individual> credulousNoSkeptical, Set<Individual> expanded,
+			Set<Individual> outputted ) {
+		if (toExpand.isEmpty()) {
+			return;
+		}
+
+		Individual conclusion = toExpand.pop();
+
+		if (expanded.contains(conclusion)
+				|| (this.getPremises(conclusion).isEmpty() && outputted.contains(conclusion))) {
+
+			this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, expanded, outputted);
+		} else {
+			out.append("<li>" + conclusion.getPropertyValue(claimText).toString());
+			NLG.log.log(Level.INFO, "Text output : " + out); 
+			outputted.add(conclusion); 
+
+			//We are adding the added claim to allow us to know if it's been expanded already
+			expanded.add(conclusion);
+
+
+			Set<Individual> premises = this.getPremises(conclusion);
+
+			if(!premises.isEmpty()) {
+				Stack<Individual> orderedPremises = new Stack<Individual>();
+
+				boolean firstPremise = true;
+
+
+				for (Iterator<Individual> itp = premises.iterator(); itp.hasNext();) {
+					Individual prem = itp.next();
+					if(credulousNoSkeptical.contains(prem) || expanded.contains(prem)) {
+						if (firstPremise) {
+							out.append(this.sBecause);
+							firstPremise = false;
+						} else {
+							out.append(this.sAnd);
+						}
+
+						if (prem.getOntClass().equals(infoStatement)) {
+							out.append("[info received] ");
+						}
+						out.append(prem.getPropertyValue(claimText).toString());
+						outputted.add(prem);
+						orderedPremises.push(prem);
+					}
+
+
+				}
+				while (!orderedPremises.empty()) {
+					toExpand.push(orderedPremises.pop());
+				}
+
+			}
+			out.append("</li>" + newline);
+
+			if (debug) {
+				NLG.log.log(Level.INFO, "Hypotheses output beginning");
+				NLG.log.log(Level.INFO, out.toString());
+				NLG.log.log(Level.INFO, "Hypotheses output ending");
+			}
+
+			this.recursivePremiseRetriever(out, toExpand, credulousNoSkeptical, expanded, outputted);
+		}
 	}
 
 	public String getText() {
@@ -570,143 +720,129 @@ public class ExtensionsBulletPoints extends URIs {
 
 		Set<Individual> inIndividuals = new HashSet<Individual>();
 
-		/**
-		 * We will output info statements at the end
-		 */
+		//We will admit that the infoStatements have already been outputted.
 		Set<Individual> outputted = this.getInfoStatements();
+
+		NLG.log.log(Level.INFO, "InfoStatements : " + outputted.toString());
 
 		if (this.getSkepticalLabelling() == null) {
 			NLG.log.log(Level.SEVERE, "Skeptical Labelling Not Found!");
 			JSONObject ret = new JSONObject();
 			ret.put("fail", true);
-			return ret.toString();
+			//NLG.log.log(Level.INFO, "SkepGraph : " + ret.toString());
+
+
 		}
 
 		if (this.getSkepticalLabelling() != null) {
 			inIndividuals = this.getIn(this.getSkepticalLabelling());
 			if (inIndividuals.isEmpty()) {
-				NLG.log.log(Level.INFO,
-						"Skeptical Labelling does not contain in statements");
+				NLG.log.log(Level.INFO, "Skeptical Labelling does not contain in statements");
 			}
+			NLG.log.log(Level.INFO, "InIndividuals : " + inIndividuals.toString());
 		}
 
-		/*
-		 * if (inIndividuals.isEmpty()) { // fallback to use credulous options
-		 * Set<Individual> credulousLabellings = this.getCredulousLabellings();
-		 * 
-		 * if (credulousLabellings.isEmpty()) { NLG.log.log(Level.SEVERE,
-		 * "Credulous Labelling Not Found!"); } else { for (Iterator<Individual>
-		 * aCredulousLab = credulousLabellings .iterator();
-		 * aCredulousLab.hasNext();) { Set<Individual> aCredulousLabIN = this
-		 * .getIn(aCredulousLab.next());
-		 * 
-		 * if (inIndividuals == null || inIndividuals.size() <
-		 * aCredulousLabIN.size()) inIndividuals = aCredulousLabIN; } } }
-		 */
 
-		if (inIndividuals != null && !inIndividuals.isEmpty()) {
+
+		/************************************************************/
+		//"We have reasons to" text output
+		
+		//toCheck will allow  us to know if we need to output a "we have reasons to" part or not.
+		Set<Individual> toCheck = inIndividuals;
+		if(inIndividuals !=null) {
+			toCheck.removeAll(outputted);
+		}
+		
+		if (inIndividuals != null && !toCheck.isEmpty() ) {
 			out.append("<p>We have reasons to believe that:</p>" + newline);
 			out.append("<ul>" + newline);
-			out.append(
-					this.individualsToString(inIndividuals, null, outputted));
+			out.append(this.individualsToString(inIndividuals, null, outputted));
 			out.append("</ul>" + newline);
+			outputted.addAll(inIndividuals);
 		}
-
-		/**
-		 * We avoid to re-output the skeptical
-		 */
-		outputted.addAll(inIndividuals);
 
 		if (debug) {
 			NLG.log.log(Level.INFO, "Outputted including skeptical");
-			for (Iterator<Individual> debugI = outputted.iterator(); debugI
-					.hasNext();) {
-				NLG.log.log(Level.INFO,
-						debugI.next().getPropertyValue(claimText).toString());
+			for (Iterator<Individual> debugI = outputted.iterator(); debugI.hasNext();) {
+				NLG.log.log(Level.INFO, debugI.next().getPropertyValue(claimText).toString());
 			}
 			NLG.log.log(Level.INFO, "END outputted including skeptical");
 		}
 
-		// credulous hypotheses
+		/*************************************************************/
+		//Hypotheses text output
+
+
 		Set<Individual> credulousLabellings = this.getCredulousLabellings();
 		Vector<String> credulousStrings = new Vector<String>();
 		if (!credulousLabellings.isEmpty()) {
-			for (Iterator<Individual> cred = credulousLabellings
-					.iterator(); cred.hasNext();) {
+			for (Iterator<Individual> cred = credulousLabellings.iterator(); cred.hasNext();) {
 
 				Set<Individual> credulousNoSkeptical = this.getIn(cred.next());
 
 				if (debug) {
 					NLG.log.log(Level.INFO, "Credulous including skeptical");
-					for (Iterator<Individual> debugI = credulousNoSkeptical
-							.iterator(); debugI.hasNext();) {
+					for (Iterator<Individual> debugI = credulousNoSkeptical.iterator(); debugI.hasNext();) {
 						NLG.log.log(Level.INFO, debugI.next().toString());
 					}
-					NLG.log.log(Level.INFO,
-							"END Credulous including skeptical");
+					NLG.log.log(Level.INFO, "END Credulous including skeptical");
 				}
 
-				credulousNoSkeptical
-						.removeAll(this.getIn(this.getSkepticalLabelling()));
+				//Removes all InStatements from the sketicalLabelling
+				credulousNoSkeptical.removeAll(this.getIn(this.getSkepticalLabelling()));
 
 				if (debug) {
 					NLG.log.log(Level.INFO, "Credulous WITHOUT skeptical");
-					for (Iterator<Individual> debugI = credulousNoSkeptical
-							.iterator(); debugI.hasNext();) {
+					for (Iterator<Individual> debugI = credulousNoSkeptical.iterator(); debugI.hasNext();) {
 						NLG.log.log(Level.INFO, debugI.next().toString());
 					}
 					NLG.log.log(Level.INFO, "END Credulous WITHOUT skeptical");
 				}
-				
-				String credulousExt = this.individualsToString(credulousNoSkeptical, this.getIn(this.getSkepticalLabelling()), outputted);
-				
-				if (!credulousExt.isEmpty()){
+
+				String credulousExt = this.retrieveHypotheses(credulousNoSkeptical,
+						this.getIn(this.getSkepticalLabelling()), outputted);
+
+				if (!credulousExt.isEmpty()) {
 					StringBuilder credout = new StringBuilder();
 					credout.append("<ul>" + newline);
 					credout.append(credulousExt);
 					credout.append("</ul>" + newline);
-					
-					if (debug){
+
+					if (debug) {
 						NLG.log.log(Level.INFO, "**Credulous extension string");
 						NLG.log.log(Level.INFO, credout.toString());
 						NLG.log.log(Level.INFO, "**End credulous extension string");
 					}
-					
+
 					credulousStrings.add(credout.toString());
 				}
 			}
 		}
-		
-		if (!credulousStrings.isEmpty()){
-			if (inIndividuals != null && !inIndividuals.isEmpty()){
+
+		if (!credulousStrings.isEmpty()) {
+			if (inIndividuals != null && !inIndividuals.isEmpty()) {
 				out.append("<p>Moreover, we also");
-			}
-			else{
+			} else {
 				out.append("<p>We");
 			}
-			out.append(" have the following "
-					+ credulousStrings.size() + " hypotheses.</p>"
-					+ newline);
+			out.append(" have the following " + credulousStrings.size() + " hypotheses.</p>" + newline);
 
-			for (int counter = 0; counter < credulousStrings.size(); counter++){
-				out.append(
-						"<p>Hypothesis number " + (counter + 1) + "</p>" + newline);
+			for (int counter = 0; counter < credulousStrings.size(); counter++) {
+				out.append("<p>Hypothesis number " + (counter + 1) + "</p>" + newline);
 				out.append(credulousStrings.get(counter));
 			}
 		}
 		// StringWriter out2 = new StringWriter(); m.write(out2, "TURTLE");
 
+		/*************************************************************/
+		//Info text output
 		Set<Individual> infos = this.getInfoStatements();
 
 		if (!infos.isEmpty()) {
-			out.append("<p>Here the pieces of information we received</p>"
-					+ newline);
+			out.append("<p>Here the pieces of information we received</p>" + newline);
 			out.append("<ul>" + newline);
-			for (Iterator<Individual> info = infos.iterator(); info
-					.hasNext();) {
-				out.append("<li>"
-						+ info.next().getPropertyValue(claimText).toString()
-						+ "</li>" + newline);
+			for (Iterator<Individual> info = infos.iterator(); info.hasNext();) {
+				out.append("<li>" + info.next().getPropertyValue(claimText).toString() + "</li>" + newline);
 			}
 			out.append("</ul>" + newline);
 		}
@@ -714,6 +850,7 @@ public class ExtensionsBulletPoints extends URIs {
 		JSONObject ret = new JSONObject();
 		ret.put("fail", false);
 		ret.put("text", out.toString());
+
 		return ret.toString();
 	}
 

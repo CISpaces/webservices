@@ -29,6 +29,7 @@ import org.apache.jena.ontology.DatatypeProperty;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -144,7 +145,9 @@ public abstract class URIs {
 			.createObjectProperty("http://arg.dundee.ac.uk/aif#hasConclusion");
 	
 	protected ObjectProperty basedOn = m.createObjectProperty(URI + "basedOn");
-
+	protected ObjectProperty basedOnReason = m.createObjectProperty(URI + "basedOnReason");
+	
+	
 	public URIs(){
 		m.add(infoStatement, RDFS.subClassOf, statement);
 		m.add(claimStatement, RDFS.subClassOf, statement);
