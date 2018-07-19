@@ -41,7 +41,7 @@
 		<nav class="navbar navbar-default navbar-static-top" role="navigation"
 			style="margin-bottom: 0">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="index.html">CISpaces</a>
+				<a class="navbar-brand" href="mIndex.html">CISpaces</a>
 			</div>
 			<ul class="nav navbar-top-links navbar-right">
 				<li class="dropdown"><a class="dropdown-toggle"
@@ -60,41 +60,63 @@
 			</ul>
 		</nav>
 <!--
-		****TO BE COMPLETED****
+******Notes*****
+	Most code has been recycled from 'index.html', this includes comments (to aid in understanding the code).
+	The code is 2 separate accordions, one of which is inside an iframe. This iframe should load after a box is checked out or viewed.
+	The second accordion is for the box editing/viewing tools.
+
+
+****TO BE COMPLETED****
  - $missionName must be added to jscript for mission select
  - $missionObjective must be added to the jscript file as sub component of $mission
  		-Find out how to solve issue of enumerating variables in JS queries
- 		(I.e load objective 1, objective 2, objective 3 etc)
- - COMPLETE: Format CSS Accordian to open/close correctly
- - Ensure details are nicely aligned on screens <3.5"
+ 		(I.e load objective 1, objective 2, objective 3 etc | Mission 1, Mission 2, Mission 3 etc...)
  - JS to focus on chart area when clicking 'Generate Reports' 
- - Reposition buttons
+ - Re-populate all graph buttons
+ - Add place-holders
+ - Format iframe to be 100% height not 640px (Samsung Galaxy S6 size)
+ - Script to hide the box select accordions when a mission is selected.
+ - When the user is navigating around the argument graph there should be a small directional pad [Dpad] visible on the graph, this will help users to navigate around the graph whilst still being able to scroll up or down.
+ 		-Please consider finding the source code for Google Maps directional pad, it *should be* open source and will be familiar for many users
  
+ ****COMPLETE****:
+ - Format CSS Accordian to open/close correctly
+ - Ensure details are nicely aligned on screens <3.5"
+
  -->
+ 
+ 
  <!-- Added accordion layout for mission select -->
-<button class="accordion">$missionName</button>
+<button class="accordion">$boxName</button>
 <div class="panel">
-  <button class="missionObj">$missionObjective</button>
+  <button class="missionObj">$boxObjective</button>
 </div>
 
 <!-- Added accordion layout for mission select -->
-<button class="accordion">$missionName</button>
+<button class="accordion">$boxName</button>
 <div class="panel">
-  <button class="missionObj">$missionObjective</button>
+  <button class="missionObj">$boxObjective</button>
 </div>
 
 <!-- Added accordion layout for mission select -->
-<button class="accordion">$missionName</button>
+<button class="accordion">$boxName</button>
 <div class="panel">
-  <button class="missionObj">$missionObjective</button>
+  <button class="missionObj">$boxObjective</button>
 </div>
 
-<iframe src="./editBox.html" width="100%" height="100%" scrolling="yes" name="boxEditMobile">Iframes are not supported, please contact your system administrator.</iframe>
 </div>
+<!-- Iframe that loads editing tools and box user tools -->
+<!-- *******************This iframe needs to become 100% not 640px (Samsung galaxy S6 size)******************** -->
+<iframe src="./editBox.html" style="height:640px;width:100%;" scrolling="yes" name="boxEditMobile">Iframes are not supported, please contact your system administrator.</iframe>
+
+<!-- Persistent home button -->
+<!-- Requires scripting so it remains useable throughout use -->
+<div class="homeButtonDiv"><button style="width:70px;height:30px;"><a class="homeButton" href='#'>Home</a></button></div>
+
 </body>
 
-
 <script>
+<!-- This script was added in order to get the accordions to open/close correctly -->
 var acc = document.getElementsByClassName("accordion");
 var i;
 
@@ -115,4 +137,35 @@ function focusGraph(){
 }
 </script>
 
+<style>
+/* Style for home button */
+.homeButtonDiv {
+    position: fixed;
+    background-color: #abcafc;
+    bottom: 0;
+    margin:10px;
+    border-radius:10px;
+}
+
+/* Styles for Accordion */
+.accordion {
+	background-color: #eee;
+	color: #444;
+	cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	transition: 0.4s;
+}
+
+.active, .accordion:hover{
+	background-color: #ccc;
+}
+
+.navbar {
+	width:100%;
+}
+</style>
 </html>
