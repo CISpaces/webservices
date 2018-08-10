@@ -2,20 +2,30 @@
  * global functions for cispaces
  */
 function generateUUID() {
-  var d = new Date().getTime();
-
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
-  });
-
-  return uuid;
+	// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript on 10 aug 2018
+	return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
 }
 
-function replaceGraphID(jsonObject, newUUID) {
-	oldUUID = jsonObject['graphID'];
-	return JSON.parse(JSON.stringify(jsonObject).replace(new RegExp(oldUUID,"gi"), newUUID));
+function replaceIDs(jsonObject) {
+	var olduids = [];
+	olduids.push(jsonObject['graphID']);
+
+	for (var i = 0; i < jsonObject.nodes.length; i++)
+	{
+		olduids.push(jsonObject.nodes[i].nodeID);
+	}
+	for (var i = 0; i < jsonObject.edges.length; i++)
+	{
+		olduids.push(jsonObject.edges[i].edgeID);
+	}
+	
+	for (var i = 0; i < olduids.length; i++)
+	{
+		jsonObject = JSON.parse(JSON.stringify(jsonObject).replace(new RegExp(olduids[i],"gi"), generateUUID()));
+	}
+	return jsonObject;
 }
 
 function generateDate(){

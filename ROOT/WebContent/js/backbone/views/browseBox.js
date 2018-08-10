@@ -319,7 +319,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
   importFromFile: function(event) {
     readFile(event.target.files, function(jsonData) {
-      jsonData = replaceGraphID(jsonData, generateUUID());
+      jsonData = replaceIDs(jsonData);
       var graphID = jsonData['graphID'];
       var userID = readCookie('user_id');
 
