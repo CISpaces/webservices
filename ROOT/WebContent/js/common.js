@@ -13,6 +13,11 @@ function generateUUID() {
   return uuid;
 }
 
+function replaceGraphID(jsonObject, newUUID) {
+	oldUUID = jsonObject['graphID'];
+	return JSON.parse(JSON.stringify(jsonObject).replace(new RegExp(oldUUID,"gi"), newUUID));
+}
+
 function generateDate(){
   // generates created time using format string type
   var now = new Date();
@@ -68,7 +73,7 @@ function validateFile(input_file){ // validate json format of the file
         var jv = new JSONValidation(); // It uses JSONValidate library
 
         // Get CIspaces schema
-        var schemaFile = '/CISpaces.schema.json';
+        var schemaFile = 'CISpaces.schema.json';
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", schemaFile, false);
         xmlhttp.send();

@@ -1,9 +1,7 @@
 var app = app || {};
 
 /**
- * BrowseBox
- * ---------------------------------
- * the UI for 'browseBox'
+ * BrowseBox --------------------------------- the UI for 'browseBox'
  */
 
 app.BrowseBoxView = Backbone.View.extend({
@@ -63,8 +61,8 @@ app.BrowseBoxView = Backbone.View.extend({
         Backbone.ajax({
           type: 'POST',
           url: 'VC/rest/new',
-          //dataType: 'text',
-          contentType: 'application/json', //Supply the JWT auth token
+          // dataType: 'text',
+          contentType: 'application/json', // Supply the JWT auth token
           data: JSON.stringify(object),
           success: function(result) {
 
@@ -158,15 +156,11 @@ app.BrowseBoxView = Backbone.View.extend({
     }).appendTo(div_panel);
 
     /*
-    $("<label></label>", {
-      'text': "graphID",
-      'style': "margin: 5px 10px"
-    }).appendTo($("<div></div>", {
-      'class': "row"
-    }).appendTo(div_heading)).after($("<span></span>", {
-      'text': analysis.graphID
-    }));
-    */
+	 * $("<label></label>", { 'text': "graphID", 'style': "margin: 5px 10px"
+	 * }).appendTo($("<div></div>", { 'class': "row"
+	 * }).appendTo(div_heading)).after($("<span></span>", { 'text':
+	 * analysis.graphID }));
+	 */
 
     $("<label></label>", {
       'text': "Title:",
@@ -229,7 +223,8 @@ app.BrowseBoxView = Backbone.View.extend({
     view_flag = _view_flag;
 
     if (view_flag) {
-      // If a user click [View] button, the user should not be able to edit the graph
+      // If a user click [View] button, the user should not be able to edit
+		// the graph
       $("#info").hide();
       $("#claim").hide();
       $("#pref").hide();
@@ -324,6 +319,7 @@ app.BrowseBoxView = Backbone.View.extend({
 
   importFromFile: function(event) {
     readFile(event.target.files, function(jsonData) {
+      jsonData = replaceGraphID(jsonData, generateUUID());
       var graphID = jsonData['graphID'];
       var userID = readCookie('user_id');
 
@@ -386,7 +382,8 @@ app.BrowseBoxView = Backbone.View.extend({
                     data: JSON.stringify(object),
                     success: function(result) {
 
-                      // 4. The graph is drawn in hidden workBox in order to call the endpoint of every node and edge
+                      // 4. The graph is drawn in hidden workBox in order to
+						// call the endpoint of every node and edge
                       // initialises a workbox
                       $("#row-workbox").show();
 
@@ -411,7 +408,7 @@ app.BrowseBoxView = Backbone.View.extend({
                   Backbone.ajax({
                     type: 'POST',
                     url: 'VC/rest/save',
-                    //dataType: 'text',
+                    // dataType: 'text',
                     contentType: 'application/json',
                     data: JSON.stringify(object),
                     success: function(result) {
@@ -432,6 +429,7 @@ app.BrowseBoxView = Backbone.View.extend({
         }
       });
     });
+    $("#myFile")[0].value = ''; //resetting the input for the open file so to enable double upload of the same filename
   },
 
   exportToFile: function(event) {
