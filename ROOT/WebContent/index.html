@@ -416,12 +416,12 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title"><%= nodeID %></h4>
+						<!--<h4 class="modal-title"><%= nodeID %></h4>-->
 					</div>
 					<div class="modal-body">
 						<div class="row row-text form-group">
 							<div class="col-md-2"><label>Text</label></div>
-							<div class="col-md-10"><textarea class="form-control" rows="3"><%= text %></textarea></div>
+							<div class="col-md-10"><textarea id="nodeContentID" class="form-control form-control-update" rows="3"><%= text %></textarea></div>
 						</div>
 						<div class="row row-link form-group">
 							<div class="col-md-2"><label>Link</label></div>
@@ -434,12 +434,13 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-update">Update</button>
+						<button type="button" id="nodeContentButtonID" class="btn btn-default btn-update">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
 		</script>
+
 
 		<!--
 			************************************* Modal for Natural Language Report *************************************
