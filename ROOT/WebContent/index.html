@@ -621,6 +621,16 @@
 						}
 					});
 		</script>
+
+		<script>
+			var globalkeys = {};
+			window.onkeyup = function(e) {
+				globalkeys[e.keyCode] = false;
+			}
+			window.onkeydown = function(e) {
+				globalkeys[e.keyCode] = true;
+			}
+		</script>
 	</div>
 </body>
 

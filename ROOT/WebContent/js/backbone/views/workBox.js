@@ -1,9 +1,7 @@
 var app = app || {};
 
 /**
- * WorkBox
- * ---------------------------------
- * the UI for 'workBox'
+ * WorkBox --------------------------------- the UI for 'workBox'
  */
 
 app.WorkBoxView = Backbone.View
@@ -11,6 +9,7 @@ app.WorkBoxView = Backbone.View
     el: '#d3-area-chart',
 
     events: {
+      'click ': 'createNodeKey',
       'click .node': 'viewDetails',
       'dblclick .node': 'popupNodeView',
       'contextmenu .node': 'onRightClick'
@@ -18,14 +17,18 @@ app.WorkBoxView = Backbone.View
 
     initialize: function() {
 
-      /* -------------------- initialisation for drawing a graph -------------------- */
+      /*
+		 * -------------------- initialisation for drawing a graph
+		 * --------------------
+		 */
       var area_id = this.el.id;
 
       // set the size of the SVG element using the size of a window
       var ret_chart = init_chart_data(area_id, 700);
       push_chart_data(area_id, ret_chart);
 
-      // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      // set the zoom functionality - In order to make zoomable screen, zoom(g
+		// element) covers whole display in the beginning.
       var zoom = set_zoom(chart.svg.el);
       chart.zoom = zoom;
 
@@ -40,7 +43,8 @@ app.WorkBoxView = Backbone.View
 
       this.listenTo(app.Nodes, "update", function() {
 
-        // Calls PROVSIMP webservice to save the node provenance after evrytime it is added.
+        // Calls PROVSIMP webservice to save the node provenance after evrytime
+		// it is added.
         var param = {
           "action": "save",
           "nodes": app.Nodes.toJSON()
@@ -90,6 +94,32 @@ app.WorkBoxView = Backbone.View
       $("#row-workbox").hide();
     },
 
+    createNodeKey: function(obj) {
+    	
+    	var type = null;
+    	if (globalkeys[49]){
+    		type = "Info";
+    	}
+    	if (globalkeys[50]){
+    		type = "Claim";
+    	}
+    	if (globalkeys[51]){
+    		type = "Con";
+    	}
+    	if (globalkeys[52]){
+    		type = "Pro";
+    	}
+    	
+    	if (type == null){
+    		console.log("Useful only if key pressed");
+    	}
+    	else {
+    		var newobj = {currentTarget : {id : type}, originalevent : obj.originalevent};
+    		app.toolBoxView.createNode(newobj);
+    		
+    	}
+    },
+    
     onRightClick: function(obj) {
 
       // return native menu if pressing control
@@ -144,7 +174,8 @@ app.WorkBoxView = Backbone.View
               var attr = null;
 
               if (link_from == target) {
-                // if the first point and the second point are same, shows an error message
+                // if the first point and the second point are same, shows an
+				// error message
                 alertMessage(obj, "You can't choose the same node for connection.");
               } else {
                 // create a new model of edge
@@ -159,7 +190,8 @@ app.WorkBoxView = Backbone.View
 
                   self.changeLinkFrom(target);
                 } else {
-                  // if the edge connects between i-nodes(Info, Claim), shows an error message
+                  // if the edge connects between i-nodes(Info, Claim), shows
+					// an error message
                   alertMessage(obj, "This connection looks not correct. You should choose at least one between Pref, Con or Pro.");
                 }
               }
@@ -224,13 +256,15 @@ app.WorkBoxView = Backbone.View
       var id = obj.currentTarget.id;
       id = id.substr(5);
 
-      // If a node is Pro-node, the value of the select should be matched with text
+      // If a node is Pro-node, the value of the select should be matched with
+		// text
       $("#node_" + id + " .row-link select").val($("#node_" + id + " textarea").val());
       if(_.isEmpty($("#node_" + id + " .row-link select").val())){
         $("#node_" + id + " .row-link select").val("Pro");
       }
 
-      // If a node is linked with another node which is a pro-node and starts with 'L'
+      // If a node is linked with another node which is a pro-node and starts
+		// with 'L'
       var edges = chart.edges.filter(function(d) {
         return ((d.source.nodeID == id) && (d.target.type == "RA") && d.target.text.startsWith("L") && (d.target.text.length == 3));
       });
@@ -351,7 +385,8 @@ app.WorkBoxView = Backbone.View
         graphID: chart.graphID
       };
 
-      // creates model of the node in the collection and sends POST request to a back-end service
+      // creates model of the node in the collection and sends POST request to
+		// a back-end service
       app.Nodes.create(attr, {
         type: 'POST'
       });
@@ -376,14 +411,16 @@ app.WorkBoxView = Backbone.View
         graphID: data['graphID']
       };
 
-      // creates model of the node in the collection and sends POST request to a back-end service
+      // creates model of the node in the collection and sends POST request to
+		// a back-end service
       app.Nodes.create(attr);
 
       return attr;
     },
 
     addNode: function(node) {
-      // when the new model is created in the collection, a view of the new model is created.
+      // when the new model is created in the collection, a view of the new
+		// model is created.
       var view = new app.NodeView({
         model: node
       });
@@ -436,7 +473,8 @@ app.WorkBoxView = Backbone.View
         graphID: graphID
       };
 
-      // creates model of the edge in the collection and sends POST request to a back-end service
+      // creates model of the edge in the collection and sends POST request to
+		// a back-end service
       app.Edges.create(attr, {
         type: 'POST'
       });
@@ -490,7 +528,8 @@ app.WorkBoxView = Backbone.View
         graphID: data['graphID']
       };
 
-      // creates model of the edge in the collection and sends POST request to a back-end service
+      // creates model of the edge in the collection and sends POST request to
+		// a back-end service
       app.Edges.create(attr);
 
       return className;
@@ -541,14 +580,18 @@ app.WorkBoxView = Backbone.View
         });
       }
 
-      /* -------------------- initialisation for drawing a graph -------------------- */
+      /*
+		 * -------------------- initialisation for drawing a graph
+		 * --------------------
+		 */
       var area_id = this.el.id;
 
       // set the size of the SVG element using the size of a window
       var ret_chart = init_chart_data(area_id, 700);
       push_chart_data(area_id, ret_chart);
 
-      // set the zoom functionality - In order to make zoomable screen, zoom(g element) covers whole display in the beginning.
+      // set the zoom functionality - In order to make zoomable screen, zoom(g
+		// element) covers whole display in the beginning.
       var zoom = set_zoom(chart.svg.el);
       chart.zoom = zoom;
 
