@@ -84,6 +84,10 @@ app.ToolBoxView = Backbone.View.extend({
 
     // re-start changed graph
     chart.simulation = restart_simulation(chart.simulation, restart);
+    
+    if (attr.type == "I"){
+    	app.workBoxView.popupNodeView({currentTarget : {id : "draw_" + attr.id}});
+    }
   },
 
   save: function() {
