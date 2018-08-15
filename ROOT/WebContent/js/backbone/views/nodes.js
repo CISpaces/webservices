@@ -22,12 +22,6 @@ app.NodeView = Backbone.View.extend({
     this.$el.attr("id", "node_" + this.model.attributes['nodeID']);
     this.$el.attr("role", "dialog");
     this.$el.attr("style", "display: none");
-
-    $(".form-control-update").keypress(function(e) {
-		if ((e.ctrlKey || e.metaKey) && e.keyCode == 13) {
-			$(".btn-update").click();
-		}
-	});
     
     if (this.model.attributes.type == "RA") { // If a node is 'pro' link
       var nodeID = this.model.attributes.nodeID;
