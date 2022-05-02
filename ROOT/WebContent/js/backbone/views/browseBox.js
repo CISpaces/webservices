@@ -31,7 +31,7 @@ app.BrowseBoxView = Backbone.View.extend({
   render: function() {},
 
   newWorkBox: function() {
-    // app.workBoxView.clearWorkBox();
+    //app.workBoxView.clearWorkBox();
 
     var graphID = generateUUID();
 
@@ -74,6 +74,7 @@ app.BrowseBoxView = Backbone.View.extend({
             push_graph_data(ret_graph);
 
             $("#saveProgress").attr("disabled", true);
+            $("#blockGraph").attr("disabled", true);
 
             // saves the meta data of the graph
             chart.graphID = graphID;
@@ -147,7 +148,7 @@ app.BrowseBoxView = Backbone.View.extend({
     var div_panel = $("<div></div>", {
       'class': "panel panel-green"
     }).appendTo($("<div></div>", {
-      'class': "existing-analysis col-lg-2 col-md-4",
+      'class': "existing-analysis col-lg-3 col-md-4",
       'id': "panel_"+analysis.graphID
     }).appendTo($("#browse_box")));
 
@@ -190,25 +191,25 @@ app.BrowseBoxView = Backbone.View.extend({
     }));
 
     var btn = $("<button></button>", {
-      'class': "pull-right btn btn-xs btn-outline btn-info btn-export",
+      'class': "pull-right btn btn-xs btn-outline btn-info-nocustom btn-export",
       'name': "btn_" + analysis.graphID,
       'text': "Export",
       'title': "Export this analysis to file"
     }).appendTo($("<div></div>", {
       'class': "panel-footer"
     }).appendTo(div_panel)).before($("<button></button>", {
-      'class': "pull-left btn btn-xs btn-outline btn-success btn-view",
+      'class': "pull-left btn btn-xs btn-outline btn-success-nocustom btn-view",
       'name': "btn_" + analysis.graphID,
       'text': "View",
       'title': "View this analysis (read-only)"
     })).before($("<button></button>", {
-      'class': "pull-left btn btn-xs btn-outline btn-success btn-checkout",
+      'class': "pull-left btn btn-xs btn-outline btn-success-nocustom btn-checkout",
       'style': "margin-left: 5px",
       'name': "btn_" + analysis.graphID,
       'text': "Checkout",
       'title': "Checkout this analysis for editing"
     })).before($("<button></button>", {
-      'class': "btn btn-xs btn-outline btn-danger btn-delete",
+      'class': "btn btn-xs btn-outline btn-danger-nocustom btn-delete",
       'name': "btn_" + analysis.graphID,
       'style': "margin-left: 5px",
       'text': "Delete",
@@ -299,6 +300,7 @@ app.BrowseBoxView = Backbone.View.extend({
         chart.simulation = restart_simulation(chart.simulation, false);
 
         $("#saveProgress").attr("disabled", true);
+        $("#blockGraph").attr("disabled", true);
 
         $("#span-graphTitle").text("[" + chart.title + "]");
       } else {

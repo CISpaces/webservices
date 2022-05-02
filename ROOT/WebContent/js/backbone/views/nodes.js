@@ -83,6 +83,7 @@ app.NodeView = Backbone.View.extend({
       });
 
       $("#saveProgress").attr("disabled", false);
+      $("#blockGraph").attr("disabled", false);     //aggiunta per il bottone Block Graph
     }
 
     $("#node_" + nodeID).modal('hide');

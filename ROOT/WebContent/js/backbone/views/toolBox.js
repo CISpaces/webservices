@@ -26,7 +26,9 @@ app.ToolBoxView = Backbone.View.extend({
     'dragend .btn-sm': 'createNode',
 
     'click #commitGraph': 'commitGraph',
-    'click #checkoutGraph': 'checkoutGraph'
+    'click #checkoutGraph': 'checkoutGraph',
+    'click #blockGraph': 'blockGraph',        //aggiunta della nuova funzione per bloccare il grafo
+    'click #customization': 'customization'   //aggiunta della nuova funzione per la personalizzazione
   },
 
   initialize: function() {
@@ -50,6 +52,7 @@ app.ToolBoxView = Backbone.View.extend({
     // Gets the list of analysis from the server
     app.browseBoxView.getAnalysisList();
 
+    $("#nav-toolbox").hide();
     $("#row-workbox").hide();
     $("#row-browsebox").show();
   },
@@ -245,5 +248,100 @@ app.ToolBoxView = Backbone.View.extend({
 
   checkoutGraph: function(event){
     app.browseBoxView.toggleViewMode(false);
+  },
+
+  //Aggiunta della funzione del blocco del grafo: da sviluppare
+  blockGraph: function() {
+    /**
+     Estrae il codice html relativo alla sezione svg. Questo verrà salvato su DB
+     */
+
+    var graph_blocked = $("#myGraph").html();
+    console.log(graph_blocked);
+    /**
+    $("#graph_info .modal-header span").text(chart.graphID);
+
+    $("#graph_info .modal-body input").val(chart.title);
+    $("#graph_info .modal-body textarea").val(chart.description);
+
+    $("#graph_info .modal-footer .btn-create")
+        .text("Block Graph")
+        .one("click", function(event){
+          //We need to use one(), rather than on(), else the click event is associated multiple times.
+          event.preventDefault();
+          var title = $("#graph_info .modal-body input").val();
+          var description = $("#graph_info .modal-body textarea").val();
+
+          if (title != null) {
+            var graphID = chart.graphID;
+            var userID = readCookie('user_id');
+            var object = {
+              "graphID": graphID,
+              "userID": userID,
+              "title": title.trim(),
+              "description": description.trim(),
+              "graph": graph_blocked.trim()
+            };
+
+            Backbone.ajax({
+              type: 'POST',
+              url: 'VC/rest/blocked',
+              //dataType: 'text',
+              contentType: 'application/json',
+              data: JSON.stringify(object),
+              success: function(result) {
+                alert("Version " + title + " blocked.");
+
+                $("#graph_info").modal('hide');
+              },
+              error: function(result) {
+                alert('Something went wrong. Please try again.');
+              }
+            });
+          }
+        });
+
+    $("#graph_info").modal('show');*/
+  },
+
+  /*
+    Aggiunta della funzione customization: sviluppo completato
+   */
+  customization: function() {
+    $("#graph_customization .modal-header span").text("CUSTOMIZATION");
+
+    $("#graph_customization .modal-footer .btn-create").text("Custom Now").on("click", function(event) {
+
+      var info_button_color = $("#info_node_draw").val();
+      var claim_button_color = $("#claim_node_draw").val();
+      var con_button_color = $("#con_node_draw").val();
+      var pro_button_color = $("#pro_node_draw").val();
+
+      if (info_button_color == "#ffffff" ||
+          claim_button_color == "#ffffff" ||
+          con_button_color == "#ffffff" ||
+          pro_button_color == "#ffffff") {
+        alert("White isn't a valid color for node. Please change it");
+      } else {
+        $('.btn-info').css('background-color', info_button_color);
+        $('.btn-claim').css('background-color', claim_button_color);
+        $('.btn-danger').css('background-color', con_button_color);
+        $('.btn-success').css('background-color', pro_button_color);
+
+        $('head').append(
+            $('<style/>', {
+              id : 'my-customization',
+              html :  '.info-node   {fill: '+info_button_color+'; ' + 'stroke: '+info_button_color+'}'+
+                      '.claim-node  {fill: '+claim_button_color+'; ' + 'stroke: '+claim_button_color+'}'+
+                      '.con-node    {fill: '+con_button_color+'; ' + 'stroke: '+con_button_color+'}'+
+                      '.pro-node    {fill: '+pro_button_color+'; ' + 'stroke: '+pro_button_color+'}'
+            })
+        );
+
+        $("#graph_customization").modal('hide');
+      }
+    });
+
+    $("#graph_customization").modal('show');
   }
 });

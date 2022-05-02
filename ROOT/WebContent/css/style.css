@@ -3,12 +3,30 @@
 	styles for login.html
 */
 
+/**
+    Login Text styles: aggiornati o aggiunti
+ */
+
 .input_text, .input_passwd {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
   box-sizing: border-box;
+  text-align: center;
+  border: none;
+  outline: none;
+  border-bottom: 3px solid #2984c3;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.input_text:focus, .input_passwd:focus{
+  border-bottom: 3px solid #29c3b6;
+}
+
+.input_text:hover, .input_passwd:hover{
+  border-bottom: 3px solid #29c3b6;
 }
 
 .btn_login {
@@ -18,8 +36,27 @@
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 20%;
-  float: right;
+  width: 50%;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  border-radius: 20px;
+  -moz-border-radius: 20px; /* firefox */
+  -webkit-border-radius: 20px; /* safari, chrome */
+}
+.btn_login:hover{
+  background-color: #29c3b6;
+}
+.myText{
+  font: 16px Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.external_links{
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+}
+.external_links:hover{
+  color: #2984c3; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
 }
 
 .btn_login:hover {
@@ -28,11 +65,11 @@
 
 .imgcontainer {
   text-align: center;
-  margin: 24px 0 12px 0;
+  margin: 0 0 12px 0;
 }
 
 img.avatar {
-  width: 25%;
+  width: 17%;
 }
 
 .container {
@@ -117,6 +154,24 @@ hr {
 }
 
 /**
+    DIV INSIDE OF THE RECT
+ */
+
+.myDiv-node {
+  color: black;
+  font: 14px Helvetica Neue,Helvetica,Arial,sans-serif;
+  height: 100%;
+  overflow: auto;
+}
+
+/*
+    No custom button view, checkout, delete and export
+ */
+.btn-info-nocustom{color:#5bc0de;border-color:#46b8da}.btn-info-nocustom.focus,.btn-info-nocustom:focus{color:#fff;background-color:#31b0d5;border-color:#1b6d85}.btn-info-nocustom:hover{color:#fff;background-color:#31b0d5;border-color:#269abc}.btn-info-nocustom.active,.btn-info-nocustom:active,.open>.dropdown-toggle.btn-info-nocustom{color:#fff;background-color:#31b0d5;border-color:#269abc}.btn-info-nocustom.active.focus,.btn-info-nocustom.active:focus,.btn-info-nocustom.active:hover,.btn-info-nocustom:active.focus,.btn-info-nocustom:active:focus,.btn-info-nocustom:active:hover,.open>.dropdown-toggle.btn-info-nocustom.focus,.open>.dropdown-toggle.btn-info-nocustom:focus,.open>.dropdown-toggle.btn-info-nocustom:hover{color:#fff;background-color:#269abc;border-color:#1b6d85}.btn-info-nocustom.active,.btn-info-nocustom:active,.open>.dropdown-toggle.btn-info-nocustom{background-image:none}.btn-info-nocustom.disabled.focus,.btn-info-nocustom.disabled:focus,.btn-info-nocustom.disabled:hover,.btn-info-nocustom[disabled].focus,.btn-info-nocustom[disabled]:focus,.btn-info-nocustom[disabled]:hover,fieldset[disabled] .btn-info-nocustom.focus,fieldset[disabled] .btn-info-nocustom:focus,fieldset[disabled] .btn-info-nocustom:hover{background-color:#5bc0de;border-color:#46b8da}.btn-info-nocustom .badge{color:#5bc0de;background-color:#fff}
+.btn-danger-nocustom{color:#d9534f;border-color:#d43f3a}.btn-danger-nocustom.focus,.btn-danger-nocustom:focus{color:#fff;background-color:#c9302c;border-color:#761c19}.btn-danger-nocustom:hover{color:#fff;background-color:#c9302c;border-color:#ac2925}.btn-danger-nocustom.active,.btn-danger-nocustom:active,.open>.dropdown-toggle.btn-danger-nocustom{color:#fff;background-color:#c9302c;border-color:#ac2925}.btn-danger-nocustom.active.focus,.btn-danger-nocustom.active:focus,.btn-danger-nocustom.active:hover,.btn-danger-nocustom:active.focus,.btn-danger-nocustom:active:focus,.btn-danger-nocustom:active:hover,.open>.dropdown-toggle.btn-danger-nocustom.focus,.open>.dropdown-toggle.btn-danger-nocustom:focus,.open>.dropdown-toggle.btn-danger-nocustom:hover{color:#fff;background-color:#ac2925;border-color:#761c19}.btn-danger-nocustom.active,.btn-danger-nocustom:active,.open>.dropdown-toggle.btn-danger-nocustom{background-image:none}.btn-danger-nocustom.disabled.focus,.btn-danger-nocustom.disabled:focus,.btn-danger-nocustom.disabled:hover,.btn-danger-nocustom[disabled].focus,.btn-danger-nocustom[disabled]:focus,.btn-danger-nocustom[disabled]:hover,fieldset[disabled] .btn-danger-nocustom.focus,fieldset[disabled] .btn-danger-nocustom:focus,fieldset[disabled] .btn-danger-nocustom:hover{background-color:#d9534f;border-color:#d43f3a}.btn-danger-nocustom .badge{color:#d9534f;background-color:#fff}
+.btn-success-nocustom{color:#5cb85c;border-color:#4cae4c}.btn-success-nocustom.focus,.btn-success-nocustom:focus{color:#fff;background-color:#449d44;border-color:#255625}.btn-success-nocustom:hover{color:#fff;background-color:#449d44;border-color:#398439}.btn-success-nocustom.active,.btn-success-nocustom:active,.open>.dropdown-toggle.btn-success-nocustom{color:#fff;background-color:#449d44;border-color:#398439}.btn-success-nocustom.active.focus,.btn-success-nocustom.active:focus,.btn-success-nocustom.active:hover,.btn-success-nocustom:active.focus,.btn-success-nocustom:active:focus,.btn-success-nocustom:active:hover,.open>.dropdown-toggle.btn-success-nocustom.focus,.open>.dropdown-toggle.btn-success-nocustom:focus,.open>.dropdown-toggle.btn-success-nocustom:hover{color:#fff;background-color:#398439;border-color:#255625}.btn-success-nocustom.active,.btn-success-nocustom:active,.open>.dropdown-toggle.btn-success-nocustom{background-image:none}.btn-success-nocustom.disabled.focus,.btn-success-nocustom.disabled:focus,.btn-success-nocustom.disabled:hover,.btn-success-nocustom[disabled].focus,.btn-success-nocustom[disabled]:focus,.btn-success-nocustom[disabled]:hover,fieldset[disabled] .btn-success-nocustom.focus,fieldset[disabled] .btn-success-nocustom:focus,fieldset[disabled] .btn-success-nocustom:hover{background-color:#5cb85c;border-color:#4cae4c}.btn-success-nocustom .badge{color:#5cb85c;background-color:#fff}
+
+/**
 	styles for nodes
 */
 
@@ -128,28 +183,43 @@ hr {
 
 .btn-claim:hover {
   color: #fff;
-  border-color: 924dcc;
+  border-color: #924dcc;
   background-color: #a25ee5;
 }
 
 .info-node {
-  fill: #5bc0de;
+  stroke: #5bc0de;
+  stroke-width:0.5%;
+  fill:#5bc0de;
+  fill-opacity:0.4;
 }
 
 .claim-node {
-  fill: #b366ff;
+  stroke: #b366ff;
+  stroke-width:0.5%;
+  fill:#b366ff;
+  fill-opacity:0.4;
 }
 
 .pref-node {
-  fill: #f0ad4e;
+  stroke: #f0ad4e;
+  stroke-width:0.5%;
+  fill:#f0ad4e;
+  fill-opacity:0.4;
 }
 
 .con-node {
-  fill: #d9534f;
+  stroke: #d9534f;
+  stroke-width:0.5%;
+  fill:#d9534f;
+  fill-opacity:0.4;
 }
 
 .pro-node {
-  fill: #5cb85c;
+  stroke: #5cb85c;
+  stroke-width:0.5%;
+  fill:#5cb85c;
+  fill-opacity:0.4;
 }
 
 .node-highlight {
@@ -232,17 +302,32 @@ hr {
   display: inline-block;
 }
 
+/**
+  Versione precedente
+  .success {
+    fill: #31a354;
+    stroke: #31a354;
+  }
+
+  Sono stati cambiati i tipi di stile, in quanto precedentemente erano applicati agli elementi text
+  Adesso, poichè i text sono racchiusi all'interno di un foreignObject e a un div, è necessario cambiare i tipi di
+  stile che vengono applicati
+  Scritte in verde, rosso, e giallo, in stile grassetto con bordatura nera
+*/
 .success {
-  fill: #31a354;
-  stroke: #31a354;
+  color: #31a354;
+  font-weight: bold;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
 }
 
 .fail {
-  fill: #f03b20;
-  stroke: #f03b20;
+  color: #f03b20;
+  font-weight: bold;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
 }
 
 .question {
-  fill: #feb24c;
-  stroke: #feb24c;
+  color: #feb24c;
+  font-weight: bold;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
 }

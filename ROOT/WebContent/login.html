@@ -6,36 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="web interface for cispaces - login.html">
 
-    <title>CISpaces</title>
+    <title>CISpaces - Università degli Studi di Brescia</title>
     <link href="css/style.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 
-<div style="width=100%;background-color: rgb(212, 42, 63); color: white; font-size: large; text-align: center;">
+<div class="myText" style="width: 100%; background-color: rgb(212, 42, 63); color: white; font-size: large; text-align: center;">
 	Experimental server: no guarantees of permanence of data and continuity of service.
 </div>
 
 <form>
-  <div class="imgcontainer">
-    <img src="cisp.png" alt="CISpaces" class="avatar">
+  <div>
+        <a href="https://www.unibs.it/it">
+            <img src="unibs_logo.jpg"  alt="Università degli Studi di Brescia" title="https://www.unibs.it/it" width="15%">
+        </a>
+
+    <div class="imgcontainer">
+        <img src="new_cispaces.png" alt="CISpaces" class="avatar" title="CISpaces">
+    </div>
   </div>
 
-  <div class="container">
-    <label><b>Username</b></label>
-    <input type="text" class="input_text" placeholder="Enter Username" id="uname">
+  <div class="container myText" style="text-align: center">
+        <label for="uname"><b>Username</b></label>
+        <div style="width: 50%; margin: auto">
+            <input type="text" class="input_text myText" placeholder="Enter Username" id="uname"/>
+        </div>
+        <br>
+        <label for="psw"><b>Password</b></label>
+        <div style="width: 50%; margin: auto">
+            <input type="password" class="input_passwd myText" placeholder="Enter Password" id="psw"/>
+        </div>
 
-    <label><b>Password</b></label>
-    <input type="password" class="input_passwd" placeholder="Enter Password" id="psw">
-
-    <button type="submit" class="btn_login" id="login">Login</button>
+        <button type="submit" class="btn-outline btn_login" id="login">Login</button>
   </div>
 </form>
 
-	<div style="width: 100%; text-align: center; padding-top: 5em;">
-	Info at <a href="https://cispaces.org/" target="_blank">https://cispaces.org/</a>
+	<div class="myText" style="width: 100%; text-align: center; padding-top: 1.5em;">
+	Info at <a class="external_links" href="https://cispaces.org/" target="_blank">https://cispaces.org/</a>
 	</div>
 
-	<div style="position: fixed; bottom: 0; width: 100%; text-align: center; padding: 1em; background-color: rgb(192,192,192);">
+    <div class="myText" style="text-align: center; padding-top: 20px;">
+        Experimental version - <a class="external_links" href="https://www.unibs.it/it">Università degli Studi di Brescia</a> (Italy)
+    </div>
+
+	<div class="myText" style="position: fixed; bottom: 0; width: 100%; text-align: center; padding: 1em; background-color: rgb(192,192,192);">
 		We use cookies to authorise your browser to access to the requested resources. <br/> No personal or tracking information are stored or manipulated.
 	</div>
 	<script type="text/javascript">

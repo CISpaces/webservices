@@ -78,10 +78,12 @@ app.WorkBoxView = Backbone.View
 					});
 
 					$("#saveProgress").attr("disabled", false);
+					$("#blockGraph").attr("disabled", false);     //aggiunta per il bottone Block Graph
 				});
 
 				this.listenTo(app.Edges, "update", function() {
 					$("#saveProgress").attr("disabled", false);
+					$("#blockGraph").attr("disabled", false);     //aggiunta per il bottone Block Graph
 				});
 
 				slider_wb = $("#slider-wb").slider(

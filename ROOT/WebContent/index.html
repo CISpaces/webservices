@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="web interface for cispaces">
 
-<title>CISpaces</title>
+<title>CISpaces - Università degli Studi di Brescia</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -85,7 +84,9 @@
 					<a class="btn btn-default" style="margin-left: 20px;"
 						id="browseAnalyses">Browse</a> <a class="btn btn-default"
 						id="commitGraph">Commit</a> <a class="btn btn-default"
-						id="checkoutGraph">Check-out</a>
+						id="checkoutGraph">Check-out</a> <a class="btn btn-default"
+					   	id="blockGraph" disabled="true">Block Graph</a> <a class="btn btn-default"
+					   	id="customization">Customization</a>
 				</div>
 			</div>
 
@@ -117,6 +118,7 @@
 							<i class="fa fa-codepen fa-fw"></i> Work Box <span
 								id="span-graphTitle"></span><span id="span-viewMode"></span>
 						</div>
+						<div id="myGraph">
 						<div class="panel-body" id="d3-area-chart">
 							<svg>
 									<defs>
@@ -136,13 +138,14 @@
 											<path d="M0,-5L10,0L0,5" class="pro-arrow-head"></path>
 										</marker>
 									</defs>
-								</svg>
+							</svg>
+						</div>
 						</div>
 						<div class="panel-footer">
 							<div class="input-group">
 								<input id="slider-wb" data-slider-id="slider-workbox"
-									type="text" data-slider-min="0" data-slider-max="50"
-									data-slider-step="1" data-slider-value="15" style="width: 100%" />
+									type="text" data-slider-min="20" data-slider-max="65"
+									data-slider-step="1" data-slider-value="30" style="width: 100%" />
 							</div>
 						</div>
 					</div>
@@ -351,7 +354,7 @@
 						</div>
 						<div class="panel-body" id="browse_box">
 							<div class="col-lg-2 col-md-4">
-								<div class="btn btn-primary btn-lg btn-block" id="new_analysis"
+								<div class="btn btn-primary btn-outline btn-lg btn-block" id="new_analysis"
 									title="Create a new analysis">
 									<div class="panel-heading">
 										<div class="row text-center">
@@ -359,7 +362,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="btn btn-info btn-lg btn-block"
+								<div class="btn btn-info-nocustom btn-outline btn-lg btn-block"
 									title="Import an analysis from file">
 									<div class="panel-heading">
 										<div class="row text-center">
@@ -552,6 +555,45 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-create">Create</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--	AGGIUNTA MODIFICA
+			************************************* Modal for Customization of the nodes *************************************
+		-->
+		<div class="modal fade" id="graph_customization" role="dialog">
+			<div class="modal-dialog" style="width:500px;">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">
+							<em><span></span></em>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row form-group">
+							<div class="col-md-2" style="width:100%">
+								<label style="padding-left: 20px;">INFO</label>
+								<input type="color" id="info_node_draw" name="info_node_draw"
+									   value="#5bc0de">
+								<label style="padding-left: 20px;">CLAIM</label>
+								<input type="color" id="claim_node_draw" name="claim_node_draw"
+									   value="#b366ff">
+								<label style="padding-left: 20px;">CON</label>
+								<input type="color" id="con_node_draw" name="con_node_draw"
+									   value="#d9534f">
+								<label style="padding-left: 20px;">PRO</label>
+								<input type="color" id="pro_node_draw" name="pro_node_draw"
+									   value="#5cb85c">
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-create">Custom Now</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
